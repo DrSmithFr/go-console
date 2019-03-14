@@ -1,12 +1,19 @@
 package output
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/MrSmith777/go-console/pkg/formatter"
+)
 
-func NewBufferedOutput() BufferedOutput {
+func NewBufferedOutput() *BufferedOutput {
 	out := new(BufferedOutput)
+
 	out.buffer = ""
 	out.doWrite = out.Write
-	return *out
+
+	out.formatter = formatter.NewOutputFormatter()
+
+	return out
 }
 
 type BufferedOutput struct {

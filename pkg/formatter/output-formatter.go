@@ -4,9 +4,17 @@ import (
 	"fmt"
 )
 
+func NewOutputFormatter() *OutputFormatter {
+	formatter := new(OutputFormatter)
+
+	formatter.styleStack = NewOutputFormatterStyleStack(nil)
+
+	return formatter
+}
+
 type OutputFormatter struct {
 	decorated bool
-	styleStack OutputFormatterStyleStack
+	styleStack *OutputFormatterStyleStack
 	stylesCache map[string]OutputFormatterStyle
 }
 
@@ -35,7 +43,7 @@ func (o *OutputFormatter) GetStyle(name string) *OutputFormatterStyle {
 }
 
 // Gets style stack
-func (o *OutputFormatter) GetStyleStack() OutputFormatterStyleStack {
+func (o *OutputFormatter) GetStyleStack() *OutputFormatterStyleStack {
 	return o.styleStack
 }
 
@@ -57,10 +65,11 @@ func (o *OutputFormatter) formatAndWrap(message string, width int) string {
 
 	output := ""
 
+	text := message[offset:]
 	output = fmt.Sprintf(
 		"%s%s",
 		output,
-		o.applyCurrentStyle(output[:offset], output, width, currentLineLenght),
+		o.applyCurrentStyle(text, output, width, currentLineLenght),
 	)
 
 	return output

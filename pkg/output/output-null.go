@@ -5,10 +5,14 @@ import (
 	"github.com/MrSmith777/go-console/pkg/formatter"
 )
 
-func NewNullOutput() NullOutput {
+func NewNullOutput() *NullOutput {
 	out := new(NullOutput)
+
 	out.doWrite = out.Write
-	return NullOutput{}
+
+	out.formatter = formatter.NewOutputFormatter()
+
+	return out
 }
 
 type NullOutput struct {

@@ -1,10 +1,16 @@
 package output
 
-func NewChanOutput(channel chan string) ChanOutput {
+import "github.com/MrSmith777/go-console/pkg/formatter"
+
+func NewChanOutput(channel chan string) *ChanOutput {
 	out := new(ChanOutput)
+
 	out.channel = channel
 	out.doWrite = out.Write
-	return *out
+
+	out.formatter = formatter.NewOutputFormatter()
+
+	return out
 }
 
 type ChanOutput struct {

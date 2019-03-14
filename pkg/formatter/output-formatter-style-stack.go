@@ -2,33 +2,49 @@ package formatter
 
 import (
 	"errors"
+	"github.com/MrSmith777/go-console/pkg/color"
 )
 
+func NewOutputFormatterStyleStack(style *OutputFormatterStyle) *OutputFormatterStyleStack {
+	stack := new(OutputFormatterStyleStack)
+
+	if nil != style {
+		stack.defaultStyle = style
+	} else {
+		stack.defaultStyle = NewOutputFormatterStyle(color.DEFAULT, color.DEFAULT)
+	}
+
+	stack.styles = []*OutputFormatterStyle{}
+
+	return stack
+}
+
 type OutputFormatterStyleStack struct {
-	styles []OutputFormatterStyle
-	defaultStyle OutputFormatterStyle
+	styles []*OutputFormatterStyle
+	defaultStyle *OutputFormatterStyle
 }
 
 // Resets stack (ie. empty internal arrays).
 func (stack *OutputFormatterStyleStack) Reset() {
-	stack.styles = []OutputFormatterStyle{}
+	stack.styles = []*OutputFormatterStyle{}
 }
 
 // Pushes a style in the stack.
-func (stack *OutputFormatterStyleStack) Push(style OutputFormatterStyle) {
+func (stack *OutputFormatterStyleStack) Push(style *OutputFormatterStyle) {
 	stack.styles = append(stack.styles, style)
 }
 
 // Pops a style from the stack, pop the first if style equal nil.
 func (stack *OutputFormatterStyleStack) Pop(style *OutputFormatterStyle) OutputFormatterStyle {
 	if 0 == len(stack.styles) {
-		return stack.defaultStyle
+		return *stack.defaultStyle
 	}
 
 	if nil == style {
-		first := stack.styles[0]
-		stack.styles = stack.styles[:1]
-		return first
+		first := stack.styles[len(stack.styles) - 1]
+		newStack := stack.styles[:len(stack.styles) - 1]
+		stack.styles = newStack
+		return *first
 	}
 
 	for index := len(stack.styles) - 1; index >= 0; index-- {
@@ -36,14 +52,14 @@ func (stack *OutputFormatterStyleStack) Pop(style *OutputFormatterStyle) OutputF
 
 		if (*style).Apply("") == stackedStyle.Apply("") {
 			stack.styles = stack.styles[:index]
-			return stackedStyle
+			return *stackedStyle
 		}
 	}
 
 	panic(errors.New("incorrectly nested style tag found"))
 }
 
-func (stack *OutputFormatterStyleStack) GetCurrent() OutputFormatterStyle {
+func (stack *OutputFormatterStyleStack) GetCurrent() *OutputFormatterStyle {
 	if 0 == len(stack.styles) {
 		return stack.defaultStyle
 	}
@@ -51,10 +67,10 @@ func (stack *OutputFormatterStyleStack) GetCurrent() OutputFormatterStyle {
 	return stack.styles[len(stack.styles) - 1]
 }
 
-func (stack *OutputFormatterStyleStack) GetDefaultStyle() OutputFormatterStyle {
+func (stack *OutputFormatterStyleStack) GetDefaultStyle() *OutputFormatterStyle {
 	return stack.defaultStyle
 }
 
 func (stack *OutputFormatterStyleStack) SetDefaultStyle(style OutputFormatterStyle) {
-	stack.defaultStyle = style
+	stack.defaultStyle = &style
 }

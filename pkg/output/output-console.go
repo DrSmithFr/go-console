@@ -1,11 +1,18 @@
 package output
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/MrSmith777/go-console/pkg/formatter"
+)
 
-func NewConsoleOutput() ConsoleOutput {
+func NewConsoleOutput() *ConsoleOutput {
 	out := new(ConsoleOutput)
+
 	out.doWrite = out.Write
-	return *out
+
+	out.formatter = formatter.NewOutputFormatter()
+
+	return out
 }
 
 type ConsoleOutput struct {
@@ -13,5 +20,5 @@ type ConsoleOutput struct {
 }
 
 func (o *ConsoleOutput) Write(message string) {
-	fmt.Print(message)
+	fmt.Printf(o.format(message))
 }
