@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/MrSmith777/go-console/pkg/color"
-	formatter2 "github.com/MrSmith777/go-console/pkg/formatter"
+	Formatter "github.com/MrSmith777/go-console/pkg/formatter"
 	"github.com/MrSmith777/go-console/pkg/output"
 )
 
@@ -14,7 +14,8 @@ func main() {
 
 	formatter := out.GetFormatter()
 	stack := formatter.GetStyleStack()
-	stack.Push(formatter2.NewOutputFormatterStyle(color.DEFAULT, color.CYAN))
+	style := Formatter.NewOutputFormatterStyle(color.DEFAULT, color.CYAN)
+	stack.Push(style)
 
 	// enable color
 	out.SetDecorated(true)
@@ -23,6 +24,8 @@ func main() {
 	stack.Pop(nil)
 	stack.Pop(nil)
 	fmt.Printf("bob")
+
+	style.SetOption(color.BLINK)
 
 	out.Writeln("POPOPOPOPOPOPOPOPOPO")
 }
