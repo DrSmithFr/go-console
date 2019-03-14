@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/MrSmith777/go-console/pkg/color"
 	Formatter "github.com/MrSmith777/go-console/pkg/formatter"
 	"github.com/MrSmith777/go-console/pkg/output"
@@ -20,10 +19,6 @@ func main() {
 	// enable color
 	out.SetDecorated(true)
 	out.Writeln("PAPAPAPAPAPAPAPAPAPA")
-
-	stack.Pop(nil)
-	stack.Pop(nil)
-	fmt.Printf("bob")
 
 	style.SetOption(color.BLINK)
 
