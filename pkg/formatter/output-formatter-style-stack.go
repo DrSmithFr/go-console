@@ -50,7 +50,10 @@ func (stack *OutputFormatterStyleStack) Pop(style *OutputFormatterStyle) OutputF
 	for index := len(stack.styles) - 1; index >= 0; index-- {
 		stackedStyle := stack.styles[index]
 
-		if (*style).Apply("") == stackedStyle.Apply("") {
+		currentStyleResult := (*style).Apply("")
+		stackedStyleResult := stackedStyle.Apply("")
+
+		if currentStyleResult == stackedStyleResult {
 			stack.styles = stack.styles[:index]
 			return *stackedStyle
 		}

@@ -85,6 +85,10 @@ func (style *OutputFormatterStyle) Apply(text string) string {
 		}
 	}
 
+	if 0 == len(setCode) {
+		return text
+	}
+
 	return fmt.Sprintf(
 		"\033[%sm%s\033[%sm",
 		arrayToString(setCode, ";"),

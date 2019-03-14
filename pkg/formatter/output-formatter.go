@@ -2,19 +2,29 @@ package formatter
 
 import (
 	"fmt"
+	"github.com/MrSmith777/go-console/pkg/color"
+	"regexp"
+	"strings"
 )
 
 func NewOutputFormatter() *OutputFormatter {
 	formatter := new(OutputFormatter)
 
+	formatter.stylesCache = make(map[string]OutputFormatterStyle)
+
 	formatter.styleStack = NewOutputFormatterStyleStack(nil)
+
+	formatter.SetStyle("error", *NewOutputFormatterStyle(color.WHITE, color.RED))
+	formatter.SetStyle("info", *NewOutputFormatterStyle(color.GREEN, color.DEFAULT))
+	formatter.SetStyle("comment", *NewOutputFormatterStyle(color.YELLOW, color.DEFAULT))
+	formatter.SetStyle("question", *NewOutputFormatterStyle(color.BLACK, color.CYAN))
 
 	return formatter
 }
 
 type OutputFormatter struct {
-	decorated bool
-	styleStack *OutputFormatterStyleStack
+	decorated   bool
+	styleStack  *OutputFormatterStyleStack
 	stylesCache map[string]OutputFormatterStyle
 }
 
@@ -55,43 +65,144 @@ func (o *OutputFormatter) HasStyle(name string) bool {
 
 // Formats a message according to the given styles.
 func (o *OutputFormatter) Format(message string) string {
-	return o.formatAndWrap(message, 0)
-}
-
-// Formats a message according to the given styles, wrapping at `$width` (0 means no wrapping).
-func (o *OutputFormatter) formatAndWrap(message string, width int) string {
 	offset := 0
-	currentLineLenght := 0
-
 	output := ""
 
-	text := message[offset:]
-	output = fmt.Sprintf(
-		"%s%s",
-		output,
-		o.applyCurrentStyle(text, output, width, currentLineLenght),
-	)
+	tags := o.findTagsInString(message)
 
-	return output
+	for _, tag := range tags {
+		text := tag.Tag
+
+		if 0 != tag.Start && '\\' == message[tag.Start-1] {
+			continue
+		}
+
+		text = message[offset:][0:tag.Start - offset]
+
+		// add the text up to the next tag
+		output = fmt.Sprintf(
+			"%s%s",
+			output,
+			o.applyCurrentStyle(text),
+		)
+
+		offset = tag.Start + len(tag.Text)
+
+		if !tag.Opening && "" != tag.Tag {
+			// </>
+			o.GetStyleStack().Pop(nil)
+		} else {
+			style := o.createStyleFromString(tag.Tag)
+
+			if nil == style {
+				output = fmt.Sprintf(
+					"%s%s",
+					output,
+					o.applyCurrentStyle(text),
+				)
+			} else if tag.Opening {
+				o.GetStyleStack().Push(style)
+			} else {
+				o.GetStyleStack().Pop(style)
+			}
+		}
+	}
+
+	output = fmt.Sprintf("%s%s", output, message[offset:])
+
+	result := strings.Replace(output, "\\<", "<", -1)
+	return result
+}
+
+// struct to describe a color tag
+type tagPos struct {
+	Text    string
+	Tag     string
+	Start   int
+	End     int
+	Opening bool
+}
+
+// Make a tagMap from a message
+func (o *OutputFormatter) findTagsInString(text string) []tagPos {
+	tagNameRegex := "[a-z][a-z0-9,_=;-]*"
+	tagRegex := fmt.Sprintf("<((%s)|/(%s)?)>", tagNameRegex, tagNameRegex)
+	regex := regexp.MustCompile(tagRegex)
+
+	tags := regex.FindAllString(text, -1)
+	indexes := regex.FindAllStringIndex(text, -1)
+
+	var positions []tagPos
+
+	for i := 0; i < len(tags); i++ {
+		// TODO find a clever way to remove <>
+		tagName := strings.Replace(tags[i][1:], ">", "", -1)
+		opening := true
+
+		if '/' == tagName[0] {
+			opening = false
+		}
+
+		positions = append(
+			positions,
+			tagPos{
+				Text:    tags[i],
+				Tag:     tagName,
+				Start:   indexes[i][0],
+				End:     indexes[i][1],
+				Opening: opening,
+			},
+		)
+	}
+
+	return positions
 }
 
 // Applies current style from stack to text, if must be applied.
-func (o *OutputFormatter) applyCurrentStyle(text string, current string, width int, currentLineLength int) string {
+func (o *OutputFormatter) applyCurrentStyle(text string) string {
 	if "" == text {
 		return ""
 	}
 
-	if 0 == width {
-		if o.IsDecorated() {
-			stack := o.GetStyleStack()
-			style := stack.GetCurrent()
-			return style.Apply(text)
-		}
-
-		return text
+	if o.IsDecorated() {
+		return o.GetStyleStack().GetCurrent().Apply(text)
 	}
 
-	// TODO boxing with currentLineLength
-
 	return text
+}
+
+// create a style from a tag string
+func (o *OutputFormatter) createStyleFromString(text string) *OutputFormatterStyle {
+	text = strings.ToLower(text)
+
+	if style, ok := o.stylesCache[text]; ok {
+		return &style
+	}
+
+	regex := regexp.MustCompile("([^=]+)=([^;]+)(;|$)")
+	matches := regex.FindAllStringSubmatch(text, -1)
+
+	if nil == matches {
+		return nil
+	}
+
+	style := NewOutputFormatterStyle(color.DEFAULT, color.DEFAULT)
+
+	for _, match := range matches {
+		match = match[1:]
+
+		if "fg" == match[0] {
+			style.SetForeground(&match[1])
+		} else if "bg" == match[0] {
+			style.SetBackground(&match[1])
+		} else if "options" == match[0] {
+			optionRegex := regexp.MustCompile("([^,;]+)")
+			options := optionRegex.FindAllString(match[1], -1)
+			style.SetOptions(options)
+		} else {
+			return nil
+		}
+	}
+
+	return style
 }

@@ -1,26 +1,26 @@
 package main
 
 import (
-	"github.com/MrSmith777/go-console/pkg/color"
-	Formatter "github.com/MrSmith777/go-console/pkg/formatter"
 	"github.com/MrSmith777/go-console/pkg/output"
 )
 
 func main() {
+	// creating new output
 	out := output.NewConsoleOutput()
-	out.Writeln("Ceci est un test")
-	out.Write("Ceci est un test\n")
-
-	formatter := out.GetFormatter()
-	stack := formatter.GetStyleStack()
-	style := Formatter.NewOutputFormatterStyle(color.DEFAULT, color.CYAN)
-	stack.Push(style)
 
 	// enable color
 	out.SetDecorated(true)
-	out.Writeln("PAPAPAPAPAPAPAPAPAPA")
 
-	style.SetOption(color.BLINK)
+	// enjoy
+	out.Writeln("<error>An error</error>")
+	out.Writeln("<error>An error</>")
 
-	out.Writeln("POPOPOPOPOPOPOPOPOPO")
+	out.Writeln("<info>An information</info>")
+	out.Writeln("<info>An information</>")
+
+	out.Writeln("<comment>An comment</comment>")
+	out.Writeln("<comment>An comment</>")
+
+	out.Writeln("<question>A question</question>")
+	out.Writeln("<question>A question</>")
 }
