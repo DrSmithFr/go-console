@@ -13,7 +13,7 @@ func NewNullOutput() NullOutput {
 
 type NullOutput struct {
 	doWrite func (string)
-	formatter *formatter.OutputFormatterInterface
+	formatter *formatter.OutputFormatter
 }
 
 func (o *NullOutput) format(message string) string {
@@ -48,11 +48,11 @@ func (o *NullOutput) IsDecorated() bool {
 	return (*o.formatter).IsDecorated()
 }
 
-func (o *NullOutput) SetFormatter(formatter *formatter.OutputFormatterInterface) {
+func (o *NullOutput) SetFormatter(formatter *formatter.OutputFormatter) {
 	o.formatter = formatter
 }
 
-func (o *NullOutput) GetFormatter() *formatter.OutputFormatterInterface {
+func (o *NullOutput) GetFormatter() *formatter.OutputFormatter {
 	return o.formatter
 }
 

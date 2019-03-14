@@ -2,14 +2,6 @@ package output
 
 import "github.com/MrSmith777/go-console/pkg/formatter"
 
-const (
-	VERBOSITY_QUIET = 16
-	VERBOSITY_NORMAL = 32
-	VERBOSITY_VERBOSE = 64
-	VERBOSITY_VERY_VERBOSE = 128
-	VERBOSITY_DEBUG = 256
-)
-
 type OutputInterface interface {
 	// Formats a message according to the current formatter styles.
 	format(message string) string
@@ -27,8 +19,8 @@ type OutputInterface interface {
 	IsDecorated() bool
 
 	// Sets current output formatter instance.
-	SetFormatter(formatter *formatter.OutputFormatterInterface)
+	SetFormatter(formatter *formatter.OutputFormatter)
 
 	// Gets current output formatter instance.
-	GetFormatter() *formatter.OutputFormatterInterface
+	GetFormatter() *formatter.OutputFormatter
 }
