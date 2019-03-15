@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"github.com/MrSmith777/go-console/pkg/color"
 	"github.com/MrSmith777/go-console/pkg/output"
 )
 
@@ -23,4 +25,15 @@ func main() {
 
 	out.Writeln("<question>A question</question>")
 	out.Writeln("<question>A question</>")
+
+	out.Writeln(
+		fmt.Sprintf(
+			"<bg=%s;fg=%s;options=%s>custom style testing</>",
+			color.BLUE,
+			color.GREEN,
+			color.BOLD,
+		),
+	)
+
+	out.Writeln(fmt.Sprintf("<options=bold,underscore>custom style testing</>"))
 }
