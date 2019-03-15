@@ -5,12 +5,18 @@ import (
 	"github.com/MrSmith777/go-console/pkg/formatter"
 )
 
-func NewConsoleOutput() *ConsoleOutput {
+func NewConsoleOutput(decorated bool, format *formatter.OutputFormatter) *ConsoleOutput {
 	out := new(ConsoleOutput)
 
 	out.doWrite = out.Write
 
-	out.formatter = formatter.NewOutputFormatter()
+	if nil == format {
+		out.formatter = formatter.NewOutputFormatter()
+	} else {
+		out.formatter = format
+	}
+
+	out.SetDecorated(decorated)
 
 	return out
 }

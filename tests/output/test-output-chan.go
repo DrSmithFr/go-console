@@ -8,7 +8,7 @@ import (
 func main() {
 	channel := make(chan string, 1)
 
-	out := output.NewChanOutput(channel)
+	out := output.NewChanOutput(channel, true, nil)
 	out.Writeln("Ceci est un test")
 
 	msg := <-channel

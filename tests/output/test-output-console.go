@@ -8,10 +8,7 @@ import (
 
 func main() {
 	// creating new output
-	out := output.NewConsoleOutput()
-
-	// enable color
-	out.SetDecorated(true)
+	out := output.NewConsoleOutput(true, nil)
 
 	// enjoy
 	out.Writeln("<error>An error</error>")

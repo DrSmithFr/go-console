@@ -2,13 +2,19 @@ package output
 
 import "github.com/MrSmith777/go-console/pkg/formatter"
 
-func NewChanOutput(channel chan string) *ChanOutput {
+func NewChanOutput(channel chan string, decorated bool, format *formatter.OutputFormatter) *ChanOutput {
 	out := new(ChanOutput)
 
 	out.channel = channel
 	out.doWrite = out.Write
 
-	out.formatter = formatter.NewOutputFormatter()
+	if nil == format {
+		out.formatter = formatter.NewOutputFormatter()
+	} else {
+		out.formatter = format
+	}
+
+	out.SetDecorated(decorated)
 
 	return out
 }
