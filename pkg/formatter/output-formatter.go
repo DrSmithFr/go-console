@@ -15,13 +15,37 @@ func NewOutputFormatter() *OutputFormatter {
 	formatter.styleStack = NewOutputFormatterStyleStack(nil)
 
 	formatter.SetStyle("error", *NewOutputFormatterStyle(color.WHITE, color.RED, nil))
-	formatter.SetStyle("info", *NewOutputFormatterStyle(color.GREEN, color.DEFAULT, nil))
-	formatter.SetStyle("comment", *NewOutputFormatterStyle(color.YELLOW, color.DEFAULT, nil))
+	formatter.SetStyle("info", *NewOutputFormatterStyle(color.GREEN, color.NULL, nil))
+	formatter.SetStyle("comment", *NewOutputFormatterStyle(color.YELLOW, color.NULL, nil))
 	formatter.SetStyle("question", *NewOutputFormatterStyle(color.BLACK, color.CYAN, nil))
 	formatter.SetStyle("b", *NewOutputFormatterStyle(color.NULL, color.NULL, []string{color.BOLD}))
 	formatter.SetStyle("u", *NewOutputFormatterStyle(color.NULL, color.NULL, []string{color.UNDERSCORE}))
 
 	return formatter
+}
+
+func Escape(message string) string {
+	regex := regexp.MustCompile("([^\\\\]?)<")
+	escaped := regex.ReplaceAllString(message, "$1\\<")
+	final := EscapeTrailingBackslash(escaped)
+	return final
+}
+
+// TODO fix this function
+func EscapeTrailingBackslash(message string) string {
+	lastChar := message[len(message)-1:]
+
+	if "\\" == lastChar {
+		totalLenght := len(message)
+		message = strings.TrimSuffix(message, "\\")
+		message = fmt.Sprintf(
+			"%s%s",
+				message,
+				strings.Repeat("\x00", totalLenght - len(message)),
+		)
+	}
+
+	return message
 }
 
 type OutputFormatter struct {
@@ -79,7 +103,7 @@ func (o *OutputFormatter) Format(message string) string {
 			continue
 		}
 
-		text = message[offset:][0:tag.Start - offset]
+		text = message[offset:][0 : tag.Start-offset]
 
 		// add the text up to the next tag
 		output = fmt.Sprintf(
@@ -111,6 +135,12 @@ func (o *OutputFormatter) Format(message string) string {
 	}
 
 	output = fmt.Sprintf("%s%s", output, message[offset:])
+
+	if strings.Contains(output, "\x00") {
+		output = strings.Replace(output, "\x00", "\\", -1)
+		output = strings.Replace(output, "\\<", "<", -1)
+	}
+
 	result := strings.Replace(output, "\\<", "<", -1)
 
 	return result

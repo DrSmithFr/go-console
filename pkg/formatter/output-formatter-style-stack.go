@@ -11,7 +11,7 @@ func NewOutputFormatterStyleStack(style *OutputFormatterStyle) *OutputFormatterS
 	if nil != style {
 		stack.defaultStyle = style
 	} else {
-		stack.defaultStyle = NewOutputFormatterStyle(color.DEFAULT, color.DEFAULT, nil)
+		stack.defaultStyle = NewOutputFormatterStyle(color.NULL, color.NULL, nil)
 	}
 
 	stack.styles = []*OutputFormatterStyle{}
