@@ -2,9 +2,9 @@ package style
 
 import (
 	"fmt"
+	"github.com/MrSmith777/go-console/pkg/helper"
 	"github.com/MrSmith777/go-console/pkg/output"
 	"strings"
-	"unicode/utf8"
 )
 
 const MAX_LINE_LENGTH = 120
@@ -35,10 +35,12 @@ func (g *GoStyler) NewLine(count int) {
 func (g *GoStyler) Title(message string) {
 	g.autoPrependBlock()
 
+	messageRealLength := helper.StrlenWithoutDecoration(g.out.GetFormatter(), message)
+
 	g.writeArray(
 		[]string{
 			fmt.Sprintf("<comment>%s</>", message),
-			fmt.Sprintf("<comment>%s</>", strings.Repeat("=", utf8.RuneCountInString(message))),
+			fmt.Sprintf("<comment>%s</>", strings.Repeat("=", messageRealLength)),
 		},
 		true,
 	)

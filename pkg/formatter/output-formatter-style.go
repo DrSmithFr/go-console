@@ -6,13 +6,21 @@ import (
 	"strings"
 )
 
-func NewOutputFormatterStyle(foreground string, background string) *OutputFormatterStyle {
+func NewOutputFormatterStyle(
+	foreground string,
+	background string,
+	options []string,
+) *OutputFormatterStyle {
 	style := new(OutputFormatterStyle)
+
+	style.options = &map[string]color.Color{}
 
 	style.SetForeground(&foreground)
 	style.SetBackground(&background)
 
-	style.options = &map[string]color.Color{}
+	if nil != options {
+		style.SetOptions(options)
+	}
 
 	return style
 }
@@ -25,7 +33,7 @@ type OutputFormatterStyle struct {
 
 // Sets style foreground color.
 func (style *OutputFormatterStyle) SetForeground(name *string) {
-	if nil == name {
+	if nil == name || color.NULL == *name {
 		style.foreground = nil
 		return
 	}
@@ -36,7 +44,7 @@ func (style *OutputFormatterStyle) SetForeground(name *string) {
 
 // Sets style background color.
 func (style *OutputFormatterStyle) SetBackground(name *string) {
-	if nil == name {
+	if nil == name || color.NULL == *name {
 		style.background = nil
 		return
 	}
@@ -86,15 +94,20 @@ func (style *OutputFormatterStyle) Apply(text string) string {
 	}
 
 	if 0 == len(setCode) {
+		fmt.Printf("")
 		return text
 	}
 
-	return fmt.Sprintf(
+	result := fmt.Sprintf(
 		"\033[%sm%s\033[%sm",
 		arrayToString(setCode, ";"),
 		text,
 		arrayToString(unsetCode, ";"),
 	)
+
+	fmt.Printf("")
+
+	return result
 }
 
 func arrayToString(a []int, delim string) string {
