@@ -1,6 +1,11 @@
 package style
 
+import "github.com/MrSmith777/go-console/pkg/output"
+
 type StylerInterface interface {
+	// retrieve OutputInterface
+	GetOutput() output.OutputInterface
+
 	// Formats a command title.
 	Title(message string)
 

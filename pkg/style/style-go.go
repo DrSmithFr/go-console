@@ -7,6 +7,11 @@ import (
 	"strings"
 )
 
+func NewConsoleGoStyler() *GoStyler {
+	out := output.NewConsoleOutput(true, nil)
+	return NewGoStyler(out)
+}
+
 func NewGoStyler(out output.OutputInterface) *GoStyler {
 	g := new(GoStyler)
 
@@ -22,6 +27,10 @@ func NewGoStyler(out output.OutputInterface) *GoStyler {
 type GoStyler struct {
 	out            output.OutputInterface
 	bufferedOutput output.BufferedOutput
+}
+
+func (g *GoStyler) GetOutput() output.OutputInterface {
+	return g.out
 }
 
 func (g *GoStyler) NewLine(count int) {

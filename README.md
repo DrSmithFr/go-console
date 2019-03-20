@@ -133,14 +133,18 @@ import (
 )
 
 func main() {
-	// creating new output
+	// create default console styler
+	io := style.NewConsoleGoStyler()
+	
+	// or create styler with custom OutputInterface
 	out := output.NewConsoleOutput(true, nil)
-
-	// creating new styler
 	io := style.NewGoStyler(out)
 
-	// use Go styler
+	// add title
 	io.Title("Lorem Ipsum Dolor Sit Amet")
+	
+	// you still access the OutputInterface
+    io.GetOutput().Write("<info>some info</>")
 }
 ```
 
