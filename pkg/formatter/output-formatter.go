@@ -114,11 +114,11 @@ func (o *OutputFormatter) Format(message string) string {
 
 		offset = tag.Start + len(tag.Text)
 
-		if !tag.Opening && "" != tag.Tag {
+		if !tag.Opening && "" == tag.Style {
 			// </>
 			o.GetStyleStack().Pop(nil)
 		} else {
-			style := o.createStyleFromString(tag.Tag)
+			style := o.createStyleFromString(tag.Style)
 
 			if nil == style {
 				output = fmt.Sprintf(
@@ -150,6 +150,7 @@ func (o *OutputFormatter) Format(message string) string {
 type tagPos struct {
 	Text    string
 	Tag     string
+	Style   string
 	Start   int
 	End     int
 	Opening bool
@@ -171,8 +172,11 @@ func (o *OutputFormatter) findTagsInString(text string) []tagPos {
 		tagName := strings.Replace(tags[i][1:], ">", "", -1)
 		opening := true
 
+		style := tagName
+
 		if '/' == tagName[0] {
 			opening = false
+			style = tagName[1:]
 		}
 
 		positions = append(
@@ -180,6 +184,7 @@ func (o *OutputFormatter) findTagsInString(text string) []tagPos {
 			tagPos{
 				Text:    tags[i],
 				Tag:     tagName,
+				Style:   style,
 				Start:   indexes[i][0],
 				End:     indexes[i][1],
 				Opening: opening,

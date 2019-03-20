@@ -2,6 +2,7 @@ package formatter
 
 import (
 	"fmt"
+	"github.com/MrSmith777/go-console/pkg/color"
 	"github.com/MrSmith777/go-console/pkg/formatter"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -142,3 +143,78 @@ func TestStyleEscaping(t *testing.T) {
 		),
 	)
 }
+
+func TestDeepNestedStyles(t *testing.T) {
+	format := formatter.NewOutputFormatter()
+	format.SetDecorated(true)
+
+	assert.Equal(
+		t,
+		"\033[37;41merror\033[39;49m\033[32minfo\033[39m\033[33mcomment\033[39m\033[37;41merror\033[39;49m",
+		format.Format("<error>error<info>info<comment>comment</info>error</error>"),
+	)
+}
+
+func TestNewStyle(t *testing.T) {
+	format := formatter.NewOutputFormatter()
+	format.SetDecorated(true)
+
+	s1 := formatter.NewOutputFormatterStyle(color.BLUE, color.WHITE, nil)
+	format.SetStyle("test", *s1)
+
+	assert.Equal(t, s1, format.GetStyle("test"))
+	assert.NotEqual(t, s1, format.GetStyle("info"))
+
+	s2 := formatter.NewOutputFormatterStyle(color.BLUE, color.WHITE, nil)
+	format.SetStyle("b", *s2)
+
+	assert.Equal(
+		t,
+		"\033[34;47msome \033[39;49m\033[34;47mcustom\033[39;49m\033[34;47m msg\033[39;49m",
+		format.Format("<test>some <b>custom</b> msg</test>"),
+	)
+}
+
+func TestRedefineStyle(t *testing.T) {
+	format := formatter.NewOutputFormatter()
+	format.SetDecorated(true)
+
+	s := formatter.NewOutputFormatterStyle(color.BLUE, color.WHITE, nil)
+	format.SetStyle("info", *s)
+
+	assert.Equal(
+		t,
+		"\033[34;47msome custom msg\033[39;49m",
+		format.Format("<info>some custom msg</info>"),
+	)
+}
+
+func TestInlineStyle(t *testing.T) {
+	format := formatter.NewOutputFormatter()
+	format.SetDecorated(true)
+
+	assert.Equal(
+		t,
+		"\033[34;41msome text\033[39;49m",
+		format.Format("<fg=blue;bg=red>some text</>"),
+	)
+
+	assert.Equal(
+		t,
+		"\033[34;41msome text\033[39;49m",
+		format.Format("<fg=blue;bg=red>some text</fg=blue;bg=red>"),
+	)
+
+	assert.Equal(
+		t,
+		"\033[39;49;4msome text\033[39;49;24m",
+		format.Format("<options=underscore>some text</>"),
+	)
+
+	assert.Equal(
+		t,
+		"\033[39;49;1;4msome text\033[39;49;22;24m",
+		format.Format("<options=underscore,bold>some text</>"),
+	)
+}
+
