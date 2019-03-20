@@ -224,9 +224,9 @@ func (o *OutputFormatter) createStyleFromString(text string) *OutputFormatterSty
 		match = match[1:]
 
 		if "fg" == match[0] {
-			style.SetForeground(&match[1])
+			style.SetForeground(match[1])
 		} else if "bg" == match[0] {
-			style.SetBackground(&match[1])
+			style.SetBackground(match[1])
 		} else if "options" == match[0] {
 			optionRegex := regexp.MustCompile("([^,;]+)")
 			options := optionRegex.FindAllString(match[1], -1)
