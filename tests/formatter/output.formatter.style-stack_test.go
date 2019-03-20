@@ -16,11 +16,12 @@ func TestPush(t *testing.T) {
 	stack.Push(s1)
 	stack.Push(s2)
 
-	assert.ObjectsAreEqual(s2, stack.GetCurrent())
+	assert.EqualValues(t,s2, stack.GetCurrent())
 
 	s3 := formatter.NewOutputFormatterStyle(color.GREEN, color.RED, nil)
+	stack.Push(s3)
 
-	assert.ObjectsAreEqual(s3, stack.GetCurrent())
+	assert.EqualValues(t, s3, stack.GetCurrent())
 }
 
 func TestPop(t *testing.T) {
@@ -32,15 +33,15 @@ func TestPop(t *testing.T) {
 	stack.Push(s1)
 	stack.Push(s2)
 
-	assert.ObjectsAreEqual(s2, stack.Pop(nil))
-	assert.ObjectsAreEqual(s1, stack.Pop(nil))
+	assert.EqualValues(t, s2, stack.Pop(nil))
+	assert.EqualValues(t, s1, stack.Pop(nil))
 }
 
 func TestPopEmpty(t *testing.T) {
+	stack := formatter.NewOutputFormatterStyleStack(nil)
 	s := formatter.NewOutputFormatterStyle(color.NULL, color.NULL, nil)
-	stack := formatter.NewOutputFormatterStyleStack(s)
 
-	assert.ObjectsAreEqual(s, stack.Pop(nil))
+	assert.EqualValues(t, s, stack.Pop(nil))
 }
 
 func TestPopNotLast(t *testing.T) {
@@ -54,8 +55,8 @@ func TestPopNotLast(t *testing.T) {
 	stack.Push(s2)
 	stack.Push(s3)
 
-	assert.ObjectsAreEqual(s2, stack.Pop(s2))
-	assert.ObjectsAreEqual(s1, stack.Pop(nil))
+	assert.EqualValues(t, s2, stack.Pop(s2))
+	assert.EqualValues(t, s1, stack.Pop(nil))
 }
 
 func TestInvalidPop(t *testing.T) {

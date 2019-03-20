@@ -35,16 +35,16 @@ func (stack *OutputFormatterStyleStack) Push(style *OutputFormatterStyle) {
 }
 
 // Pops a style from the stack, pop the first if style equal nil.
-func (stack *OutputFormatterStyleStack) Pop(style *OutputFormatterStyle) OutputFormatterStyle {
+func (stack *OutputFormatterStyleStack) Pop(style *OutputFormatterStyle) *OutputFormatterStyle {
 	if 0 == len(stack.styles) {
-		return *stack.defaultStyle
+		return stack.defaultStyle
 	}
 
 	if nil == style {
 		first := stack.styles[len(stack.styles) - 1]
 		newStack := stack.styles[:len(stack.styles) - 1]
 		stack.styles = newStack
-		return *first
+		return first
 	}
 
 	for index := len(stack.styles) - 1; index >= 0; index-- {
@@ -55,7 +55,7 @@ func (stack *OutputFormatterStyleStack) Pop(style *OutputFormatterStyle) OutputF
 
 		if currentStyleResult == stackedStyleResult {
 			stack.styles = stack.styles[:index]
-			return *stackedStyle
+			return stackedStyle
 		}
 	}
 
