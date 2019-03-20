@@ -20,7 +20,7 @@ func NewOutputFormatterStyleStack(style *OutputFormatterStyle) *OutputFormatterS
 }
 
 type OutputFormatterStyleStack struct {
-	styles []*OutputFormatterStyle
+	styles       []*OutputFormatterStyle
 	defaultStyle *OutputFormatterStyle
 }
 
@@ -41,8 +41,8 @@ func (stack *OutputFormatterStyleStack) Pop(style *OutputFormatterStyle) *Output
 	}
 
 	if nil == style {
-		first := stack.styles[len(stack.styles) - 1]
-		newStack := stack.styles[:len(stack.styles) - 1]
+		first := stack.styles[len(stack.styles)-1]
+		newStack := stack.styles[:len(stack.styles)-1]
 		stack.styles = newStack
 		return first
 	}
@@ -67,7 +67,7 @@ func (stack *OutputFormatterStyleStack) GetCurrent() *OutputFormatterStyle {
 		return stack.defaultStyle
 	}
 
-	return stack.styles[len(stack.styles) - 1]
+	return stack.styles[len(stack.styles)-1]
 }
 
 func (stack *OutputFormatterStyleStack) GetDefaultStyle() *OutputFormatterStyle {

@@ -217,4 +217,3 @@ func TestInlineStyle(t *testing.T) {
 		format.Format("<options=underscore,bold>some text</>"),
 	)
 }
-

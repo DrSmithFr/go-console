@@ -1,6 +1,6 @@
 package color
 
-func NewColor(set int, unset int) Color  {
+func NewColor(set int, unset int) Color {
 	color := new(Color)
 
 	color.set = set
@@ -10,7 +10,7 @@ func NewColor(set int, unset int) Color  {
 }
 
 type Color struct {
-	set int
+	set   int
 	unset int
 }
 

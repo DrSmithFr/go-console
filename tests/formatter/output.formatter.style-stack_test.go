@@ -16,7 +16,7 @@ func TestPush(t *testing.T) {
 	stack.Push(s1)
 	stack.Push(s2)
 
-	assert.EqualValues(t,s2, stack.GetCurrent())
+	assert.EqualValues(t, s2, stack.GetCurrent())
 
 	s3 := formatter.NewOutputFormatterStyle(color.GREEN, color.RED, nil)
 	stack.Push(s3)

@@ -40,8 +40,8 @@ func EscapeTrailingBackslash(message string) string {
 		message = strings.TrimSuffix(message, "\\")
 		message = fmt.Sprintf(
 			"%s%s",
-				message,
-				strings.Repeat("\x00", totalLenght - len(message)),
+			message,
+			strings.Repeat("\x00", totalLenght-len(message)),
 		)
 	}
 

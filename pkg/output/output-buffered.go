@@ -32,7 +32,7 @@ func (o *BufferedOutput) Write(message string) {
 }
 
 // Empties buffer and returns its content.
-func (o* BufferedOutput) Fetch() string {
+func (o *BufferedOutput) Fetch() string {
 	buffer := o.buffer
 	o.buffer = ""
 	return buffer

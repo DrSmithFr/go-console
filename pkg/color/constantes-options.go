@@ -10,7 +10,6 @@ var options = map[string]Color{
 	CONCEAL:    NewColor(8, 28),
 }
 
-
 func GetOption(name string) Color {
 	if option, ok := options[name]; ok {
 		return option

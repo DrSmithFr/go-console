@@ -110,7 +110,7 @@ func (style *OutputFormatterStyle) Apply(text string) string {
 	setCodeString := arrayToString(setCode, ";")
 	unsetCodeString := arrayToString(unsetCode, ";")
 
-	result := fmt.Sprintf("\033[%sm%s\033[%sm", setCodeString, text, unsetCodeString,)
+	result := fmt.Sprintf("\033[%sm%s\033[%sm", setCodeString, text, unsetCodeString)
 
 	return result
 }

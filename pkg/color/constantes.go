@@ -1,7 +1,7 @@
 package color
 
 const (
-	NULL    = ""
+	NULL = ""
 
 	BLACK   = "black"
 	RED     = "red"

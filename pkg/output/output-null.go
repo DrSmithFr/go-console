@@ -22,7 +22,7 @@ func NewNullOutput(decorated bool, format *formatter.OutputFormatter) *NullOutpu
 }
 
 type NullOutput struct {
-	doWrite func (string)
+	doWrite   func(string)
 	formatter *formatter.OutputFormatter
 }
 
@@ -65,4 +65,3 @@ func (o *NullOutput) SetFormatter(formatter *formatter.OutputFormatter) {
 func (o *NullOutput) GetFormatter() *formatter.OutputFormatter {
 	return o.formatter
 }
-
