@@ -1,0 +1,10 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/MrSmith777/go-console
+    steps:
+      - checkout
+      - run: go test -v ./tests/color/
+      - run: go test -v ./tests/formatter/

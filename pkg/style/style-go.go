@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-const MAX_LINE_LENGTH = 120
-
 func NewGoStyler(out output.OutputInterface) *GoStyler {
 	g := new(GoStyler)
 

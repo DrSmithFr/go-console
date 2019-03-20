@@ -12,7 +12,6 @@ func main() {
 	// creating new styler
 	styler := style.NewGoStyler(out)
 
-	//out.Writeln("<bg=red>boby</> est cool")
-	//styler.Title("<bg=red>boby</> <b>est</> cool")
-	styler.Title("<bg=red>boby</> <sdfsdf>est</> cool")
+	// use Go styler
+	styler.Title("Lorem Ipsum Dolor Sit Amet")
 }

@@ -97,13 +97,11 @@ func (o *OutputFormatter) Format(message string) string {
 	tags := o.findTagsInString(message)
 
 	for _, tag := range tags {
-		text := tag.Tag
-
 		if 0 != tag.Start && '\\' == message[tag.Start-1] {
 			continue
 		}
 
-		text = message[offset:][0 : tag.Start-offset]
+		text := message[offset:][0 : tag.Start-offset]
 
 		// add the text up to the next tag
 		output = fmt.Sprintf(

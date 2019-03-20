@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/MrSmith777/go-console/pkg/color"
+	"github.com/MrSmith777/go-console/pkg/formatter"
 	"github.com/MrSmith777/go-console/pkg/output"
 )
 
@@ -32,5 +33,8 @@ func main() {
 		),
 	)
 
-	out.Writeln(fmt.Sprintf("<options=bold,underscore>custom style testing</>"))
+	s := formatter.NewOutputFormatterStyle(color.RED, color.YELLOW, []string{color.BOLD, color.BLINK})
+	out.GetFormatter().SetStyle("fire", *s)
+
+	out.Writeln("<fire>foo</>")
 }
