@@ -7,7 +7,6 @@
 [![CircleCI](https://circleci.com/gh/MrSmith777/go-console.svg?style=shield)](https://circleci.com/gh/MrSmith777/go-console)
 [![GolangCI](https://golangci.com/badges/github.com/MrSmith777/go-console.svg)](https://golangci.com/r/github.com/MrSmith777/go-console)
 [![Go Report Card](https://goreportcard.com/badge/github.com/MrSmith777/go-console)](https://goreportcard.com/report/github.com/MrSmith777/go-console)
-[![codecov.io](https://codecov.io/github/MrSmith777/go-console/coverage.svg?branch=master)](https://codecov.io/github/MrSmith777/go-console?branch=master)
 
 One of the most boring tasks when creating console commands is to deal with the styling of the command's output, 
 this library provide several helper for that. 
