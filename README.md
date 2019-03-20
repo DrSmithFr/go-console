@@ -48,7 +48,9 @@ func main() {
 
 > The closing tag can be replaced by </>, which revokes all formatting options established by the last opened tag.
 
-It is possible to define your own styles using the OutputFormatterStyle class
+---
+
+It is possible to define your own styles using the OutputFormatterStyle
 
 ```go
 import (
@@ -68,9 +70,10 @@ func main() {
 }
 ```
 
-Available foreground and background colors are: black, red, green, yellow, blue, magenta, cyan and white.
+> Available foreground and background colors are: black, red, green, yellow, blue, magenta, cyan and white.
+> And available options are: bold, underscore, blink, reverse (enables the "reverse video" mode where the background and foreground colors are swapped) and conceal (sets the foreground color to transparent, making the typed text invisible - although it can be selected and copied; this option is commonly used when asking the user to type sensitive information).
 
-And available options are: bold, underscore, blink, reverse (enables the "reverse video" mode where the background and foreground colors are swapped) and conceal (sets the foreground color to transparent, making the typed text invisible - although it can be selected and copied; this option is commonly used when asking the user to type sensitive information).
+---
 
 You can also set these colors and options directly inside the tag name:
 
