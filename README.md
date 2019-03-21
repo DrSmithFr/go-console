@@ -166,3 +166,64 @@ func main() {
 </p>
 
 > If you need to render a tag literally, escape it with a backslash: \<info> or use the escape() method to escape all the tags included in the given string.
+
+## How to Style the Console Output
+
+One of the most boring tasks when creating console commands is to deal with the styling of the command's input and output. Displaying titles and tables or asking questions to the user involves a lot of repetitive code.
+
+Consider for example the code used to display the title of the following command:
+
+```go
+import "github.com/MrSmith777/go-console/pkg/output"
+
+func main() {
+    // creating new output
+    out := output.NewConsoleOutput(true, nil)
+    
+    out.Writeln("<info>Lorem Ipsum Dolor Sit Amet</>")
+    out.Writeln("<info>==========================</>\n")
+}
+```
+
+Displaying a simple title requires two lines of code, to change the font color, underline the contents and leave an additional blank line after the title. Dealing with styles is required for well-designed commands, but it complicates their code unnecessarily.
+
+In order to reduce that boilerplate code, go-console can optionally use the Go Style Guide. These styles are implemented as a set of helper methods which allow to create semantic commands and forget about their styling.
+
+### Basic Usage
+
+```go
+package main
+
+import (
+	"github.com/MrSmith777/go-console/pkg/output"
+	"github.com/MrSmith777/go-console/pkg/style"
+)
+
+func main() {
+	// create default console styler
+	io := style.NewConsoleGoStyler()
+	
+	// or create styler with custom OutputInterface
+	out := output.NewConsoleOutput(true, nil)
+	io := style.NewGoStyler(out)
+
+	// add title
+	io.Title("Lorem Ipsum Dolor Sit Amet")
+	
+	// you still access the OutputInterface
+    io.GetOutput().Write("<info>some info</>")
+}
+```
+
+### Helper Methods
+
+#### Titling Methods
+
+##### title()
+
+It displays the given string as the command title. This method is meant to be used only once in a given command, but nothing prevents you to use it repeatedly:
+
+```go
+io.Title("Lorem Ipsum Dolor Sit Amet")
+```
+
