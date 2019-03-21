@@ -2,7 +2,7 @@ package formatter
 
 import (
 	"errors"
-	"github.com/MrSmith777/go-console/pkg/color"
+	"github.com/DrSmithFr/go-console/pkg/color"
 )
 
 func NewOutputFormatterStyleStack(style *OutputFormatterStyle) *OutputFormatterStyleStack {

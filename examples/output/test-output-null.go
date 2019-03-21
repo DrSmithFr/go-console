@@ -1,6 +1,6 @@
 package main
 
-import "github.com/MrSmith777/go-console/pkg/output"
+import "github.com/DrSmithFr/go-console/pkg/output"
 
 func main() {
 	out := output.NewNullOutput(true, nil)

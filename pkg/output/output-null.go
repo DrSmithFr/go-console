@@ -2,7 +2,7 @@ package output
 
 import (
 	"fmt"
-	"github.com/MrSmith777/go-console/pkg/formatter"
+	"github.com/DrSmithFr/go-console/pkg/formatter"
 )
 
 func NewNullOutput(decorated bool, format *formatter.OutputFormatter) *NullOutput {

@@ -4,9 +4,9 @@
 
 # How to Style a Console Command
 
-[![CircleCI](https://circleci.com/gh/MrSmith777/go-console.svg?style=shield)](https://circleci.com/gh/MrSmith777/go-console)
-[![GolangCI](https://golangci.com/badges/github.com/MrSmith777/go-console.svg)](https://golangci.com/r/github.com/MrSmith777/go-console)
-[![Go Report Card](https://goreportcard.com/badge/github.com/MrSmith777/go-console)](https://goreportcard.com/report/github.com/MrSmith777/go-console)
+[![CircleCI](https://circleci.com/gh/DrSmithFr/go-console.svg?style=shield)](https://circleci.com/gh/DrSmithFr/go-console)
+[![GolangCI](https://golangci.com/badges/github.com/DrSmithFr/go-console.svg)](https://golangci.com/r/github.com/DrSmithFr/go-console)
+[![Go Report Card](https://goreportcard.com/badge/github.com/DrSmithFr/go-console)](https://goreportcard.com/report/github.com/DrSmithFr/go-console)
 
 One of the most boring tasks when creating console commands is to deal with the styling of the command's output, 
 this library provide several helper for that. 
@@ -20,7 +20,7 @@ By using colors in the command output, you can distinguish different types of ou
 Whenever you output text, you can surround the text with tags to color its output. For example:
 
 ```go
-import "github.com/MrSmith777/go-console/pkg/output"
+import "github.com/DrSmithFr/go-console/pkg/output"
 
 func main() {
     // creating new output
@@ -54,8 +54,8 @@ It is possible to define your own styles using the OutputFormatterStyle
 
 ```go
 import (
-    "github.com/MrSmith777/go-console/pkg/output"
-    "github.com/MrSmith777/go-console/pkg/color"
+    "github.com/DrSmithFr/go-console/pkg/output"
+    "github.com/DrSmithFr/go-console/pkg/color"
 )
 
 func main() {
@@ -78,7 +78,7 @@ func main() {
 You can also set these colors and options directly inside the tag name:
 
 ```go
-import "github.com/MrSmith777/go-console/pkg/output"
+import "github.com/DrSmithFr/go-console/pkg/output"
 
 func main() {
     // green text

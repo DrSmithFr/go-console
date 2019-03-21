@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.9
-    working_directory: /go/src/github.com/MrSmith777/go-console
+    working_directory: /go/src/github.com/DrSmithFr/go-console
     steps:
       - checkout
 
