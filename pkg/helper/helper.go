@@ -1,7 +1,7 @@
 package helper
 
 import (
-	"github.com/MrSmith777/go-console/pkg/formatter"
+	"github.com/DrSmithFr/go-console/pkg/formatter"
 	"regexp"
 	"unicode/utf8"
 )

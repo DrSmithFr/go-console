@@ -1,6 +1,6 @@
 package output
 
-import "github.com/MrSmith777/go-console/pkg/formatter"
+import "github.com/DrSmithFr/go-console/pkg/formatter"
 
 type OutputInterface interface {
 	// Formats a message according to the current formatter styles.

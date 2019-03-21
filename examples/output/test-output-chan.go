@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/MrSmith777/go-console/pkg/output"
+	"github.com/DrSmithFr/go-console/pkg/output"
 )
 
 func main() {
