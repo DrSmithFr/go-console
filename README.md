@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="icon.png">
+    <img src="assets/icon.png">
 </p>
 
 # How to Style a Console Command
@@ -54,6 +54,10 @@ func main() {
 }
 ```
 
+<p align="center">
+    <img src="assets/direct-use-formatter-style.png">
+</p>
+
 The OutputFormatterStyle is the simplest way to color output. It is not mean to be use directly, but to defined custom tags used by OutputFormatterInterface.
 
 ---
@@ -61,6 +65,8 @@ The OutputFormatterStyle is the simplest way to color output. It is not mean to 
 Whenever you output text, you can use OutputInterface to surround the text with tags to color its output. For example:
 
 ```go
+package main
+
 import "github.com/DrSmithFr/go-console/pkg/output"
 
 func main() {
@@ -87,6 +93,10 @@ func main() {
 }
 ```
 
+<p align="center">
+    <img src="assets/test-default-output-console.png">
+</p>
+
 > The closing tag can be replaced by </>, which revokes all formatting options established by the last opened tag.
 
 ---
@@ -94,22 +104,32 @@ func main() {
 It is possible to define your own styles using the OutputFormatterStyle
 
 ```go
+package main
+
 import (
-    "github.com/DrSmithFr/go-console/pkg/output"
-    "github.com/DrSmithFr/go-console/pkg/color"
+	"github.com/DrSmithFr/go-console/pkg/color"
+	"github.com/DrSmithFr/go-console/pkg/formatter"
+	"github.com/DrSmithFr/go-console/pkg/output"
 )
 
 func main() {
-    // create new style
-    s := formatter.NewOutputFormatterStyle(color.RED, color.YELLOW, []string{color.BOLD, color.BLINK})
- 
-    // add style to formatter
-    out.GetFormatter().SetStyle("fire", *s)
+	// creating new output
+	out := output.NewConsoleOutput(true, nil)
 
-    // use the new style
-    out.Writeln("<fire>foo</>")
+	// create new style
+	s := formatter.NewOutputFormatterStyle(color.RED, color.YELLOW, []string{color.BOLD, color.BLINK})
+
+	// add style to formatter
+	out.GetFormatter().SetStyle("fire", *s)
+
+	// use the new style
+	out.Writeln("<fire>foo</>")
 }
 ```
+
+<p align="center">
+    <img src="assets/custom-console-style.png">
+</p>
 
 > Available foreground and background colors are: black, red, green, yellow, blue, magenta, cyan and white.
 > And available options are: bold, underscore, blink, reverse (enables the "reverse video" mode where the background and foreground colors are swapped) and conceal (sets the foreground color to transparent, making the typed text invisible - although it can be selected and copied; this option is commonly used when asking the user to type sensitive information).
@@ -119,6 +139,8 @@ func main() {
 You can also set these colors and options directly inside the tag name:
 
 ```go
+package main
+
 import "github.com/DrSmithFr/go-console/pkg/output"
 
 func main() {
@@ -138,5 +160,9 @@ func main() {
     out.Writeln("<options=bold,underscore>foo</>")
 }
 ```
+
+<p align="center">
+    <img src="assets/custom-style-tags.png">
+</p>
 
 > If you need to render a tag literally, escape it with a backslash: \<info> or use the escape() method to escape all the tags included in the given string.
