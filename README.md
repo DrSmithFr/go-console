@@ -174,7 +174,7 @@ One of the most boring tasks when creating console commands is to deal with the 
 Consider for example the code used to display the title of the following command:
 
 ```go
-import "github.com/MrSmith777/go-console/pkg/output"
+import "github.com/DrSmithFr/go-console/pkg/output"
 
 func main() {
     // creating new output
@@ -195,8 +195,8 @@ In order to reduce that boilerplate code, go-console can optionally use the Go S
 package main
 
 import (
-	"github.com/MrSmith777/go-console/pkg/output"
-	"github.com/MrSmith777/go-console/pkg/style"
+	"github.com/DrSmithFr/go-console/pkg/output"
+	"github.com/DrSmithFr/go-console/pkg/style"
 )
 
 func main() {
@@ -227,3 +227,164 @@ It displays the given string as the command title. This method is meant to be us
 io.Title("Lorem Ipsum Dolor Sit Amet")
 ```
 
+##### section()
+
+It displays the given string as the title of some command section. This is only needed in complex commands which want to better separate their contents:
+
+```go
+io.Section("Lorem Ipsum Dolor Sit Amet")
+```
+
+#### Content Methods
+
+##### text()
+
+It displays the given string or array of strings as regular text. This is useful to render help messages and instructions for the user running the command:
+
+```go
+// use simple strings for short messages
+io.Text("Lorem Ipsum Dolor Sit Amet")
+
+// consider using arrays when displaying long messages
+io.TextArray([]string{
+	"Lorem Ipsum Dolor Sit Amet",
+	"Lorem Ipsum Dolor Sit Amet",
+	"Lorem Ipsum Dolor Sit Amet",
+})
+```
+
+<p align="center">
+    <img src="assets/example-style-text.png">
+</p>
+
+##### listing()
+
+It displays an unordered list of elements passed as an array:
+
+```go
+io.Listing([]string{
+	"Lorem Ipsum Dolor Sit Amet",
+	"Lorem Ipsum Dolor Sit Amet",
+	"Lorem Ipsum Dolor Sit Amet",
+})
+```
+
+<p align="center">
+    <img src="assets/example-style-listing.png">
+</p>
+
+##### newLine()
+
+It displays a blank line in the command output. Although it may seem useful, most of the times you won't need it at all. The reason is that every helper already adds their own blank lines, so you don't have to care about the vertical spacing:
+
+```go
+// outputs a single blank line
+io.NewLine(1)
+
+// outputs three consecutive blank lines
+io.NewLine(3)
+```
+
+#### Admonition Methods
+
+##### note()
+
+It displays the given string or array of strings as a highlighted admonition. Use this helper sparingly to avoid cluttering command's output:
+
+```go
+// use simple strings for short messages
+io.Note("Lorem Ipsum Dolor Sit Amet")
+
+// consider using arrays when displaying long messages
+io.NoteArray([]string{
+	"Lorem Ipsum Dolor Sit Amet",
+	"Lorem Ipsum Dolor Sit Amet",
+	"Lorem Ipsum Dolor Sit Amet",
+})
+```
+
+<p align="center">
+    <img src="assets/example-style-note.png">
+</p>
+
+##### caution()
+
+Similar to the note() helper, but the contents are more prominently highlighted. The resulting contents resemble an error message, so you should avoid using this helper unless strictly necessary:
+
+```go
+// use simple strings for short messages
+io.Caution("Lorem Ipsum Dolor Sit Amet")
+
+// consider using arrays when displaying long messages
+io.CautionArray([]string{
+	"Lorem Ipsum Dolor Sit Amet",
+	"Lorem Ipsum Dolor Sit Amet",
+	"Lorem Ipsum Dolor Sit Amet",
+})
+```
+
+<p align="center">
+    <img src="assets/example-style-caution.png">
+</p>
+
+#### Result Methods
+
+##### success()
+
+It displays the given string or array of strings highlighted as a successful message (with a green background and the \[OK] label). It's meant to be used once to display the final result of executing the given command, but you can use it repeatedly during the execution of the command:
+
+```go
+// use simple strings for short messages
+io.Success("Lorem Ipsum Dolor Sit Amet")
+
+// consider using arrays when displaying long messages
+io.SuccessArray([]string{
+	"Lorem Ipsum Dolor Sit Amet",
+	"Lorem Ipsum Dolor Sit Amet",
+	"Lorem Ipsum Dolor Sit Amet",
+})
+```
+
+<p align="center">
+    <img src="assets/example-style-success.png">
+</p>
+
+##### warning()
+
+It displays the given string or array of strings highlighted as a warning message (with a red background and the \[WARNING] label). It's meant to be used once to display the final result of executing the given command, but you can use it repeatedly during the execution of the command:
+
+```go
+// use simple strings for short messages
+io.Warning("Lorem Ipsum Dolor Sit Amet")
+
+// consider using arrays when displaying long messages
+io.WarningArray([]string{
+	"Lorem Ipsum Dolor Sit Amet",
+	"Lorem Ipsum Dolor Sit Amet",
+	"Lorem Ipsum Dolor Sit Amet",
+})
+```
+
+<p align="center">
+    <img src="assets/example-style-warning.png">
+</p>
+
+##### error()
+
+It displays the given string or array of strings highlighted as an error message (with a red background and the \[ERROR] label). It's meant to be used once to display the final result of executing the given command, but you can use it repeatedly during the execution of the command:
+
+```go
+// use simple strings for short messages
+io.Error("Lorem Ipsum Dolor Sit Amet")
+
+// consider using arrays when displaying long messages
+io.ErrorArray([]string{
+	"Lorem Ipsum Dolor Sit Amet",
+	"Lorem Ipsum Dolor Sit Amet",
+	"Lorem Ipsum Dolor Sit Amet",
+})
+```
+
+<p align="center">
+    <img src="assets/example-style-error.png">
+</p>
