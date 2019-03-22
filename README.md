@@ -11,7 +11,7 @@
 One of the most boring tasks when creating console commands is to deal with the styling of the command's output, 
 this library provide several helper for that. 
 
-GoConsole is the Go equivalent to the [Console Component](https://github.com/symfony/console) of Symfony PHP framework.
+GoConsole is a lightweight equivalent in Go to the [Console Component](https://github.com/symfony/console) of Symfony PHP framework.
 
 ## How to Color the Console Output
 
@@ -227,6 +227,10 @@ It displays the given string as the command title. This method is meant to be us
 io.Title("Lorem Ipsum Dolor Sit Amet")
 ```
 
+<p align="center">
+    <img src="assets/example-style-title.png">
+</p>
+
 ##### section()
 
 It displays the given string as the title of some command section. This is only needed in complex commands which want to better separate their contents:
@@ -234,6 +238,10 @@ It displays the given string as the title of some command section. This is only 
 ```go
 io.Section("Lorem Ipsum Dolor Sit Amet")
 ```
+
+<p align="center">
+    <img src="assets/example-style-section.png">
+</p>
 
 #### Content Methods
 
@@ -243,7 +251,7 @@ It displays the given string or array of strings as regular text. This is useful
 
 ```go
 // use simple strings for short messages
-io.Text("Lorem Ipsum Dolor Sit Amet")
+io.Text("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.TextArray([]string{
@@ -293,7 +301,7 @@ It displays the given string or array of strings as a highlighted admonition. Us
 
 ```go
 // use simple strings for short messages
-io.Note("Lorem Ipsum Dolor Sit Amet")
+io.Note("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.NoteArray([]string{
@@ -313,7 +321,7 @@ Similar to the note() helper, but the contents are more prominently highlighted.
 
 ```go
 // use simple strings for short messages
-io.Caution("Lorem Ipsum Dolor Sit Amet")
+io.Caution("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.CautionArray([]string{
@@ -335,7 +343,7 @@ It displays the given string or array of strings highlighted as a successful mes
 
 ```go
 // use simple strings for short messages
-io.Success("Lorem Ipsum Dolor Sit Amet")
+io.Success("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.SuccessArray([]string{
@@ -355,7 +363,7 @@ It displays the given string or array of strings highlighted as a warning messag
 
 ```go
 // use simple strings for short messages
-io.Warning("Lorem Ipsum Dolor Sit Amet")
+io.Warning("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.WarningArray([]string{
@@ -375,7 +383,7 @@ It displays the given string or array of strings highlighted as an error message
 
 ```go
 // use simple strings for short messages
-io.Error("Lorem Ipsum Dolor Sit Amet")
+io.Error("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.ErrorArray([]string{
