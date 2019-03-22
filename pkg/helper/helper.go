@@ -32,6 +32,7 @@ func ArrayUnshift(s []string, elements ...string) []string {
 	return append(elements, s...)
 }
 
+// TODO this func as be stolen for a random repo. Extremely disgusting, Need refactoring
 func Wordwrap(message string, width int, breaker rune) string {
 	// Initialize a buffer with a slightly larger size to account for breaks
 	init := make([]byte, 0, len(message))
