@@ -454,3 +454,130 @@ func TestGetOptionDefaults(t *testing.T) {
 	assert.Equal(t, validation["foo6"], def.GetOptionDefaults()["foo6"])
 	assert.Equal(t, validation["foo7"], def.GetOptionDefaults()["foo7"])
 }
+
+func TestGetSynopsis(t *testing.T) {
+	for _, pattern := range getSynopticPattern() {
+		assert.Equalf(t, pattern.synoptic, pattern.definition.GetSynopsis(false), pattern.message)
+	}
+}
+
+type synopticPattern struct {
+	definition input.InputDefinition
+	synoptic   string
+	message    string
+}
+
+func getSynopticPattern() []synopticPattern {
+	return []synopticPattern{
+		// testing options
+		{
+			definition: *input.
+				NewInputDefinition().
+				AddOption(*option.NewInputOption("foo", option.NONE)),
+			synoptic: "[--foo]",
+			message:  "puts optional options in square brackets",
+		},
+		{
+			definition: *input.
+				NewInputDefinition().
+				AddOption(
+					*option.
+						NewInputOption("foo", option.NONE).
+						SetShortcut("f"),
+				),
+			synoptic: "[-f|--foo]",
+			message:  "separates shortcut with a pipe",
+		},
+		{
+			definition: *input.
+				NewInputDefinition().
+				AddOption(
+					*option.
+						NewInputOption("foo", option.REQUIRED).
+						SetShortcut("f"),
+				),
+			synoptic: "[-f|--foo FOO]",
+			message:  "uses shortcut as value placeholder",
+		},
+		{
+			definition: *input.
+				NewInputDefinition().
+				AddOption(
+					*option.
+						NewInputOption("foo", option.OPTIONAL).
+						SetShortcut("f"),
+				),
+			synoptic: "[-f|--foo [FOO]]",
+			message:  "puts optional values in square brackets",
+		},
+
+		// testing arguments
+		{
+			definition: *input.
+				NewInputDefinition().
+				AddArgument(
+					*argument.
+						NewInputArgument("foo", argument.REQUIRED),
+				),
+			synoptic: "<foo>",
+			message:  "puts arguments in angle brackets",
+		},
+		{
+			definition: *input.
+				NewInputDefinition().
+				AddArgument(
+					*argument.
+						NewInputArgument("foo", argument.OPTIONAL),
+				),
+			synoptic: "[<foo>]",
+			message:  "puts optional arguments in square brackets",
+		},
+		{
+			definition: *input.
+				NewInputDefinition().
+				AddArgument(
+					*argument.
+						NewInputArgument("foo", argument.OPTIONAL),
+				).
+				AddArgument(
+					*argument.
+						NewInputArgument("bar", argument.OPTIONAL),
+				),
+			synoptic: "[<foo> [<bar>]]",
+			message:  "chains optional arguments inside brackets",
+		},
+		{
+			definition: *input.
+				NewInputDefinition().
+				AddArgument(
+					*argument.
+						NewInputArgument("foo", argument.IS_ARRAY),
+				),
+			synoptic: "[<foo>...]",
+			message:  "uses an ellipsis for array arguments",
+		},
+		{
+			definition: *input.
+				NewInputDefinition().
+				AddArgument(
+					*argument.
+						NewInputArgument("foo", argument.IS_ARRAY|argument.REQUIRED),
+				),
+			synoptic: "<foo>...",
+			message:  "uses an ellipsis for required array arguments",
+		},
+
+		// testing options and arguments
+		{
+			definition: *input.
+				NewInputDefinition().
+				AddOption(*option.NewInputOption("foo", option.NONE)).
+				AddArgument(
+					*argument.
+						NewInputArgument("foo", argument.REQUIRED),
+				),
+			synoptic: "[--foo] [--] <foo>",
+			message:  "puts [--] between options and arguments",
+		},
+	}
+}

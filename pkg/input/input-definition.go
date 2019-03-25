@@ -14,6 +14,9 @@ func NewInputDefinition() *InputDefinition {
 		arguments: map[string]argument.InputArgument{},
 		options:   map[string]option.InputOption{},
 
+		argumentKeysOrdered: []string{},
+		optionKeysOrdered:   []string{},
+
 		requiredCount: 0,
 
 		hasOptional:        false,
@@ -29,6 +32,9 @@ func NewInputDefinition() *InputDefinition {
 type InputDefinition struct {
 	arguments map[string]argument.InputArgument
 	options   map[string]option.InputOption
+
+	argumentKeysOrdered []string
+	optionKeysOrdered   []string
 
 	requiredCount int
 
@@ -82,6 +88,7 @@ func (i *InputDefinition) AddArgument(arg argument.InputArgument) *InputDefiniti
 	}
 
 	i.arguments[arg.GetName()] = arg
+	i.argumentKeysOrdered = append(i.argumentKeysOrdered, arg.GetName())
 
 	return i
 }
@@ -122,7 +129,9 @@ func (i *InputDefinition) GetArgumentRequiredCount() int {
 func (i *InputDefinition) GetArgumentDefaults() map[string][]string {
 	values := make(map[string][]string)
 
-	for _, arg := range i.arguments {
+	for _, key := range i.argumentKeysOrdered {
+		arg := i.GetArgument(key)
+
 		if arg.IsArray() {
 			values[arg.GetName()] = arg.GetDefaults()
 		} else {
@@ -132,7 +141,6 @@ func (i *InputDefinition) GetArgumentDefaults() map[string][]string {
 				values[arg.GetName()] = []string{}
 			}
 		}
-
 	}
 
 	return values
@@ -170,6 +178,7 @@ func (i *InputDefinition) AddOption(opt option.InputOption) *InputDefinition {
 	}
 
 	i.options[opt.GetName()] = opt
+	i.optionKeysOrdered = append(i.optionKeysOrdered, opt.GetName())
 
 	if "" != opt.GetShortcut() {
 		for _, shortcut := range strings.Split(opt.GetShortcut(), "|") {
@@ -217,7 +226,9 @@ func (i *InputDefinition) GetOptionForShortcut(s string) *option.InputOption {
 func (i *InputDefinition) GetOptionDefaults() map[string][]string {
 	values := make(map[string][]string)
 
-	for _, opt := range i.options {
+	for _, key := range i.optionKeysOrdered {
+		opt := i.GetOption(key)
+
 		if opt.IsArray() {
 			values[opt.GetName()] = opt.GetDefaults()
 		} else {
@@ -227,7 +238,6 @@ func (i *InputDefinition) GetOptionDefaults() map[string][]string {
 				values[opt.GetName()] = []string{}
 			}
 		}
-
 	}
 
 	return values
@@ -251,9 +261,9 @@ func (i *InputDefinition) GetSynopsis(short bool) string {
 	if short && 0 != len(i.GetOptions()) {
 		elements = append(elements, "[options]")
 	} else if !short {
-		for _, opt := range i.options {
+		for _, key := range i.optionKeysOrdered {
+			opt := i.GetOption(key)
 			value := ""
-
 			start := ""
 			end := ""
 
@@ -274,7 +284,7 @@ func (i *InputDefinition) GetSynopsis(short bool) string {
 			shortcut := ""
 
 			if "" != opt.GetShortcut() {
-				shortcut = fmt.Sprintf("-s|", opt.GetShortcut())
+				shortcut = fmt.Sprintf("-%s|", opt.GetShortcut())
 			}
 
 			elements = append(
@@ -295,7 +305,8 @@ func (i *InputDefinition) GetSynopsis(short bool) string {
 
 	tail := ""
 
-	for _, arg := range i.arguments {
+	for _, key := range i.argumentKeysOrdered {
+		arg := i.GetArgument(key)
 		element := fmt.Sprintf("<%s>", arg.GetName())
 
 		if arg.IsArray() {
