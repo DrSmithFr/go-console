@@ -11,7 +11,7 @@ type InputInterface interface {
 	// before they have been validated. It must be used carefully.
 	// Does not necessarily return the correct result for short options
 	// when multiple flags are combined in the same option.
-	HasParameterOption(values []string, onlyParams bool)
+	HasParameterOption(values []string, onlyParams bool) bool
 
 	// Returns the value of a raw option (not parsed).
 	//
@@ -28,28 +28,46 @@ type InputInterface interface {
 	Validate()
 
 	// Returns all the given arguments merged with the default values.
-	GetArguments() []string
+	GetArguments() map[string]string
+
+	// Returns all the given array arguments merged with the default values.
+	GetArgumentArrays() map[string][]string
 
 	// Returns the argument value for a given argument name.
-	GetArgument(name string) []string
+	GetArgument(name string) string
+
+	// Returns the argument array value for a given array argument name.
+	GetArgumentArray(name string) []string
+
+	// Set the argument value for a given argument name.
+	SetArgument(name string, value string)
+
+	// Set the argument value for a given array argument name.
+	SetArgumentArray(name string, value []string)
 
 	// Returns the argument value for a given argument name.
-	SetArgument(name string, values []string)
-
-	// Returns the argument value for a given argument name.
-	HasArgument(name string)
+	HasArgument(name string) bool
 
 	// Returns all the given options merged with the default values.
-	GetOptions() []string
+	GetOptions() map[string]string
+
+	// Returns all the given array options merged with the default values.
+	GetOptionArrays() map[string][]string
 
 	// Returns the option value for a given option name.
-	GetOption(name string) []string
+	GetOption(name string) string
+
+	// Returns the option array value for a given array option name.
+	GetOptionArray(name string) []string
 
 	// Sets an option value by name.
-	SetOption(name string, values []string)
+	SetOption(name string, value string)
+
+	// Sets an array option value by name.
+	SetOptionArray(name string, value []string)
 
 	// Returns true if an InputOption object exists by name.
-	HasOption(name string)
+	HasOption(name string) bool
 
 	// Is this input means interactive?
 	IsInteractive() bool

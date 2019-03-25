@@ -113,3 +113,11 @@ func IsStringSliceEqual(a, b []string) bool {
 
 	return true
 }
+
+func MergeDefaultsMaps(defaults, inputs map[string][]string) map[string][]string {
+	for key, value := range inputs {
+		defaults[key] = value
+	}
+
+	return defaults
+}

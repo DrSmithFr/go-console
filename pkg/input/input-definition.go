@@ -115,6 +115,10 @@ func (i *InputDefinition) GetArguments() map[string]argument.InputArgument {
 	return i.arguments
 }
 
+func (i *InputDefinition) GetArgumentsOrder() []string {
+	return i.argumentKeysOrdered
+}
+
 // Returns the number of InputArguments.
 func (i *InputDefinition) GetArgumentCount() int {
 	return len(i.arguments)
@@ -138,7 +142,7 @@ func (i *InputDefinition) GetArgumentDefaults() map[string][]string {
 			if "" != arg.GetDefault() {
 				values[arg.GetName()] = []string{arg.GetDefault()}
 			} else {
-				values[arg.GetName()] = []string{}
+				values[arg.GetName()] = nil
 			}
 		}
 	}
@@ -209,6 +213,10 @@ func (i *InputDefinition) GetOption(name string) *option.InputOption {
 
 func (i *InputDefinition) GetOptions() map[string]option.InputOption {
 	return i.options
+}
+
+func (i *InputDefinition) GetOptionsOrder() []string {
+	return i.optionKeysOrdered
 }
 
 // returns true if an InputOption object exists by shortcut.

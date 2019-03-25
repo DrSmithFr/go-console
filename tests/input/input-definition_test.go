@@ -214,7 +214,7 @@ func TestGetArgumentDefaults(t *testing.T) {
 		})
 
 	validation := map[string][]string{
-		"foo1": {},
+		"foo1": nil,
 		"foo2": {"default"},
 		"foo3": {},
 		"foo4": {"1", "2"},
