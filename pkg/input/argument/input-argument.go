@@ -11,16 +11,20 @@ const (
 	IS_ARRAY = 4
 )
 
-func NewInputArgument(name string, mode int, description string) *InputArgument {
+// constructor
+func NewInputArgument(
+	name string, // The argument name
+	mode int, // The argument mode: REQUIRED or OPTIONAL (default: OPTIONAL)
+) *InputArgument {
 	if mode > 7 || mode < 1 {
 		panic(errors.New(fmt.Sprintf("Argument mode '%d' is not valid.", mode)))
 	}
 
 	arg := &InputArgument{
-		name:        name,
-		mode:        mode,
-		description: description,
-		defaultValue: "",
+		name:          name,
+		mode:          mode,
+		description:   "",
+		defaultValue:  "",
 		defaultValues: []string{},
 	}
 
@@ -100,4 +104,10 @@ func (a *InputArgument) GetDefaults() []string {
 // Returns the description text
 func (a *InputArgument) GetDescription() string {
 	return a.description
+}
+
+// Returns the description text
+func (a *InputArgument) SetDescription(desc string) *InputArgument {
+	a.description = desc
+	return a
 }

@@ -130,7 +130,7 @@ func (i *InputDefinition) getArgumentDefaults() map[string]string {
 	return values
 }
 
-// ets the InputOption objects.
+// sets the InputOption objects.
 func (i *InputDefinition) SetOptions(options []option.InputOption) {
 	i.options = make(map[string]option.InputOption)
 	i.shortcuts = []string{}
