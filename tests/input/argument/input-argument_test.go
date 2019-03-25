@@ -7,16 +7,16 @@ import (
 )
 
 func TestConstructor(t *testing.T) {
-	arg := argument.NewInputArgument("foo", argument.OPTIONAL, "", "")
+	arg := argument.NewInputArgument("foo", argument.OPTIONAL, "")
 
 	assert.Equal(t, "foo", arg.GetName())
 }
 
 func TestModes(t *testing.T) {
-	arg1 := argument.NewInputArgument("foo", argument.OPTIONAL, "", "")
+	arg1 := argument.NewInputArgument("foo", argument.OPTIONAL, "")
 	assert.False(t, arg1.IsRequired())
 
-	arg2 := argument.NewInputArgument("foo", argument.REQUIRED, "", "")
+	arg2 := argument.NewInputArgument("foo", argument.REQUIRED, "")
 	assert.True(t, arg2.IsRequired())
 }
 
@@ -24,32 +24,83 @@ func TestInvalidModes(t *testing.T) {
 	assert.Panics(
 		t,
 		func() {
-			argument.NewInputArgument("foo", -1, "", "")
+			argument.NewInputArgument("foo", -1, "")
 		},
 	)
 }
 
 func TestIsArray(t *testing.T) {
-	arg1 := argument.NewInputArgument("foo", argument.IS_ARRAY, "", "")
+	arg1 := argument.NewInputArgument("foo", argument.IS_ARRAY, "")
 	assert.True(t, arg1.IsArray())
 
-	arg2 := argument.NewInputArgument("foo", argument.OPTIONAL|argument.IS_ARRAY, "", "")
+	arg2 := argument.NewInputArgument("foo", argument.OPTIONAL|argument.IS_ARRAY, "")
 	assert.True(t, arg2.IsArray())
 
-	arg3 := argument.NewInputArgument("foo", argument.OPTIONAL, "", "")
+	arg3 := argument.NewInputArgument("foo", argument.OPTIONAL, "")
 	assert.False(t, arg3.IsArray())
 }
 
 func TestGetDescription(t *testing.T) {
-	arg := argument.NewInputArgument("foo", argument.IS_ARRAY, "Some description", "")
+	arg := argument.NewInputArgument("foo", argument.IS_ARRAY, "Some description")
 	assert.Equal(t, "Some description", arg.GetDescription())
 }
 
 func TestGetDefault(t *testing.T) {
-	arg := argument.NewInputArgument("foo", argument.IS_ARRAY, "", "default")
-	assert.Equal(t, "default", arg.GetDefault())
+	arg1 := argument.
+		NewInputArgument("foo", argument.OPTIONAL, "").
+		SetDefault("default")
+
+	assert.Equal(t, "default", arg1.GetDefault())
+
+	arg2 := argument.
+		NewInputArgument("foo", argument.IS_ARRAY, "").
+		SetDefaults([]string{"default"})
+
+	assert.Equal(t, []string{"default"}, arg2.GetDefaults())
+}
+
+func TestSetDefaultsOnNotArray(t *testing.T) {
+	assert.Panics(t, func() {
+		argument.
+			NewInputArgument("foo", argument.OPTIONAL, "").
+			SetDefaults([]string{"default"})
+	})
+}
+
+func TestSetDefaultOnArray(t *testing.T) {
+	assert.Panics(t, func() {
+		argument.
+			NewInputArgument("foo", argument.IS_ARRAY, "").
+			SetDefault("default")
+	})
+
+	assert.Panics(t, func() {
+		argument.
+			NewInputArgument("foo", argument.IS_ARRAY | argument.REQUIRED, "").
+			SetDefault("default")
+	})
 }
 
 func TestSetDefault(t *testing.T) {
-	// TODO
+	arg1 := argument.NewInputArgument("foo", argument.OPTIONAL, "")
+
+	assert.Equal(t, "", arg1.GetDefault())
+
+	arg1.SetDefault("another")
+
+	assert.Equal(t, "another", arg1.GetDefault())
+
+	arg2 := argument.
+		NewInputArgument("foo", argument.IS_ARRAY, "").
+		SetDefaults([]string{"1", "2"})
+
+	assert.Equal(t, []string{"1", "2"}, arg2.GetDefaults())
+}
+
+func TestSetDefaultWithRequiredArgument(t *testing.T) {
+	assert.Panics(t, func() {
+		argument.
+			NewInputArgument("foo", argument.REQUIRED, "").
+			SetDefault("default")
+	})
 }

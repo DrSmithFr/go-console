@@ -11,7 +11,7 @@ const (
 	IS_ARRAY = 4
 )
 
-func NewInputArgument(name string, mode int, description string, defaultValue string) *InputArgument {
+func NewInputArgument(name string, mode int, description string) *InputArgument {
 	if mode > 7 || mode < 1 {
 		panic(errors.New(fmt.Sprintf("Argument mode '%d' is not valid.", mode)))
 	}
@@ -20,19 +20,20 @@ func NewInputArgument(name string, mode int, description string, defaultValue st
 		name:        name,
 		mode:        mode,
 		description: description,
+		defaultValue: "",
+		defaultValues: []string{},
 	}
-
-	arg.SetDefault(defaultValue)
 
 	return arg
 }
 
 // Represents a command line argument.
 type InputArgument struct {
-	name         string
-	mode         int
-	defaultValue string
-	description  string
+	name          string
+	mode          int
+	defaultValue  string
+	defaultValues []string
+	description   string
 }
 
 // Returns the argument name.
@@ -51,21 +52,49 @@ func (a *InputArgument) IsArray() bool {
 }
 
 // Sets the default value.
-func (a *InputArgument) SetDefault(defaultValue string) {
+func (a *InputArgument) SetDefault(defaultValue string) *InputArgument {
 	if REQUIRED == a.mode && "" != defaultValue {
 		panic(errors.New("cannot set a default value except for InputArgument::OPTIONAL mode"))
 	}
 
 	if a.IsArray() {
-		// TODO find a way to enable array default values
+		panic(errors.New("cannot use SetDefault() for InputArgument::IS_ARRAY mode, use SetDefaults() instead"))
 	}
 
 	a.defaultValue = defaultValue
+	return a
+}
+
+func (a *InputArgument) SetDefaults(values []string) *InputArgument {
+	if REQUIRED == a.mode && 0 != len(values) {
+		panic(errors.New("cannot set a default value except for InputArgument::OPTIONAL mode"))
+	}
+
+	if ! a.IsArray() {
+		panic(errors.New("cannot use SetDefaults() except for InputArgument::IS_ARRAY mode, use SetDefault() instead"))
+	}
+
+	a.defaultValues = values
+
+	return a
 }
 
 // Returns the default value.
 func (a *InputArgument) GetDefault() string {
+	if a.IsArray() {
+		panic(errors.New("cannot use GetDefault() for InputArgument::IS_ARRAY mode, use GetDefaults() instead"))
+	}
+
 	return a.defaultValue
+}
+
+// Returns the defaults value.
+func (a *InputArgument) GetDefaults() []string {
+	if ! a.IsArray() {
+		panic(errors.New("cannot use GetDefaults() except for InputArgument::IS_ARRAY, use GetDefault() instead"))
+	}
+
+	return a.defaultValues
 }
 
 // Returns the description text
