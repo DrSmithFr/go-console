@@ -3,9 +3,10 @@ package output
 import "github.com/DrSmithFr/go-console/pkg/formatter"
 
 func NewChanOutput(channel chan string, decorated bool, format *formatter.OutputFormatter) *ChanOutput {
-	out := new(ChanOutput)
+	out := & ChanOutput{
+		channel: channel,
+	}
 
-	out.channel = channel
 	out.doWrite = out.Write
 
 	if nil == format {

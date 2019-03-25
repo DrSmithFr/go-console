@@ -13,9 +13,9 @@ func NewOutputFormatterStyle(
 	background string,
 	options []string,
 ) *OutputFormatterStyle {
-	style := new(OutputFormatterStyle)
-
-	style.options = &map[string]color.Color{}
+	style := & OutputFormatterStyle{
+		options: new(map[string]color.Color),
+	}
 
 	style.SetForeground(foreground)
 	style.SetBackground(background)

@@ -6,15 +6,15 @@ import (
 )
 
 func NewOutputFormatterStyleStack(style *OutputFormatterStyle) *OutputFormatterStyleStack {
-	stack := new(OutputFormatterStyleStack)
+	stack := & OutputFormatterStyleStack{
+		styles: []*OutputFormatterStyle{},
+	}
 
 	if nil != style {
 		stack.defaultStyle = style
 	} else {
 		stack.defaultStyle = NewOutputFormatterStyle(color.NULL, color.NULL, nil)
 	}
-
-	stack.styles = []*OutputFormatterStyle{}
 
 	return stack
 }

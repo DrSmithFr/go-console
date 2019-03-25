@@ -8,11 +8,10 @@ import (
 )
 
 func NewOutputFormatter() *OutputFormatter {
-	formatter := new(OutputFormatter)
-
-	formatter.stylesCache = make(map[string]OutputFormatterStyle)
-
-	formatter.styleStack = NewOutputFormatterStyleStack(nil)
+	formatter := & OutputFormatter{
+		stylesCache: make(map[string]OutputFormatterStyle),
+		styleStack: NewOutputFormatterStyleStack(nil),
+	}
 
 	formatter.SetStyle("error", *NewOutputFormatterStyle(color.WHITE, color.RED, nil))
 	formatter.SetStyle("info", *NewOutputFormatterStyle(color.GREEN, color.NULL, nil))

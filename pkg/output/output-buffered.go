@@ -6,9 +6,10 @@ import (
 )
 
 func NewBufferedOutput(decorated bool, format *formatter.OutputFormatter) *BufferedOutput {
-	out := new(BufferedOutput)
+	out := & BufferedOutput{
+		buffer: "",
+	}
 
-	out.buffer = ""
 	out.doWrite = out.Write
 
 	if nil == format {
