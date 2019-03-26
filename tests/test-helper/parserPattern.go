@@ -16,6 +16,8 @@ func NewParserPattern(argv []string) *ParserPattern {
 
 		options:      map[string]string{},
 		optionArrays: map[string][]string{},
+
+		message: "",
 	}
 
 	return pattern
@@ -30,6 +32,17 @@ type ParserPattern struct {
 
 	options      map[string]string
 	optionArrays map[string][]string
+
+	message string
+}
+
+func (p *ParserPattern) Message() string {
+	return p.message
+}
+
+func (p *ParserPattern) SetMessage(message string) *ParserPattern {
+	p.message = message
+	return p
 }
 
 func (p *ParserPattern) Argv() []string {
