@@ -1,4 +1,4 @@
-package input
+package definition
 
 import (
 	"errors"
@@ -9,7 +9,7 @@ import (
 )
 
 // constructor
-func NewInputDefinition() *InputDefinition {
+func New() *InputDefinition {
 	def := &InputDefinition{
 		arguments: map[string]argument.InputArgument{},
 		options:   map[string]option.InputOption{},

@@ -16,7 +16,7 @@ const (
 )
 
 // constructor
-func NewInputOption(
+func New(
 	name string, // The option name
 	mode int,    // The option mode: One of the option constants (default: NONE)
 ) *InputOption {

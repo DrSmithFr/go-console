@@ -1,5 +1,7 @@
 package input
 
+import "github.com/DrSmithFr/go-console/pkg/input/definition"
+
 // InputInterface is the interface implemented by all input classes.
 type InputInterface interface {
 	// Returns the first argument from the raw parameters (not parsed).
@@ -22,10 +24,13 @@ type InputInterface interface {
 	GetParameterOption(values []string, defaultValue string, onlyParams bool)
 
 	// Binds the current Input instance with the given arguments and options.
-	Bind(definition InputDefinition)
+	Bind(definition definition.InputDefinition)
 
 	// Validates the input.
 	Validate()
+
+	// Parse the input data
+	Parse()
 
 	// Returns all the given arguments merged with the default values.
 	GetArguments() map[string]string
@@ -74,4 +79,7 @@ type InputInterface interface {
 
 	// Sets the input interactivity.
 	SetInteractive(bool)
+
+	// Get the input definition
+	GetDefinition() definition.InputDefinition
 }

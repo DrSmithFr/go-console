@@ -21,17 +21,19 @@ GoConsole is a lightweight equivalent in Go to the [Console Component](https://g
 package main
 
 import (
+	"github.com/DrSmithFr/go-console/pkg/input"
 	"github.com/DrSmithFr/go-console/pkg/output"
 	"github.com/DrSmithFr/go-console/pkg/style"
 )
 
 func main() {
 	// create default console styler
-	io := style.NewConsoleGoStyler()
+	io := style.NewConsoleStyler()
 	
 	// or create styler with custom OutputInterface
+	in := input.NewArgvInput(nil)
 	out := output.NewConsoleOutput(true, nil)
-	io := style.NewGoStyler(out)
+	io := style.NewGoStyler(in, out)
 
 	// add title
 	io.Title("Lorem Ipsum Dolor Sit Amet")

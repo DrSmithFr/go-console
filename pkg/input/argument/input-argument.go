@@ -12,7 +12,7 @@ const (
 )
 
 // constructor
-func NewInputArgument(
+func New(
 	name string, // The argument name
 	mode int, // The argument mode: REQUIRED or OPTIONAL (default: OPTIONAL)
 ) *InputArgument {

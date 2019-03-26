@@ -13,4 +13,5 @@ jobs:
       - run: go test -v ./tests/formatter/
       - run: go test -v ./tests/input/
       - run: go test -v ./tests/input/argument
+      - run: go test -v ./tests/input/definition
       - run: go test -v ./tests/input/option

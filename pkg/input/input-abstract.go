@@ -3,10 +3,11 @@ package input
 import (
 	"errors"
 	"fmt"
+	"github.com/DrSmithFr/go-console/pkg/input/definition"
 )
 
 type abstractInput struct {
-	definition InputDefinition
+	definition definition.InputDefinition
 
 	interactive bool
 
@@ -17,6 +18,10 @@ type abstractInput struct {
 	optionArrays map[string][]string
 
 	doParse func()
+}
+
+func (i *abstractInput) GetDefinition() definition.InputDefinition {
+	return i.definition
 }
 
 func (i *abstractInput) GetArguments() map[string]string {
@@ -179,15 +184,23 @@ func (i *abstractInput) SetInteractive(interactive bool) {
 	i.interactive = interactive
 }
 
-func (i *abstractInput) Bind(def InputDefinition)  {
+func (i *abstractInput) initialize() {
 	i.options = make(map[string]string)
 	i.arguments = make(map[string]string)
 
 	i.optionArrays = make(map[string][]string)
 	i.argumentArrays = make(map[string][]string)
+}
+
+func (i *abstractInput) Bind(def definition.InputDefinition) {
+	i.initialize()
 
 	i.definition = def
 
+	i.Parse()
+}
+
+func (i *abstractInput) Parse() {
 	i.doParse()
 }
 

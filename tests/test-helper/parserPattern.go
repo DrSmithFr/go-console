@@ -1,15 +1,15 @@
 package test_helper
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/input"
 	"github.com/DrSmithFr/go-console/pkg/input/argument"
+	"github.com/DrSmithFr/go-console/pkg/input/definition"
 	"github.com/DrSmithFr/go-console/pkg/input/option"
 )
 
 func NewParserPattern(argv []string) *ParserPattern {
 	pattern := &ParserPattern{
 		argv:       argv,
-		definition: *input.NewInputDefinition(),
+		definition: *definition.New(),
 
 		arguments:      map[string]string{},
 		argumentArrays: map[string][]string{},
@@ -25,7 +25,7 @@ func NewParserPattern(argv []string) *ParserPattern {
 
 type ParserPattern struct {
 	argv       []string
-	definition input.InputDefinition
+	definition definition.InputDefinition
 
 	arguments      map[string]string
 	argumentArrays map[string][]string
@@ -49,7 +49,7 @@ func (p *ParserPattern) Argv() []string {
 	return p.argv
 }
 
-func (p *ParserPattern) Definition() input.InputDefinition {
+func (p *ParserPattern) Definition() definition.InputDefinition {
 	return p.definition
 }
 

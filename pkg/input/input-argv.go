@@ -3,6 +3,7 @@ package input
 import (
 	"errors"
 	"fmt"
+	"github.com/DrSmithFr/go-console/pkg/input/definition"
 	"os"
 	"regexp"
 	"strings"
@@ -17,7 +18,9 @@ func NewArgvInput(argv []string) *ArgvInput {
 		input.tokens = argv[1:]
 	}
 
-	input.doParse = input.Parse
+	input.doParse = input.ParseArgv
+	input.initialize()
+	input.definition = *definition.New()
 
 	return input
 }
@@ -48,7 +51,7 @@ func (i *ArgvInput) GetParameterOption(values []string, defaultValue string, onl
 	panic("implement me")
 }
 
-func (i *ArgvInput) Parse() {
+func (i *ArgvInput) ParseArgv() {
 	parseOptions := true
 	i.parsed = i.tokens
 
@@ -107,7 +110,7 @@ func (i *ArgvInput) parseShortOptionSet(name string) {
 		opt := i.definition.GetOptionForShortcut(name[index:index])
 
 		if opt.AcceptValue() {
-			if index == length - 1 {
+			if index == length-1 {
 				i.addLongOption(opt.GetName(), "")
 			} else {
 				i.addLongOption(opt.GetName(), name[index+1:])
