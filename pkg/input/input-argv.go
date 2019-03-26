@@ -88,9 +88,11 @@ func (i *ArgvInput) parseShortOption(token string) {
 	name := token[1:]
 
 	if len(name) > 1 {
-		if i.definition.HasShortcut(name[0:0]) && i.definition.GetOptionForShortcut(name[0:0]).AcceptValue() {
+		shortcut := name[0:1]
+
+		if i.definition.HasShortcut(shortcut) && i.definition.GetOptionForShortcut(shortcut).AcceptValue() {
 			// an option with a value (with no space)
-			i.addShortOption(name[0:0], name[1:])
+			i.addShortOption(shortcut, name[1:])
 		} else {
 			i.parseShortOptionSet(name)
 		}
@@ -103,11 +105,13 @@ func (i *ArgvInput) parseShortOptionSet(name string) {
 	length := len(name)
 
 	for index := 0; index < length; index++ {
-		if !i.definition.HasShortcut(name[index:index]) {
-			panic(errors.New(fmt.Sprintf("the '-%s' option does not exist", name[index:index])))
+		shortcut := name[index:index+1]
+
+		if !i.definition.HasShortcut(shortcut) {
+			panic(errors.New(fmt.Sprintf("the '-%s' option does not exist", shortcut)))
 		}
 
-		opt := i.definition.GetOptionForShortcut(name[index:index])
+		opt := i.definition.GetOptionForShortcut(shortcut)
 
 		if opt.AcceptValue() {
 			if index == length-1 {

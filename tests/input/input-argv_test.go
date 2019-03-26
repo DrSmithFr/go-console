@@ -30,7 +30,11 @@ func TestParseArguments(t *testing.T) {
 }
 
 func TestParsePatterns(t *testing.T) {
-	for _, pattern := range provideOptionsPatterns() {
+	patterns := provideOptionsPatterns()
+
+	// lunch tests in reverse order for easy debugging
+	for i := len(patterns) - 1; i > -1; i-- {
+		pattern := patterns[i]
 		in := input.NewArgvInput(pattern.Argv())
 		in.Bind(pattern.Definition())
 
@@ -109,5 +113,64 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			).
 			AddArgument(*argument.New("name", argument.REQUIRED)).
 			SetOptions(map[string]string{"foo": ""}),
+
+		*test_helper.
+			NewParserPattern([]string{"cli.php", "--foo", "", "bar"}).
+			SetMessage("->parse() parses long options with optional value which is empty as empty string even followed by an argument").
+			AddOption(
+				*option.
+					New("foo", option.OPTIONAL).
+					SetShortcut("f"),
+			).
+			AddArgument(*argument.New("name", argument.REQUIRED)).
+			SetOptions(map[string]string{"foo": ""}),
+
+		*test_helper.
+			NewParserPattern([]string{"cli.php", "--foo"}).
+			SetMessage(
+				"->parse() parses long options with optional value specified with no separator and no value as null",
+			).
+			AddOption(
+				*option.
+					New("foo", option.OPTIONAL).
+					SetShortcut("f"),
+			).
+			SetOptions(map[string]string{"foo": ""}),
+
+		*test_helper.
+			NewParserPattern([]string{"cli.php", "-f"}).
+			SetMessage(
+				"->parse() parses short options without a value",
+			).
+			AddOption(
+				*option.
+					New("foo", option.NONE).
+					SetShortcut("f"),
+			).
+			SetOptions(map[string]string{"foo": ""}),
+
+		*test_helper.
+			NewParserPattern([]string{"cli.php", "-fbar"}).
+			SetMessage(
+				"->parse() parses short options with a required value (with no separator)",
+			).
+			AddOption(
+				*option.
+					New("foo", option.REQUIRED).
+					SetShortcut("f"),
+			).
+			SetOptions(map[string]string{"foo": "bar"}),
+
+		*test_helper.
+			NewParserPattern([]string{"cli.php", "-f", "bar"}).
+			SetMessage(
+				"->parse() parses short options with a required value (with a space separator)",
+			).
+			AddOption(
+				*option.
+					New("foo", option.REQUIRED).
+					SetShortcut("f"),
+			).
+			SetOptions(map[string]string{"foo": "bar"}),
 	}
 }
