@@ -193,7 +193,7 @@ func (i *ArgvInput) addLongOption(name string, value string) {
 		next := i.parsed[0]
 		i.parsed = i.parsed[1:]
 
-		if len(next) > 0 || "" == next {
+		if len(next) > 0 && next[0] != '-' || "" == next {
 			value = next
 		} else {
 			i.parsed = append([]string{next}, i.parsed...)
