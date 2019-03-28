@@ -15,6 +15,11 @@ const (
 	IS_ARRAY = 8
 )
 
+const (
+	DEFINED = "true"
+	UNDEFINED = "false"
+)
+
 // constructor
 func New(
 	name string, // The option name

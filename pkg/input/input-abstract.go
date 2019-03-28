@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/DrSmithFr/go-console/pkg/input/definition"
+	"github.com/DrSmithFr/go-console/pkg/input/option"
 )
 
 type abstractInput struct {
@@ -20,8 +21,8 @@ type abstractInput struct {
 	doParse func()
 }
 
-func (i *abstractInput) GetDefinition() definition.InputDefinition {
-	return i.definition
+func (i *abstractInput) GetDefinition() *definition.InputDefinition {
+	return &i.definition
 }
 
 func (i *abstractInput) GetArguments() map[string]string {
@@ -125,6 +126,11 @@ func (i *abstractInput) GetOption(name string) string {
 
 	if val, ok := i.options[name]; ok {
 		return val
+	}
+
+	// TODO find a better way to handle option.NONE
+	if ! opt.AcceptValue() {
+		return option.UNDEFINED
 	}
 
 	return opt.GetDefault()

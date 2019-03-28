@@ -41,8 +41,7 @@ func (g *GoStyler) AddInputOption(opt *option.InputOption) *GoStyler {
 		panic(errors.New("cannot add option on parsed input"))
 	}
 
-	def := g.in.GetDefinition()
-	def.AddOption(*opt)
+	g.in.GetDefinition().AddOption(*opt)
 
 	return g
 }
@@ -52,8 +51,9 @@ func (g *GoStyler) AddInputArgument(arg *argument.InputArgument) *GoStyler {
 		panic(errors.New("cannot add argument on parsed input"))
 	}
 
-	def := g.in.GetDefinition()
-	def.AddArgument(*arg)
+	// TODO find what cause "cannot call pointer method" using one line operation
+	g.in.GetDefinition().AddArgument(*arg)
+
 	return g
 }
 

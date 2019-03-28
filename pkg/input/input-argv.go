@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/DrSmithFr/go-console/pkg/input/definition"
+	"github.com/DrSmithFr/go-console/pkg/input/option"
 	"os"
 	"regexp"
 	"strings"
@@ -182,6 +183,9 @@ func (i *ArgvInput) addLongOption(name string, value string) {
 
 	if "" != value && !opt.AcceptValue() {
 		panic(errors.New(fmt.Sprintf("the '--%s' option does not accept a value", name)))
+	} else if ! opt.AcceptValue() {
+		// TODO find a better way to handle option.NONE
+		value = option.DEFINED
 	}
 
 	acceptValue := opt.AcceptValue()

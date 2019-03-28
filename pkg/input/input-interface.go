@@ -81,5 +81,5 @@ type InputInterface interface {
 	SetInteractive(bool)
 
 	// Get the input definition
-	GetDefinition() definition.InputDefinition
+	GetDefinition() *definition.InputDefinition
 }
