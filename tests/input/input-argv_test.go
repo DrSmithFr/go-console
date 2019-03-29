@@ -36,7 +36,7 @@ func TestParsePatterns(t *testing.T) {
 	for i := len(patterns) - 1; i > -1; i-- {
 		pattern := patterns[i]
 		in := input.NewArgvInput(pattern.Argv())
-		in.Bind(pattern.Definition())
+		in.Bind(*pattern.Definition())
 
 		assert.Equalf(t, pattern.Options(), in.GetOptions(), pattern.Message())
 		assert.Equalf(t, pattern.OptionArrays(), in.GetOptionArrays(), pattern.Message())
@@ -292,5 +292,56 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 					SetShortcut("b"),
 			).
 			SetOptions(map[string]string{"foo": "bbar"}),
+	}
+}
+
+func TestInvalidInput(t *testing.T) {
+	patterns := provideInvalidInput()
+
+	// lunch tests in reverse order for easy debugging
+	for i := len(patterns) - 1; i > -1; i-- {
+		pattern := patterns[i]
+
+		assert.Panicsf(
+			t,
+			func() {
+				in := input.NewArgvInput(pattern.Argv())
+				in.Bind(*pattern.Definition())
+			},
+			pattern.Message(),
+		)
+	}
+}
+
+func provideInvalidInput() []*test_helper.ParserPattern {
+	return []*test_helper.ParserPattern{
+		//*test_helper.
+		//	NewParserPattern([]string{"cli.php", "--foo"}).
+		//	SetMessage("The '--foo' option requires a value.").
+		//	AddOption(*option.New("foo", option.REQUIRED)),
+		//
+		//*test_helper.
+		//	NewParserPattern([]string{"cli.php", "-f"}).
+		//	SetMessage("The '--foo' option requires a value.").
+		//	AddOption(*option.New("foo", option.REQUIRED)),
+		//
+		//*test_helper.
+		//	NewParserPattern([]string{"cli.php", "-ffoo"}).
+		//	SetMessage("The '-o' option does not exist.").
+		//	AddOption(*option.New("foo", option.NONE)),
+		//
+		//*test_helper.
+		//	NewParserPattern([]string{"cli.php", "--foo=bar"}).
+		//	SetMessage("The '--foo' option does not accept a value.").
+		//	AddOption(*option.New("foo", option.NONE)),
+		//
+		//*test_helper.
+		//	NewParserPattern([]string{"cli.php", "foo", "bar"}).
+		//	SetMessage("No arguments expected, got 'foo'."),
+
+		test_helper.
+			NewParserPattern([]string{"cli.php", "foo", "bar"}).
+			AddArgument(*argument.New("number", argument.DEFAULT)).
+			SetMessage("Too many arguments, expected arguments 'number'"),
 	}
 }

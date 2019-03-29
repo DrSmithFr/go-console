@@ -6,6 +6,8 @@ import (
 )
 
 const (
+	DEFAULT = OPTIONAL
+
 	REQUIRED = 1
 	OPTIONAL = 2
 	IS_ARRAY = 4
@@ -14,7 +16,7 @@ const (
 // constructor
 func New(
 	name string, // The argument name
-	mode int, // The argument mode: REQUIRED or OPTIONAL (default: OPTIONAL)
+	mode int,    // The argument mode: REQUIRED or OPTIONAL (default: OPTIONAL)
 ) *InputArgument {
 	if mode > 7 || mode < 1 {
 		panic(errors.New(fmt.Sprintf("Argument mode '%d' is not valid.", mode)))

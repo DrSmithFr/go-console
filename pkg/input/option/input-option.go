@@ -9,6 +9,8 @@ import (
 )
 
 const (
+	DEFAULT = NONE
+
 	NONE     = 1
 	REQUIRED = 2
 	OPTIONAL = 4

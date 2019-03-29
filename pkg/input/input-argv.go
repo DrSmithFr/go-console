@@ -3,6 +3,8 @@ package input
 import (
 	"errors"
 	"fmt"
+	"github.com/DrSmithFr/go-console/pkg/helper"
+	"github.com/DrSmithFr/go-console/pkg/input/argument"
 	"github.com/DrSmithFr/go-console/pkg/input/definition"
 	"github.com/DrSmithFr/go-console/pkg/input/option"
 	"os"
@@ -106,7 +108,7 @@ func (i *ArgvInput) parseShortOptionSet(name string) {
 	length := len(name)
 
 	for index := 0; index < length; index++ {
-		shortcut := name[index:index+1]
+		shortcut := name[index : index+1]
 
 		if !i.definition.HasShortcut(shortcut) {
 			panic(errors.New(fmt.Sprintf("the '-%s' option does not exist", shortcut)))
@@ -148,6 +150,7 @@ func (i *ArgvInput) parseLongOption(token string) {
 func (i *ArgvInput) parseArgument(token string) {
 	keys := i.definition.GetArgumentsOrder()
 
+	// if input is expecting another argument, add it
 	if len(keys) > 0 && i.definition.HasArgument(keys[len(keys)-1]) {
 		arg := i.definition.GetArgument(keys[len(keys)-1])
 
@@ -156,11 +159,31 @@ func (i *ArgvInput) parseArgument(token string) {
 		} else {
 			i.arguments[arg.GetName()] = token
 		}
+
+		// if last argument isArray(), append token to last argument
 	} else if len(keys) > 1 &&
 		i.definition.HasArgument(keys[len(keys)-2]) &&
 		i.definition.GetArgument(keys[len(keys)-2]).IsArray() {
 		arg := i.definition.GetArgument(keys[len(keys)-2])
 		i.argumentArrays[arg.GetName()] = append(i.argumentArrays[arg.GetName()], token)
+
+		// unexpected argument
+	} else {
+		def := i.GetDefinition()
+		all := def.GetArguments()
+
+		if len(all) != 0 {
+			panic(
+				errors.New(
+					fmt.Sprintf(
+						"too many arguments, expected arguments '%s'",
+						helper.Implode(" ", getArgumentsMapKeys(all)),
+					),
+				),
+			)
+		}
+
+		panic(errors.New(fmt.Sprintf("no arguments expected, got '%s'", token)))
 	}
 }
 
@@ -215,4 +238,14 @@ func (i *ArgvInput) addLongOption(name string, value string) {
 	} else {
 		i.options[name] = value
 	}
+}
+
+func getArgumentsMapKeys(inputs map[string]argument.InputArgument) []string {
+	var keys []string
+
+	for k := range inputs {
+		keys = append(keys, k)
+	}
+
+	return keys
 }

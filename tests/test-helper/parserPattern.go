@@ -49,8 +49,8 @@ func (p *ParserPattern) Argv() []string {
 	return p.argv
 }
 
-func (p *ParserPattern) Definition() definition.InputDefinition {
-	return p.definition
+func (p *ParserPattern) Definition() *definition.InputDefinition {
+	return &p.definition
 }
 
 func (p *ParserPattern) AddArgument(arg argument.InputArgument) *ParserPattern {

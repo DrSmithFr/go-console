@@ -2,6 +2,7 @@ package helper
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/DrSmithFr/go-console/pkg/formatter"
 	"regexp"
 	"unicode"
@@ -114,10 +115,12 @@ func IsStringSliceEqual(a, b []string) bool {
 	return true
 }
 
-func MergeDefaultsMaps(defaults, inputs map[string][]string) map[string][]string {
-	for key, value := range inputs {
-		defaults[key] = value
+func Implode(glue string, values []string) string {
+	result := ""
+
+	for value := range values {
+		result = fmt.Sprintf("%s%s%s", result, value, glue)
 	}
 
-	return defaults
+	return result
 }
