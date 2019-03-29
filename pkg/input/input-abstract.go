@@ -211,5 +211,5 @@ func (i *abstractInput) Parse() {
 }
 
 func (i *abstractInput) Validate()  {
-	// TODO
+	// TODO add input validation
 }

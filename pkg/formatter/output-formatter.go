@@ -30,7 +30,6 @@ func Escape(message string) string {
 	return final
 }
 
-// TODO fix this function
 func EscapeTrailingBackslash(message string) string {
 	lastChar := message[len(message)-1:]
 

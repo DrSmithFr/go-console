@@ -51,7 +51,6 @@ func (g *GoStyler) AddInputArgument(arg *argument.InputArgument) *GoStyler {
 		panic(errors.New("cannot add argument on parsed input"))
 	}
 
-	// TODO find what cause "cannot call pointer method" using one line operation
 	g.in.GetDefinition().AddArgument(*arg)
 
 	return g

@@ -61,7 +61,7 @@ type StylerInterface interface {
 	// Add newline(s).
 	NewLine(count int)
 
-	// TODO add ask(), askHidden(), confirm() and choice() when inputInterface is ready
+	// TODO add ask(), askHidden(), confirm() and choice() when questionInterface is ready
 
 	// TODO add progressStart(), progressAdvance(), and progressFinish() when helper.ProgressBar is ready
 
