@@ -315,33 +315,55 @@ func TestInvalidInput(t *testing.T) {
 
 func provideInvalidInput() []*test_helper.ParserPattern {
 	return []*test_helper.ParserPattern{
-		//*test_helper.
-		//	NewParserPattern([]string{"cli.php", "--foo"}).
-		//	SetMessage("The '--foo' option requires a value.").
-		//	AddOption(*option.New("foo", option.REQUIRED)),
-		//
-		//*test_helper.
-		//	NewParserPattern([]string{"cli.php", "-f"}).
-		//	SetMessage("The '--foo' option requires a value.").
-		//	AddOption(*option.New("foo", option.REQUIRED)),
-		//
-		//*test_helper.
-		//	NewParserPattern([]string{"cli.php", "-ffoo"}).
-		//	SetMessage("The '-o' option does not exist.").
-		//	AddOption(*option.New("foo", option.NONE)),
-		//
-		//*test_helper.
-		//	NewParserPattern([]string{"cli.php", "--foo=bar"}).
-		//	SetMessage("The '--foo' option does not accept a value.").
-		//	AddOption(*option.New("foo", option.NONE)),
-		//
-		//*test_helper.
-		//	NewParserPattern([]string{"cli.php", "foo", "bar"}).
-		//	SetMessage("No arguments expected, got 'foo'."),
+		test_helper.
+			NewParserPattern([]string{"cli.php", "--foo"}).
+			SetMessage("The '--foo' option requires a value.").
+			AddOption(*option.New("foo", option.REQUIRED)),
+
+		test_helper.
+			NewParserPattern([]string{"cli.php", "-f"}).
+			SetMessage("The '--foo' option requires a value.").
+			AddOption(*option.New("foo", option.REQUIRED)),
+
+		test_helper.
+			NewParserPattern([]string{"cli.php", "-ffoo"}).
+			SetMessage("The '-o' option does not exist.").
+			AddOption(*option.New("foo", option.NONE)),
+
+		test_helper.
+			NewParserPattern([]string{"cli.php", "--foo=bar"}).
+			SetMessage("The '--foo' option does not accept a value.").
+			AddOption(*option.New("foo", option.NONE)),
+
+		test_helper.
+			NewParserPattern([]string{"cli.php", "foo", "bar"}).
+			SetMessage("No arguments expected, got 'foo'."),
 
 		test_helper.
 			NewParserPattern([]string{"cli.php", "foo", "bar"}).
 			AddArgument(*argument.New("number", argument.DEFAULT)).
 			SetMessage("Too many arguments, expected arguments 'number'"),
+
+		test_helper.
+			NewParserPattern([]string{"cli.php", "foo", "bar", "zzz"}).
+			AddArgument(*argument.New("number", argument.DEFAULT)).
+			AddArgument(*argument.New("country", argument.DEFAULT)).
+			SetMessage("Too many arguments, expected arguments 'number' 'country'"),
+
+		test_helper.
+			NewParserPattern([]string{"cli.php", "--foo"}).
+			SetMessage("The '--foo' option does not exist."),
+
+		test_helper.
+			NewParserPattern([]string{"cli.php", "-f"}).
+			SetMessage("The '-f' option does not exist."),
+
+		test_helper.
+			NewParserPattern([]string{"cli.php", "-1"}).
+			SetMessage("The '-1' option does not exist."),
+
+		test_helper.
+			NewParserPattern([]string{"cli.php", "-fЩ"}).
+			SetMessage("The '-fЩ' option does not exist."),
 	}
 }

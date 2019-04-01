@@ -150,9 +150,12 @@ func (i *ArgvInput) parseLongOption(token string) {
 func (i *ArgvInput) parseArgument(token string) {
 	keys := i.definition.GetArgumentsOrder()
 
+
+	nbArgs := i.countArguments()
+
 	// if input is expecting another argument, add it
-	if len(keys) > 0 && i.definition.HasArgument(keys[len(keys)-1]) {
-		arg := i.definition.GetArgument(keys[len(keys)-1])
+	if nbArgs <= len(keys) && i.definition.HasArgument(keys[nbArgs]) {
+		arg := i.definition.GetArgument(keys[nbArgs])
 
 		if arg.IsArray() {
 			i.argumentArrays[arg.GetName()] = []string{token}
@@ -161,16 +164,15 @@ func (i *ArgvInput) parseArgument(token string) {
 		}
 
 		// if last argument isArray(), append token to last argument
-	} else if len(keys) > 1 &&
-		i.definition.HasArgument(keys[len(keys)-2]) &&
-		i.definition.GetArgument(keys[len(keys)-2]).IsArray() {
-		arg := i.definition.GetArgument(keys[len(keys)-2])
+	} else if nbArgs - 1 <= len(keys) &&
+		i.definition.HasArgument(keys[nbArgs-1]) &&
+		i.definition.GetArgument(keys[nbArgs-1]).IsArray() {
+		arg := i.definition.GetArgument(keys[nbArgs-1])
 		i.argumentArrays[arg.GetName()] = append(i.argumentArrays[arg.GetName()], token)
 
 		// unexpected argument
 	} else {
-		def := i.GetDefinition()
-		all := def.GetArguments()
+		all := i.GetDefinition().GetArguments()
 
 		if len(all) != 0 {
 			panic(
@@ -238,6 +240,10 @@ func (i *ArgvInput) addLongOption(name string, value string) {
 	} else {
 		i.options[name] = value
 	}
+}
+
+func (i *ArgvInput) countArguments() int {
+	return len(i.arguments) + len(i.argumentArrays)
 }
 
 func getArgumentsMapKeys(inputs map[string]argument.InputArgument) []string {
