@@ -58,8 +58,6 @@ func (i *ArgvInput) ParseArgv() {
 	parseOptions := true
 	i.parsed = i.tokens
 
-	longOptionRegex := regexp.MustCompile("^--")
-
 	for {
 		if 0 == len(i.parsed) {
 			break
@@ -72,7 +70,7 @@ func (i *ArgvInput) ParseArgv() {
 			i.parseArgument(token)
 		} else if parseOptions && "--" == token {
 			parseOptions = false
-		} else if parseOptions && longOptionRegex.MatchString(token) {
+		} else if parseOptions && regexp.MustCompile("^--").MatchString(token) {
 			i.parseLongOption(token)
 		} else if parseOptions && '-' == token[0] && "-" != token {
 			i.parseShortOption(token)
@@ -213,10 +211,7 @@ func (i *ArgvInput) addLongOption(name string, value string) {
 		value = option.DEFINED
 	}
 
-	acceptValue := opt.AcceptValue()
-	size := len(i.parsed)
-
-	if "" == value && acceptValue && size > 0 {
+	if "" == value && opt.AcceptValue() && len(i.parsed) > 0 {
 		// if option accepts an optional or mandatory argument
 		// let's see if there is one provided
 		next := i.parsed[0]
@@ -232,6 +227,10 @@ func (i *ArgvInput) addLongOption(name string, value string) {
 	if "" == value {
 		if opt.IsValueRequired() {
 			panic(errors.New(fmt.Sprintf("the '--%s' option requires a value", name)))
+		}
+
+		if !opt.IsArray() && !opt.IsValueOptional() {
+			value = option.DEFINED
 		}
 	}
 

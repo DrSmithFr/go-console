@@ -49,7 +49,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "--foo"}).
 			SetMessage("->parse() parses long options without a value").
 			AddOption(*option.New("foo", option.NONE)).
-			SetOptions(map[string]string{"foo": ""}),
+			SetOptions(map[string]string{"foo": option.DEFINED}),
 
 		*test_helper.
 			NewParserPattern([]string{"cli.php", "--foo=bar"}).
@@ -144,7 +144,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 					New("foo", option.NONE).
 					SetShortcut("f"),
 			).
-			SetOptions(map[string]string{"foo": ""}),
+			SetOptions(map[string]string{"foo": option.DEFINED}),
 
 		*test_helper.
 			NewParserPattern([]string{"cli.php", "-fbar"}).
@@ -189,7 +189,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 
 		*test_helper.
 			NewParserPattern([]string{"cli.php", "-f", "", "-b"}).
-			SetMessage("->parse() parses short options with an optional empty value followed by an argument").
+			SetMessage("->parse() parses short options with an optional empty value followed by an option").
 			AddOption(
 				*option.
 					New("foo", option.OPTIONAL).
@@ -197,10 +197,10 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			).
 			AddOption(
 				*option.
-					New("bar", option.OPTIONAL).
+					New("bar", option.DEFAULT).
 					SetShortcut("b"),
 			).
-			SetOptions(map[string]string{"foo": "", "bar": ""}),
+			SetOptions(map[string]string{"foo": "", "bar": option.DEFINED}),
 
 		*test_helper.
 			NewParserPattern([]string{"cli.php", "-f", "-b", "foo"}).
@@ -216,7 +216,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 					New("bar", option.NONE).
 					SetShortcut("b"),
 			).
-			SetOptions(map[string]string{"foo": "", "bar": ""}),
+			SetOptions(map[string]string{"foo": "", "bar": option.DEFINED}),
 
 		*test_helper.
 			NewParserPattern([]string{"cli.php", "-fb"}).
@@ -231,7 +231,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 					New("bar", option.NONE).
 					SetShortcut("b"),
 			).
-			SetOptions(map[string]string{"foo": "", "bar": ""}),
+			SetOptions(map[string]string{"foo": option.DEFINED, "bar": option.DEFINED}),
 
 		*test_helper.
 			NewParserPattern([]string{"cli.php", "-fb", "bar"}).
@@ -246,7 +246,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 					New("bar", option.REQUIRED).
 					SetShortcut("b"),
 			).
-			SetOptions(map[string]string{"foo": "", "bar": "bar"}),
+			SetOptions(map[string]string{"foo": option.DEFINED, "bar": "bar"}),
 
 		*test_helper.
 			NewParserPattern([]string{"cli.php", "-fb", "bar"}).
@@ -261,7 +261,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 					New("bar", option.OPTIONAL).
 					SetShortcut("b"),
 			).
-			SetOptions(map[string]string{"foo": "", "bar": "bar"}),
+			SetOptions(map[string]string{"foo": option.DEFINED, "bar": "bar"}),
 
 		*test_helper.
 			NewParserPattern([]string{"cli.php", "-fbbar"}).
@@ -276,7 +276,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 					New("bar", option.OPTIONAL).
 					SetShortcut("b"),
 			).
-			SetOptions(map[string]string{"foo": "", "bar": "bar"}),
+			SetOptions(map[string]string{"foo": option.DEFINED, "bar": "bar"}),
 
 		*test_helper.
 			NewParserPattern([]string{"cli.php", "-fbbar"}).
