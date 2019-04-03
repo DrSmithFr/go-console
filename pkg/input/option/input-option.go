@@ -123,7 +123,7 @@ func (a *InputOption) IsArray() bool {
 
 // Sets the default value.
 func (a *InputOption) SetDefault(defaultValue string) *InputOption {
-	if NONE == (NONE&a.mode) && "" != defaultValue {
+	if !a.AcceptValue() && "" != defaultValue {
 		panic(errors.New("cannot set a default value when using InputOption::VALUE_NONE mode"))
 	}
 
