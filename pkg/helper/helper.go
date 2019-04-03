@@ -123,7 +123,7 @@ func IsStringSliceEqual(a, b []string) bool {
 func Implode(glue string, values []string) string {
 	result := ""
 
-	for value := range values {
+	for _, value := range values {
 		result = fmt.Sprintf("%s%s%s", result, value, glue)
 	}
 
