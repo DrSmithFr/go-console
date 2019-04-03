@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// terminal max line length
 const MAX_LINE_LENGTH = 120
 
 type abstractStyler struct {
@@ -18,26 +19,32 @@ type abstractStyler struct {
 	bufferedOutput output.BufferedOutput
 }
 
+// set max line length
 func (g *abstractStyler) SetMaxLineLength(length int) {
 	g.lineLength = length
 }
 
+// get max line length
 func (g *abstractStyler) GetMaxLineLength() int {
 	return g.lineLength
 }
 
+// get current inputInterface Instance
 func (g *abstractStyler) GetInput() input.InputInterface {
 	return g.in
 }
 
+// get current outputInterface Instance
 func (g *abstractStyler) GetOutput() output.OutputInterface {
 	return g.out
 }
 
+// Add newline(s).
 func (g *abstractStyler) NewLine(count int) {
 	g.writeArray([]string{strings.Repeat("\n", count)}, false)
 }
 
+// Formats a command title.
 func (g *abstractStyler) Title(message string) {
 	g.autoPrependBlock()
 
@@ -54,6 +61,7 @@ func (g *abstractStyler) Title(message string) {
 	g.NewLine(1)
 }
 
+// Formats a section title.
 func (g *abstractStyler) Section(message string) {
 	g.autoPrependBlock()
 
@@ -70,6 +78,7 @@ func (g *abstractStyler) Section(message string) {
 	g.NewLine(1)
 }
 
+// Formats a list.
 func (g *abstractStyler) Listing(messages []string) {
 	g.autoPrependText()
 
@@ -80,12 +89,14 @@ func (g *abstractStyler) Listing(messages []string) {
 	g.NewLine(1)
 }
 
+// Formats informational text.
 func (g *abstractStyler) Text(message string) {
 	g.autoPrependText()
 	g.write(fmt.Sprintf(" %s", message), false)
 	g.NewLine(1)
 }
 
+// Formats informational text array.
 func (g *abstractStyler) TextArray(messages []string) {
 	g.autoPrependText()
 
@@ -96,18 +107,22 @@ func (g *abstractStyler) TextArray(messages []string) {
 	g.NewLine(1)
 }
 
+// Formats a comment bar.
 func (g *abstractStyler) Comment(message string) {
 	g.CommentArray([]string{message})
 }
 
+// Formats a comment bar.
 func (g *abstractStyler) CommentArray(messages []string) {
 	g.blockArray(messages, "", "", "<fg=default;bg=default> // </>", false, false)
 }
 
+// Formats a success result bar.
 func (g *abstractStyler) Success(message string) {
 	g.SuccessArray([]string{message})
 }
 
+// Formats a success result bar.
 func (g *abstractStyler) SuccessArray(messages []string) {
 	g.blockArray(messages, "OK", "fg=black;bg=green", " ", true, false)
 }
@@ -116,30 +131,37 @@ func (g *abstractStyler) Error(message string) {
 	g.ErrorArray([]string{message})
 }
 
+// Formats an error result bar.
 func (g *abstractStyler) ErrorArray(messages []string) {
 	g.blockArray(messages, "ERROR", "fg=white;bg=red", " ", true, false)
 }
 
+// Formats an warning result bar.
 func (g *abstractStyler) Warning(message string) {
 	g.WarningArray([]string{message})
 }
 
+// Formats an warning result bar.
 func (g *abstractStyler) WarningArray(messages []string) {
 	g.blockArray(messages, "WARNING", "fg=white;bg=red", " ", true, false)
 }
 
+// Formats a note admonition.
 func (g *abstractStyler) Note(message string) {
 	g.NoteArray([]string{message})
 }
 
+// Formats a note admonition.
 func (g *abstractStyler) NoteArray(messages []string) {
 	g.blockArray(messages, "NOTE", "fg=yellow", " ! ", false, false)
 }
 
+// Formats a caution admonition.
 func (g *abstractStyler) Caution(message string) {
 	g.CautionArray([]string{message})
 }
 
+// Formats a caution admonition.
 func (g *abstractStyler) CautionArray(messages []string) {
 	g.blockArray(messages, "CAUTION", "fg=white;bg=red", " ! ", true, false)
 }

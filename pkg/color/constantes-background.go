@@ -14,6 +14,7 @@ var backgroundColors = map[string]Color{
 	DEFAULT: NewColor(49, 49),
 }
 
+// get color from background const
 func GetBackgroundColor(name string) Color {
 	if color, ok := backgroundColors[name]; ok {
 		return color

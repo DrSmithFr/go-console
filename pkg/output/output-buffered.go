@@ -5,6 +5,7 @@ import (
 	"github.com/DrSmithFr/go-console/pkg/formatter"
 )
 
+// constructor
 func NewBufferedOutput(decorated bool, format *formatter.OutputFormatter) *BufferedOutput {
 	out := & BufferedOutput{
 		buffer: "",
@@ -23,6 +24,7 @@ func NewBufferedOutput(decorated bool, format *formatter.OutputFormatter) *Buffe
 	return out
 }
 
+// Buffered output classes
 type BufferedOutput struct {
 	NullOutput
 	buffer string

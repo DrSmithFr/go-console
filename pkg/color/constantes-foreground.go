@@ -14,6 +14,7 @@ var foregroundColors = map[string]Color{
 	DEFAULT: NewColor(39, 39),
 }
 
+// get color from foreground const
 func GetForegroundColor(name string) Color {
 	if color, ok := foregroundColors[name]; ok {
 		return color

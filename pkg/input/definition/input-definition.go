@@ -99,6 +99,7 @@ func (i *InputDefinition) HasArgument(name string) bool {
 	return found
 }
 
+// Returns an InputArgument by name or by position
 func (i *InputDefinition) GetArgument(name string) *argument.InputArgument {
 	if ! i.HasArgument(name) {
 		panic(errors.New(fmt.Sprintf("the '%s' argument does not exist", name)))
@@ -111,10 +112,12 @@ func (i *InputDefinition) GetArgument(name string) *argument.InputArgument {
 	return nil
 }
 
+// Gets the array of InputArgument objects
 func (i *InputDefinition) GetArguments() map[string]argument.InputArgument {
 	return i.arguments
 }
 
+// Gets the array of InputArgument keys ordered
 func (i *InputDefinition) GetArgumentsOrder() []string {
 	return i.argumentKeysOrdered
 }
@@ -199,6 +202,7 @@ func (i *InputDefinition) HasOption(name string) bool {
 	return found
 }
 
+// Returns an InputOption by name
 func (i *InputDefinition) GetOption(name string) *option.InputOption {
 	if ! i.HasOption(name) {
 		panic(errors.New(fmt.Sprintf("the '%s' argument does not exist", name)))
@@ -211,10 +215,12 @@ func (i *InputDefinition) GetOption(name string) *option.InputOption {
 	return nil
 }
 
+// Gets the array of InputOption objects
 func (i *InputDefinition) GetOptions() map[string]option.InputOption {
 	return i.options
 }
 
+// Gets the array of InputOption keys ordered
 func (i *InputDefinition) GetOptionsOrder() []string {
 	return i.optionKeysOrdered
 }

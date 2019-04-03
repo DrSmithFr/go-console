@@ -5,6 +5,7 @@ import (
 	"github.com/DrSmithFr/go-console/pkg/color"
 )
 
+// output formatter style constructor
 func NewOutputFormatterStyleStack(style *OutputFormatterStyle) *OutputFormatterStyleStack {
 	stack := & OutputFormatterStyleStack{
 		styles: []*OutputFormatterStyle{},
@@ -19,6 +20,7 @@ func NewOutputFormatterStyleStack(style *OutputFormatterStyle) *OutputFormatterS
 	return stack
 }
 
+// Formatter style stack class for defining styles
 type OutputFormatterStyleStack struct {
 	styles       []*OutputFormatterStyle
 	defaultStyle *OutputFormatterStyle
@@ -62,6 +64,7 @@ func (stack *OutputFormatterStyleStack) Pop(style *OutputFormatterStyle) *Output
 	panic(errors.New("incorrectly nested style tag found"))
 }
 
+// Computes current style with stacks top codes
 func (stack *OutputFormatterStyleStack) GetCurrent() *OutputFormatterStyle {
 	if 0 == len(stack.styles) {
 		return stack.defaultStyle
@@ -70,10 +73,12 @@ func (stack *OutputFormatterStyleStack) GetCurrent() *OutputFormatterStyle {
 	return stack.styles[len(stack.styles)-1]
 }
 
+// get default style
 func (stack *OutputFormatterStyleStack) GetDefaultStyle() *OutputFormatterStyle {
 	return stack.defaultStyle
 }
 
+// set default style
 func (stack *OutputFormatterStyleStack) SetDefaultStyle(style OutputFormatterStyle) {
 	stack.defaultStyle = &style
 }

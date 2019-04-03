@@ -9,10 +9,12 @@ import (
 	"unicode/utf8"
 )
 
+// length of an undecorated string
 func StrlenWithoutDecoration(outputFormatter formatter.OutputFormatterInterface, message string) int {
 	return utf8.RuneCountInString(RemoveDecoration(outputFormatter, message))
 }
 
+// remove all string decoration (tags)
 func RemoveDecoration(outputFormatter formatter.OutputFormatterInterface, message string) string {
 	wasDecorated := outputFormatter.IsDecorated()
 	outputFormatter.SetDecorated(false)
@@ -29,6 +31,7 @@ func RemoveDecoration(outputFormatter formatter.OutputFormatterInterface, messag
 	return noDecoration
 }
 
+// unshift a string from array
 func ArrayUnshift(s []string, elements ...string) []string {
 	return append(elements, s...)
 }
@@ -97,6 +100,7 @@ func Wordwrap(message string, width int, breaker rune) string {
 	return buf.String()
 }
 
+// compare byte by byte a string to another
 func IsStringSliceEqual(a, b []string) bool {
 	if (a == nil) != (b == nil) {
 		return false
@@ -115,6 +119,7 @@ func IsStringSliceEqual(a, b []string) bool {
 	return true
 }
 
+// equivalent of php implode()
 func Implode(glue string, values []string) string {
 	result := ""
 

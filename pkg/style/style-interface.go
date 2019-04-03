@@ -25,6 +25,12 @@ type StylerInterface interface {
 	// Formats informational text array.
 	TextArray(message []string)
 
+	// Formats a comment bar.
+	Comment(message string)
+
+	// Formats a comment bar.
+	CommentArray(message []string)
+
 	// Formats a success result bar.
 	Success(message string)
 

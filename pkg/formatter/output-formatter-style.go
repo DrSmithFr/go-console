@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// Formatter style constructor
 func NewOutputFormatterStyle(
 	foreground string,
 	background string,
@@ -27,6 +28,7 @@ func NewOutputFormatterStyle(
 	return style
 }
 
+// Formatter style class for defining styles
 type OutputFormatterStyle struct {
 	foreground *color.Color
 	background *color.Color

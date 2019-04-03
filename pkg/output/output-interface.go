@@ -2,6 +2,7 @@ package output
 
 import "github.com/DrSmithFr/go-console/pkg/formatter"
 
+// OutputInterface is the interface implemented by all Output classes
 type OutputInterface interface {
 	// Formats a message according to the current formatter styles.
 	format(message string) string

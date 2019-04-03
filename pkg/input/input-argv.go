@@ -12,6 +12,7 @@ import (
 	"strings"
 )
 
+// constructor
 func NewArgvInput(argv []string) *ArgvInput {
 	input := new(ArgvInput)
 
@@ -28,12 +29,14 @@ func NewArgvInput(argv []string) *ArgvInput {
 	return input
 }
 
+// ArgvInput represents an input coming from the CLI arguments
 type ArgvInput struct {
 	abstractInput
 	tokens []string
 	parsed []string
 }
 
+// Returns the first argument from the raw parameters (not parsed)
 func (i *ArgvInput) GetFirstArgument() string {
 	for _, token := range i.tokens {
 		if "" != token && '-' == token[0] {
@@ -46,14 +49,17 @@ func (i *ArgvInput) GetFirstArgument() string {
 	panic(errors.New("first argument not found"))
 }
 
+// Returns true if the raw parameters (not parsed) contain a value
 func (i *ArgvInput) HasParameterOption(values []string, onlyParams bool) bool {
 	panic("implement me")
 }
 
+// Returns the value of a raw option (not parsed).
 func (i *ArgvInput) GetParameterOption(values []string, defaultValue string, onlyParams bool) {
 	panic("implement me")
 }
 
+// parse cli argv
 func (i *ArgvInput) ParseArgv() {
 	parseOptions := true
 	i.parsed = i.tokens

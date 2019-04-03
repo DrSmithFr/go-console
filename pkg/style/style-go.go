@@ -8,6 +8,7 @@ import (
 	"github.com/DrSmithFr/go-console/pkg/output"
 )
 
+// simple constructor
 func NewConsoleStyler() *GoStyler {
 	out := output.NewConsoleOutput(true, nil)
 	in := input.NewArgvInput(nil)
@@ -15,6 +16,7 @@ func NewConsoleStyler() *GoStyler {
 	return NewGoStyler(in, out)
 }
 
+// custom constructor
 func NewGoStyler(in input.InputInterface, out output.OutputInterface) *GoStyler {
 	g := &GoStyler{
 		alreadyParsed: false,
@@ -31,11 +33,13 @@ func NewGoStyler(in input.InputInterface, out output.OutputInterface) *GoStyler 
 	return g
 }
 
+// Output decorator helpers for the Style Guide
 type GoStyler struct {
 	abstractStyler
 	alreadyParsed bool
 }
 
+// (helper) add option to input definition
 func (g *GoStyler) AddInputOption(opt *option.InputOption) *GoStyler {
 	if g.alreadyParsed {
 		panic(errors.New("cannot add option on parsed input"))
@@ -46,6 +50,7 @@ func (g *GoStyler) AddInputOption(opt *option.InputOption) *GoStyler {
 	return g
 }
 
+// (helper) add argument to input definition
 func (g *GoStyler) AddInputArgument(arg *argument.InputArgument) *GoStyler {
 	if g.alreadyParsed {
 		panic(errors.New("cannot add argument on parsed input"))
@@ -56,6 +61,7 @@ func (g *GoStyler) AddInputArgument(arg *argument.InputArgument) *GoStyler {
 	return g
 }
 
+// (helper) parse input argv
 func (g *GoStyler) ParseInput() *GoStyler {
 	if g.alreadyParsed {
 		panic(errors.New("argv is already parsed"))
@@ -67,6 +73,7 @@ func (g *GoStyler) ParseInput() *GoStyler {
 	return g
 }
 
+// (helper) validate input argv
 func (g *GoStyler) ValidateInput() *GoStyler {
 	if !g.alreadyParsed {
 		panic(errors.New("cannot validate unparsed input"))

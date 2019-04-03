@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// output formatter constructor
 func NewOutputFormatter() *OutputFormatter {
 	formatter := & OutputFormatter{
 		stylesCache: make(map[string]OutputFormatterStyle),
@@ -23,6 +24,7 @@ func NewOutputFormatter() *OutputFormatter {
 	return formatter
 }
 
+// Escapes "<" special char in given text.
 func Escape(message string) string {
 	regex := regexp.MustCompile("([^\\\\]?)<")
 	escaped := regex.ReplaceAllString(message, "$1\\<")
@@ -30,6 +32,7 @@ func Escape(message string) string {
 	return final
 }
 
+// Escapes trailing "\" in given text.
 func EscapeTrailingBackslash(message string) string {
 	lastChar := message[len(message)-1:]
 
@@ -46,6 +49,7 @@ func EscapeTrailingBackslash(message string) string {
 	return message
 }
 
+// Formatter class for console output.
 type OutputFormatter struct {
 	decorated   bool
 	styleStack  *OutputFormatterStyleStack

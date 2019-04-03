@@ -70,6 +70,7 @@ func (a *InputOption) GetName() string {
 	return a.name
 }
 
+// set the option description
 func (a *InputOption) SetDescription(desc string) *InputOption {
 	a.description = desc
 	return a
@@ -135,6 +136,7 @@ func (a *InputOption) SetDefault(defaultValue string) *InputOption {
 	return a
 }
 
+// Sets the default value for array options
 func (a *InputOption) SetDefaults(values []string) *InputOption {
 	if NONE == (NONE&a.mode) && 0 != len(values) {
 		panic(errors.New("cannot set default values when using InputOption::VALUE_NONE mode"))
@@ -167,6 +169,7 @@ func (a *InputOption) GetDefaults() []string {
 	return a.defaultValues
 }
 
+// compare to another option
 func (a *InputOption) Equals(b InputOption) bool {
 	if b.IsArray() != a.IsArray() {
 		return false

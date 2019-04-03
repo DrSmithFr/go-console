@@ -5,6 +5,7 @@ import (
 	"github.com/DrSmithFr/go-console/pkg/formatter"
 )
 
+// constructor
 func NewConsoleOutput(decorated bool, format *formatter.OutputFormatter) *ConsoleOutput {
 	out := new(ConsoleOutput)
 
@@ -21,6 +22,7 @@ func NewConsoleOutput(decorated bool, format *formatter.OutputFormatter) *Consol
 	return out
 }
 
+// Console output classes
 type ConsoleOutput struct {
 	NullOutput
 }

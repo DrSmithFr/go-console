@@ -71,6 +71,7 @@ func (a *InputArgument) SetDefault(defaultValue string) *InputArgument {
 	return a
 }
 
+// Sets the default value for array args.
 func (a *InputArgument) SetDefaults(values []string) *InputArgument {
 	if REQUIRED == a.mode && 0 != len(values) {
 		panic(errors.New("cannot set a default value except for InputArgument::OPTIONAL mode"))
