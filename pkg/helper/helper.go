@@ -2,16 +2,19 @@ package helper
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/DrSmithFr/go-console/pkg/formatter"
 	"regexp"
 	"unicode"
 	"unicode/utf8"
 )
 
+// length of an undecorated string
 func StrlenWithoutDecoration(outputFormatter formatter.OutputFormatterInterface, message string) int {
 	return utf8.RuneCountInString(RemoveDecoration(outputFormatter, message))
 }
 
+// remove all string decoration (tags)
 func RemoveDecoration(outputFormatter formatter.OutputFormatterInterface, message string) string {
 	wasDecorated := outputFormatter.IsDecorated()
 	outputFormatter.SetDecorated(false)
@@ -28,11 +31,12 @@ func RemoveDecoration(outputFormatter formatter.OutputFormatterInterface, messag
 	return noDecoration
 }
 
+// unshift a string from array
 func ArrayUnshift(s []string, elements ...string) []string {
 	return append(elements, s...)
 }
 
-// TODO this func as be stolen for a random repo. Extremely disgusting, Need refactoring
+// TODO this func as be stolen for a random repo (yep im an horrible person). Extremely disgusting, Need refactoring
 func Wordwrap(message string, width int, breaker rune) string {
 	// Initialize a buffer with a slightly larger size to account for breaks
 	init := make([]byte, 0, len(message))
@@ -94,4 +98,34 @@ func Wordwrap(message string, width int, breaker rune) string {
 	}
 
 	return buf.String()
+}
+
+// compare byte by byte a string to another
+func IsStringSliceEqual(a, b []string) bool {
+	if (a == nil) != (b == nil) {
+		return false
+	}
+
+	if len(a) != len(b) {
+		return false
+	}
+
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
+// equivalent of php implode()
+func Implode(glue string, values []string) string {
+	result := ""
+
+	for _, value := range values {
+		result = fmt.Sprintf("%s%s%s", result, value, glue)
+	}
+
+	return result
 }

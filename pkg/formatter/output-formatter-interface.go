@@ -1,5 +1,6 @@
 package formatter
 
+// Formatter interface for console output
 type OutputFormatterInterface interface {
 	// Sets the decorated flag.
 	SetDecorated(decorated bool)

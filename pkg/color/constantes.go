@@ -1,6 +1,7 @@
 package color
 
 const (
+	// empty color
 	NULL = ""
 
 	BLACK   = "black"

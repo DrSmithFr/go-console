@@ -1,5 +1,6 @@
 package color
 
+// color constructor
 func NewColor(set int, unset int) Color {
 	color := new(Color)
 
@@ -9,15 +10,18 @@ func NewColor(set int, unset int) Color {
 	return *color
 }
 
+// color struct
 type Color struct {
 	set   int
 	unset int
 }
 
+// Get the setter color value
 func (c *Color) GetValue() int {
 	return c.set
 }
 
+// Get the default color value
 func (c *Color) GetUnset() int {
 	return c.unset
 }

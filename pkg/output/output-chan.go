@@ -2,10 +2,12 @@ package output
 
 import "github.com/DrSmithFr/go-console/pkg/formatter"
 
+// constructor
 func NewChanOutput(channel chan string, decorated bool, format *formatter.OutputFormatter) *ChanOutput {
-	out := new(ChanOutput)
+	out := & ChanOutput{
+		channel: channel,
+	}
 
-	out.channel = channel
 	out.doWrite = out.Write
 
 	if nil == format {
@@ -19,6 +21,7 @@ func NewChanOutput(channel chan string, decorated bool, format *formatter.Output
 	return out
 }
 
+// Chan output classes
 type ChanOutput struct {
 	NullOutput
 	channel chan string

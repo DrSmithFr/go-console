@@ -1,0 +1,50 @@
+package main
+
+import (
+	"fmt"
+	"github.com/DrSmithFr/go-console/pkg/input/argument"
+	"github.com/DrSmithFr/go-console/pkg/input/option"
+	"github.com/DrSmithFr/go-console/pkg/style"
+)
+
+func main() {
+	io := style.
+		NewConsoleStyler().
+		AddInputArgument(
+			argument.
+				New("name", argument.REQUIRED),
+		).
+		AddInputOption(
+			option.
+				New("foo", option.NONE).
+				SetShortcut("f"),
+		).
+		ParseInput().
+		ValidateInput()
+
+	//
+	// Do what you want with console and args !
+	//
+
+	io.Title("Starting console")
+
+	io.TextArray([]string{
+		"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+		"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+		"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+		"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+	})
+
+	io.Note(
+		fmt.Sprintf(
+			"name argument value '%s'",
+			io.GetInput().GetArgument("name"),
+		),
+	)
+
+	if option.DEFINED == io.GetInput().GetOption("foo") {
+		io.Success("foo option is set")
+	} else {
+		io.Error("foo option is set")
+	}
+}

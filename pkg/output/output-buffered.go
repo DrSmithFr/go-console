@@ -5,10 +5,12 @@ import (
 	"github.com/DrSmithFr/go-console/pkg/formatter"
 )
 
+// constructor
 func NewBufferedOutput(decorated bool, format *formatter.OutputFormatter) *BufferedOutput {
-	out := new(BufferedOutput)
+	out := & BufferedOutput{
+		buffer: "",
+	}
 
-	out.buffer = ""
 	out.doWrite = out.Write
 
 	if nil == format {
@@ -22,6 +24,7 @@ func NewBufferedOutput(decorated bool, format *formatter.OutputFormatter) *Buffe
 	return out
 }
 
+// Buffered output classes
 type BufferedOutput struct {
 	NullOutput
 	buffer string

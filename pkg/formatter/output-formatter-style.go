@@ -8,14 +8,15 @@ import (
 	"strings"
 )
 
+// Formatter style constructor
 func NewOutputFormatterStyle(
 	foreground string,
 	background string,
 	options []string,
 ) *OutputFormatterStyle {
-	style := new(OutputFormatterStyle)
-
-	style.options = &map[string]color.Color{}
+	style := & OutputFormatterStyle{
+		options: new(map[string]color.Color),
+	}
 
 	style.SetForeground(foreground)
 	style.SetBackground(background)
@@ -27,6 +28,7 @@ func NewOutputFormatterStyle(
 	return style
 }
 
+// Formatter style class for defining styles
 type OutputFormatterStyle struct {
 	foreground *color.Color
 	background *color.Color
