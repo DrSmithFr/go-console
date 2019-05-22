@@ -22,6 +22,9 @@ func main() {
 		ParseInput().
 		ValidateInput()
 
+	// enable stylish errors
+	defer io.HandleRuntimeException()
+
 	//
 	// Do what you want with console and args !
 	//
@@ -44,7 +47,7 @@ func main() {
 
 	if option.DEFINED == io.GetInput().GetOption("foo") {
 		io.Success("foo option is set")
-	} else {
-		io.Error("foo option is set")
 	}
+
+	panic("this error will be stylish!")
 }

@@ -34,6 +34,10 @@ func Escape(message string) string {
 
 // Escapes trailing "\" in given text.
 func EscapeTrailingBackslash(message string) string {
+	if message == "" {
+		return ""
+	}
+
 	lastChar := message[len(message)-1:]
 
 	if "\\" == lastChar {
