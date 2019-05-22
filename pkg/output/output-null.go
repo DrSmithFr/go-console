@@ -9,7 +9,7 @@ import (
 func NewNullOutput(decorated bool, format *formatter.OutputFormatter) *NullOutput {
 	out := new(NullOutput)
 
-	out.doWrite = out.Write
+	out.doWrite = out.Void
 
 	if nil == format {
 		out.formatter = formatter.NewOutputFormatter()
@@ -22,10 +22,19 @@ func NewNullOutput(decorated bool, format *formatter.OutputFormatter) *NullOutpu
 	return out
 }
 
-// Null output classes (eq. toi abstract)
+// Null output classes (~abstract)
 type NullOutput struct {
 	doWrite   func(string)
 	formatter *formatter.OutputFormatter
+	verbosity int
+}
+
+func (o *NullOutput) GetVerbosity() int {
+	return o.verbosity
+}
+
+func (o *NullOutput) SetVerbosity(verbosity int) {
+	o.verbosity = verbosity
 }
 
 func (o *NullOutput) format(message string) string {
@@ -36,13 +45,21 @@ func (o *NullOutput) format(message string) string {
 	return (*o.formatter).Format(message)
 }
 
-func (o *NullOutput) Write(message string) {
+func (o *NullOutput) preWriteEvent(message string)  {
+
+}
+
+func (o *NullOutput) Void(message string)  {
 	// do nothing
+}
+
+func (o *NullOutput) Write(message string) {
+	o.doWrite(o.format(message))
 }
 
 // Writes a message to the output and adds a newline at the end
 func (o *NullOutput) Writeln(message string) {
-	o.doWrite(fmt.Sprintf("%s\n", message))
+	o.Write(fmt.Sprintf("%s\n", message))
 }
 
 // Sets the decorated flag

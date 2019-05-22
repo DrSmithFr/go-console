@@ -9,7 +9,7 @@ import (
 func NewConsoleOutput(decorated bool, format *formatter.OutputFormatter) *ConsoleOutput {
 	out := new(ConsoleOutput)
 
-	out.doWrite = out.Write
+	out.doWrite = out.Print
 
 	if nil == format {
 		out.formatter = formatter.NewOutputFormatter()
@@ -27,6 +27,6 @@ type ConsoleOutput struct {
 	NullOutput
 }
 
-func (o *ConsoleOutput) Write(message string) {
-	fmt.Printf(o.format(message))
+func (o *ConsoleOutput) Print(message string) {
+	fmt.Printf(message)
 }

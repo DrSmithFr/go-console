@@ -8,7 +8,7 @@ func NewChanOutput(channel chan string, decorated bool, format *formatter.Output
 		channel: channel,
 	}
 
-	out.doWrite = out.Write
+	out.doWrite = out.Send
 
 	if nil == format {
 		out.formatter = formatter.NewOutputFormatter()
@@ -27,6 +27,6 @@ type ChanOutput struct {
 	channel chan string
 }
 
-func (o *ChanOutput) Write(message string) {
-	o.channel <- o.format(message)
+func (o *ChanOutput) Send(message string) {
+	o.channel <- message
 }

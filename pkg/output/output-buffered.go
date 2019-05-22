@@ -11,7 +11,7 @@ func NewBufferedOutput(decorated bool, format *formatter.OutputFormatter) *Buffe
 		buffer: "",
 	}
 
-	out.doWrite = out.Write
+	out.doWrite = out.Store
 
 	if nil == format {
 		out.formatter = formatter.NewOutputFormatter()
@@ -30,7 +30,7 @@ type BufferedOutput struct {
 	buffer string
 }
 
-func (o *BufferedOutput) Write(message string) {
+func (o *BufferedOutput) Store(message string) {
 	o.buffer = fmt.Sprintf("%s%s", o.buffer, message)
 }
 
