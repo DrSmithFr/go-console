@@ -18,7 +18,7 @@ const (
 )
 
 const (
-	DEFINED = "true"
+	DEFINED   = "true"
 	UNDEFINED = "false"
 )
 
@@ -48,7 +48,7 @@ func New(
 		defaultValues: []string{},
 	}
 
-	if opt.IsArray() && ! opt.AcceptValue() {
+	if opt.IsArray() && !opt.AcceptValue() {
 		panic(errors.New("impossible to have an option mode IS_ARRAY if the option does not accept a value"))
 	}
 
@@ -142,7 +142,7 @@ func (a *InputOption) SetDefaults(values []string) *InputOption {
 		panic(errors.New("cannot set default values when using InputOption::VALUE_NONE mode"))
 	}
 
-	if ! a.IsArray() {
+	if !a.IsArray() {
 		panic(errors.New("cannot use SetDefaults() except for InputOption::IS_ARRAY mode, use SetDefault() instead"))
 	}
 
@@ -162,7 +162,7 @@ func (a *InputOption) GetDefault() string {
 
 // Returns the defaults value.
 func (a *InputOption) GetDefaults() []string {
-	if ! a.IsArray() {
+	if !a.IsArray() {
 		panic(errors.New("cannot use GetDefaults() except for InputOption::IS_ARRAY, use GetDefault() instead"))
 	}
 

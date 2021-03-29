@@ -9,9 +9,9 @@ import (
 
 // output formatter constructor
 func NewOutputFormatter() *OutputFormatter {
-	formatter := & OutputFormatter{
+	formatter := &OutputFormatter{
 		stylesCache: make(map[string]OutputFormatterStyle),
-		styleStack: NewOutputFormatterStyleStack(nil),
+		styleStack:  NewOutputFormatterStyleStack(nil),
 	}
 
 	formatter.SetStyle("error", *NewOutputFormatterStyle(color.WHITE, color.RED, nil))

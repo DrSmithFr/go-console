@@ -79,7 +79,7 @@ func TestSetDefaultOnArray(t *testing.T) {
 
 	assert.Panics(t, func() {
 		argument.
-			New("foo", argument.IS_ARRAY | argument.REQUIRED).
+			New("foo", argument.IS_ARRAY|argument.REQUIRED).
 			SetDefault("default")
 	})
 }

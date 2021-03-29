@@ -85,23 +85,23 @@ func TestSingleDashOptionShortcutIsInvalid(t *testing.T) {
 	})
 }
 
-func TestIsArray(t *testing.T)  {
-	opt1 := option.New("foo", option.OPTIONAL | option.IS_ARRAY)
+func TestIsArray(t *testing.T) {
+	opt1 := option.New("foo", option.OPTIONAL|option.IS_ARRAY)
 	assert.True(t, opt1.IsArray())
 
 	opt2 := option.New("foo", option.NONE)
 	assert.False(t, opt2.IsArray())
 }
 
-func TestGetDescription(t *testing.T)  {
+func TestGetDescription(t *testing.T) {
 	opt1 := option.
-		New("foo", option.OPTIONAL | option.IS_ARRAY).
+		New("foo", option.OPTIONAL|option.IS_ARRAY).
 		SetDescription("Some description")
 	assert.Equal(t, "Some description", opt1.GetDescription())
 
 }
 
-func TestGetDefault(t *testing.T)  {
+func TestGetDefault(t *testing.T) {
 	opt1 := option.
 		New("foo", option.OPTIONAL).
 		SetDefault("default")
@@ -154,7 +154,7 @@ func TestSetDefaultOnArray(t *testing.T) {
 
 	assert.Panics(t, func() {
 		option.
-			New("foo", option.IS_ARRAY | option.REQUIRED).
+			New("foo", option.IS_ARRAY|option.REQUIRED).
 			SetDefault("default")
 	})
 }

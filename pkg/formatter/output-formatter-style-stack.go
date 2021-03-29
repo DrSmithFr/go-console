@@ -7,7 +7,7 @@ import (
 
 // output formatter style constructor
 func NewOutputFormatterStyleStack(style *OutputFormatterStyle) *OutputFormatterStyleStack {
-	stack := & OutputFormatterStyleStack{
+	stack := &OutputFormatterStyleStack{
 		styles: []*OutputFormatterStyle{},
 	}
 

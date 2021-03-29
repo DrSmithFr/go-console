@@ -94,7 +94,7 @@ func (p *ParserPattern) OptionArrays() map[string][]string {
 	return p.optionArrays
 }
 
-func (p *ParserPattern) SetOptionArrays(optionArrays map[string][]string)  *ParserPattern {
+func (p *ParserPattern) SetOptionArrays(optionArrays map[string][]string) *ParserPattern {
 	p.optionArrays = optionArrays
 	return p
 }

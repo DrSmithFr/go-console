@@ -141,7 +141,7 @@ func (i *abstractInput) GetOption(name string) string {
 	}
 
 	// TODO find a better way to handle option.NONE
-	if ! opt.AcceptValue() {
+	if !opt.AcceptValue() {
 		return option.UNDEFINED
 	}
 
@@ -230,6 +230,6 @@ func (i *abstractInput) Parse() {
 }
 
 // Validates the input
-func (i *abstractInput) Validate()  {
+func (i *abstractInput) Validate() {
 	// TODO add input validation
 }

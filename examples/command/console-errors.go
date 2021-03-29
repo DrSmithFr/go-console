@@ -1,10 +1,10 @@
 package main
 
 import (
+	"errors"
 	"github.com/DrSmithFr/go-console/pkg/input/argument"
 	"github.com/DrSmithFr/go-console/pkg/input/option"
 	"github.com/DrSmithFr/go-console/pkg/style"
-	"github.com/pkg/errors"
 )
 
 func main() {

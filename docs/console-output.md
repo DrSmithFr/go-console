@@ -1,7 +1,7 @@
 ## How to Style the Console Output
 
-One of the most boring tasks when creating console commands is to deal with the styling of the command's output, 
-this library provide several helper for that. 
+One of the most boring tasks when creating console commands is to deal with the styling of the command's output, this
+library provide several helper for that.
 
 ### Basic Usage
 
@@ -9,25 +9,25 @@ this library provide several helper for that.
 package main
 
 import (
-    "github.com/DrSmithFr/go-console/pkg/input"
-    "github.com/DrSmithFr/go-console/pkg/output"
-    "github.com/DrSmithFr/go-console/pkg/style"
+	"github.com/DrSmithFr/go-console/pkg/input"
+	"github.com/DrSmithFr/go-console/pkg/output"
+	"github.com/DrSmithFr/go-console/pkg/style"
 )
 
 func main() {
-    // create default console styler
-    io := style.NewConsoleStyler()
-    
-    // or create styler with custom OutputInterface
-    in := input.NewArgvInput(nil)
-    out := output.NewConsoleOutput(true, nil)
-    io := style.NewGoStyler(in, out)
+	// create default console styler
+	io := style.NewConsoleStyler()
 
-    // add title
-    io.Title("Lorem Ipsum Dolor Sit Amet")
-    
-    // you still access the OutputInterface
-    io.GetOutput().Write("<info>some info</>")
+	// or create styler with custom OutputInterface
+	in := input.NewArgvInput(nil)
+	out := output.NewConsoleOutput(true, nil)
+	io := style.NewGoStyler(in, out)
+
+	// add title
+	io.Title("Lorem Ipsum Dolor Sit Amet")
+
+	// you still access the OutputInterface
+	io.GetOutput().Write("<info>some info</>")
 }
 ```
 
@@ -37,7 +37,8 @@ func main() {
 
 ##### title()
 
-It displays the given string as the command title. This method is meant to be used only once in a given command, but nothing prevents you to use it repeatedly:
+It displays the given string as the command title. This method is meant to be used only once in a given command, but
+nothing prevents you to use it repeatedly:
 
 ```go
 io.Title("Lorem Ipsum Dolor Sit Amet")
@@ -49,7 +50,8 @@ io.Title("Lorem Ipsum Dolor Sit Amet")
 
 ##### section()
 
-It displays the given string as the title of some command section. This is only needed in complex commands which want to better separate their contents:
+It displays the given string as the title of some command section. This is only needed in complex commands which want to
+better separate their contents:
 
 ```go
 io.Section("Lorem Ipsum Dolor Sit Amet")
@@ -63,7 +65,8 @@ io.Section("Lorem Ipsum Dolor Sit Amet")
 
 ##### text()
 
-It displays the given string or array of strings as regular text. This is useful to render help messages and instructions for the user running the command:
+It displays the given string or array of strings as regular text. This is useful to render help messages and
+instructions for the user running the command:
 
 ```go
 // use simple strings for short messages
@@ -71,9 +74,9 @@ io.Text("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.TextArray([]string{
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -87,9 +90,9 @@ It displays an unordered list of elements passed as an array:
 
 ```go
 io.Listing([]string{
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -99,7 +102,9 @@ io.Listing([]string{
 
 ##### newLine()
 
-It displays a blank line in the command output. Although it may seem useful, most of the times you won't need it at all. The reason is that every helper already adds their own blank lines, so you don't have to care about the vertical spacing:
+It displays a blank line in the command output. Although it may seem useful, most of the times you won't need it at all.
+The reason is that every helper already adds their own blank lines, so you don't have to care about the vertical
+spacing:
 
 ```go
 // outputs a single blank line
@@ -113,7 +118,8 @@ io.NewLine(3)
 
 ##### note()
 
-It displays the given string or array of strings as a highlighted admonition. Use this helper sparingly to avoid cluttering command's output:
+It displays the given string or array of strings as a highlighted admonition. Use this helper sparingly to avoid
+cluttering command's output:
 
 ```go
 // use simple strings for short messages
@@ -121,9 +127,9 @@ io.Note("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.NoteArray([]string{
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -133,7 +139,8 @@ io.NoteArray([]string{
 
 ##### caution()
 
-Similar to the note() helper, but the contents are more prominently highlighted. The resulting contents resemble an error message, so you should avoid using this helper unless strictly necessary:
+Similar to the note() helper, but the contents are more prominently highlighted. The resulting contents resemble an
+error message, so you should avoid using this helper unless strictly necessary:
 
 ```go
 // use simple strings for short messages
@@ -141,9 +148,9 @@ io.Caution("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.CautionArray([]string{
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -155,7 +162,9 @@ io.CautionArray([]string{
 
 ##### success()
 
-It displays the given string or array of strings highlighted as a successful message (with a green background and the \[OK] label). It's meant to be used once to display the final result of executing the given command, but you can use it repeatedly during the execution of the command:
+It displays the given string or array of strings highlighted as a successful message (with a green background and the
+\[OK] label). It's meant to be used once to display the final result of executing the given command, but you can use it
+repeatedly during the execution of the command:
 
 ```go
 // use simple strings for short messages
@@ -163,9 +172,9 @@ io.Success("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.SuccessArray([]string{
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -175,7 +184,9 @@ io.SuccessArray([]string{
 
 ##### warning()
 
-It displays the given string or array of strings highlighted as a warning message (with a red background and the \[WARNING] label). It's meant to be used once to display the final result of executing the given command, but you can use it repeatedly during the execution of the command:
+It displays the given string or array of strings highlighted as a warning message (with a red background and the
+\[WARNING] label). It's meant to be used once to display the final result of executing the given command, but you can
+use it repeatedly during the execution of the command:
 
 ```go
 // use simple strings for short messages
@@ -183,9 +194,9 @@ io.Warning("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.WarningArray([]string{
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -195,7 +206,9 @@ io.WarningArray([]string{
 
 ##### error()
 
-It displays the given string or array of strings highlighted as an error message (with a red background and the \[ERROR] label). It's meant to be used once to display the final result of executing the given command, but you can use it repeatedly during the execution of the command:
+It displays the given string or array of strings highlighted as an error message (with a red background and the \[ERROR]
+label). It's meant to be used once to display the final result of executing the given command, but you can use it
+repeatedly during the execution of the command:
 
 ```go
 // use simple strings for short messages
@@ -203,9 +216,9 @@ io.Error("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.ErrorArray([]string{
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -223,26 +236,26 @@ package main
 import "github.com/DrSmithFr/go-console/pkg/output"
 
 func main() {
-    // creating new output
-    out := output.NewConsoleOutput(true, nil)
-    
-    // white text on a red background
-    out.Writeln("<error>An error</error>")
-    
-    // green text
-    out.Writeln("<info>An information</info>")
-    
-    // yellow text
-    out.Writeln("<comment>An comment</comment>")
-    
-    // black text on a cyan background
-    out.Writeln("<question>A question</question>")
-    
-    // underscore text
-    out.Writeln("<u>Some underscore text</u>")
-    
-    // bold text
-    out.Writeln("<b>Some bold text</b>")
+	// creating new output
+	out := output.NewConsoleOutput(true, nil)
+
+	// white text on a red background
+	out.Writeln("<error>An error</error>")
+
+	// green text
+	out.Writeln("<info>An information</info>")
+
+	// yellow text
+	out.Writeln("<comment>An comment</comment>")
+
+	// black text on a cyan background
+	out.Writeln("<question>A question</question>")
+
+	// underscore text
+	out.Writeln("<u>Some underscore text</u>")
+
+	// bold text
+	out.Writeln("<b>Some bold text</b>")
 }
 ```
 
@@ -262,20 +275,20 @@ package main
 import "github.com/DrSmithFr/go-console/pkg/output"
 
 func main() {
-    // green text
-    out := output.NewConsoleOutput(true, nil)
-    
-    // black text on a cyan background
-    out.Writeln("<fg=green>foo</>")
-    
-    // green text
-    out.Writeln("<fg=black;bg=cyan>foo</>")
-    
-    // bold text on a yellow background
-    out.Writeln("<bg=yellow;options=bold>foo</>")
-    
-    // bold text with underscore
-    out.Writeln("<options=bold,underscore>foo</>")
+	// green text
+	out := output.NewConsoleOutput(true, nil)
+
+	// black text on a cyan background
+	out.Writeln("<fg=green>foo</>")
+
+	// green text
+	out.Writeln("<fg=black;bg=cyan>foo</>")
+
+	// bold text on a yellow background
+	out.Writeln("<bg=yellow;options=bold>foo</>")
+
+	// bold text with underscore
+	out.Writeln("<options=bold,underscore>foo</>")
 }
 ```
 
@@ -293,23 +306,23 @@ It is possible to define your own styles using the OutputFormatterStyle
 package main
 
 import (
-    "github.com/DrSmithFr/go-console/pkg/color"
-    "github.com/DrSmithFr/go-console/pkg/formatter"
-    "github.com/DrSmithFr/go-console/pkg/output"
+	"github.com/DrSmithFr/go-console/pkg/color"
+	"github.com/DrSmithFr/go-console/pkg/formatter"
+	"github.com/DrSmithFr/go-console/pkg/output"
 )
 
 func main() {
-    // creating new output
-    out := output.NewConsoleOutput(true, nil)
+	// creating new output
+	out := output.NewConsoleOutput(true, nil)
 
-    // create new style
-    s := formatter.NewOutputFormatterStyle(color.RED, color.YELLOW, []string{color.BOLD, color.BLINK})
+	// create new style
+	s := formatter.NewOutputFormatterStyle(color.RED, color.YELLOW, []string{color.BOLD, color.BLINK})
 
-    // add style to formatter
-    out.GetFormatter().SetStyle("fire", *s)
+	// add style to formatter
+	out.GetFormatter().SetStyle("fire", *s)
 
-    // use the new style
-    out.Writeln("<fire>foo</>")
+	// use the new style
+	out.Writeln("<fire>foo</>")
 }
 ```
 
@@ -322,42 +335,43 @@ func main() {
 
 ---
 
-By using colors in the command output, you can distinguish different types of output (e.g. important messages, titles, comments, etc.).
+By using colors in the command output, you can distinguish different types of output (e.g. important messages, titles,
+comments, etc.).
 
 ```go
 package main
 
 import (
-    "fmt"
-    "github.com/DrSmithFr/go-console/pkg/color"
-    "github.com/DrSmithFr/go-console/pkg/formatter"
+	"fmt"
+	"github.com/DrSmithFr/go-console/pkg/color"
+	"github.com/DrSmithFr/go-console/pkg/formatter"
 )
 
 func main() {
-    // create a default style
-    s1 := formatter.NewOutputFormatterStyle(color.NULL, color.NULL, nil)
-    fmt.Printf(s1.Apply("some text without coloration\n"))
+	// create a default style
+	s1 := formatter.NewOutputFormatterStyle(color.NULL, color.NULL, nil)
+	fmt.Printf(s1.Apply("some text without coloration\n"))
 
-    s1.SetBackground(color.RED)
-    fmt.Printf(s1.Apply("some text with red background\n"))
+	s1.SetBackground(color.RED)
+	fmt.Printf(s1.Apply("some text with red background\n"))
 
-    s1.SetForeground(color.GREEN)
-    fmt.Printf(s1.Apply("some text with red background and green text\n"))
+	s1.SetForeground(color.GREEN)
+	fmt.Printf(s1.Apply("some text with red background and green text\n"))
 
-    s1.SetOption(color.BOLD)
-    fmt.Printf(s1.Apply("some bold text with red background and green text \n"))
+	s1.SetOption(color.BOLD)
+	fmt.Printf(s1.Apply("some bold text with red background and green text \n"))
 
-    // override all options in one time
-    s1.SetOptions([]string{color.UNDERSCORE})
-    fmt.Printf(s1.Apply("some underscore text with red background and green text \n"))
+	// override all options in one time
+	s1.SetOptions([]string{color.UNDERSCORE})
+	fmt.Printf(s1.Apply("some underscore text with red background and green text \n"))
 
-    // quick declaration
-    s2 := formatter.NewOutputFormatterStyle(color.BLUE, color.YELLOW, nil)
-    fmt.Printf(s2.Apply("some text with yellow background and blue text\n"))
+	// quick declaration
+	s2 := formatter.NewOutputFormatterStyle(color.BLUE, color.YELLOW, nil)
+	fmt.Printf(s2.Apply("some text with yellow background and blue text\n"))
 
-    // quick declaration with options
-    s3 := formatter.NewOutputFormatterStyle(color.DEFAULT, color.DEFAULT, []string{color.UNDERSCORE, color.BOLD})
-    fmt.Printf(s3.Apply("some bold and underscore text\n"))
+	// quick declaration with options
+	s3 := formatter.NewOutputFormatterStyle(color.DEFAULT, color.DEFAULT, []string{color.UNDERSCORE, color.BOLD})
+	fmt.Printf(s3.Apply("some bold and underscore text\n"))
 }
 ```
 

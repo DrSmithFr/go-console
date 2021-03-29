@@ -7,7 +7,7 @@ import (
 
 // constructor
 func NewBufferedOutput(decorated bool, format *formatter.OutputFormatter) *BufferedOutput {
-	out := & BufferedOutput{
+	out := &BufferedOutput{
 		buffer: "",
 	}
 

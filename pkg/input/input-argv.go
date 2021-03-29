@@ -154,7 +154,6 @@ func (i *ArgvInput) parseLongOption(token string) {
 func (i *ArgvInput) parseArgument(token string) {
 	keys := i.definition.GetArgumentsOrder()
 
-
 	nbArgs := i.countArguments()
 
 	// if input is expecting another argument, add it
@@ -168,7 +167,7 @@ func (i *ArgvInput) parseArgument(token string) {
 		}
 
 		// if last argument isArray(), append token to last argument
-	} else if nbArgs - 1 <= len(keys) &&
+	} else if nbArgs-1 <= len(keys) &&
 		i.definition.HasArgument(keys[nbArgs-1]) &&
 		i.definition.GetArgument(keys[nbArgs-1]).IsArray() {
 		arg := i.definition.GetArgument(keys[nbArgs-1])
@@ -212,7 +211,7 @@ func (i *ArgvInput) addLongOption(name string, value string) {
 
 	if "" != value && !opt.AcceptValue() {
 		panic(errors.New(fmt.Sprintf("the '--%s' option does not accept a value", name)))
-	} else if ! opt.AcceptValue() {
+	} else if !opt.AcceptValue() {
 		// TODO find a better way to handle option.NONE
 		value = option.DEFINED
 	}

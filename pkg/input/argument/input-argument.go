@@ -77,7 +77,7 @@ func (a *InputArgument) SetDefaults(values []string) *InputArgument {
 		panic(errors.New("cannot set a default value except for InputArgument::OPTIONAL mode"))
 	}
 
-	if ! a.IsArray() {
+	if !a.IsArray() {
 		panic(errors.New("cannot use SetDefaults() except for InputArgument::IS_ARRAY mode, use SetDefault() instead"))
 	}
 
@@ -97,7 +97,7 @@ func (a *InputArgument) GetDefault() string {
 
 // Returns the defaults value.
 func (a *InputArgument) GetDefaults() []string {
-	if ! a.IsArray() {
+	if !a.IsArray() {
 		panic(errors.New("cannot use GetDefaults() except for InputArgument::IS_ARRAY, use GetDefault() instead"))
 	}
 

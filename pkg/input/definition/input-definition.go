@@ -101,7 +101,7 @@ func (i *InputDefinition) HasArgument(name string) bool {
 
 // Returns an InputArgument by name or by position
 func (i *InputDefinition) GetArgument(name string) *argument.InputArgument {
-	if ! i.HasArgument(name) {
+	if !i.HasArgument(name) {
 		panic(errors.New(fmt.Sprintf("the '%s' argument does not exist", name)))
 	}
 
@@ -178,7 +178,7 @@ func (i *InputDefinition) AddOption(opt option.InputOption) *InputDefinition {
 
 	if "" != opt.GetShortcut() {
 		for _, shortcut := range strings.Split(opt.GetShortcut(), "|") {
-			if i.HasShortcut(shortcut) && ! opt.Equals(*i.GetOptionForShortcut(shortcut)) {
+			if i.HasShortcut(shortcut) && !opt.Equals(*i.GetOptionForShortcut(shortcut)) {
 				panic(errors.New(fmt.Sprintf("An option with shortcut '%s' already exists", shortcut)))
 			}
 		}
@@ -204,7 +204,7 @@ func (i *InputDefinition) HasOption(name string) bool {
 
 // Returns an InputOption by name
 func (i *InputDefinition) GetOption(name string) *option.InputOption {
-	if ! i.HasOption(name) {
+	if !i.HasOption(name) {
 		panic(errors.New(fmt.Sprintf("the '%s' argument does not exist", name)))
 	}
 
@@ -261,7 +261,7 @@ func (i *InputDefinition) GetOptionDefaults() map[string][]string {
 func (i *InputDefinition) ShortcutToName(s string) string {
 	opt, found := i.shortcuts[s]
 
-	if ! found {
+	if !found {
 		panic(errors.New(fmt.Sprintf("the '-%s' option does not exist", s)))
 	}
 
