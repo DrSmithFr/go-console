@@ -13,7 +13,7 @@
 GoConsole component allows you to create command-line commands. Your console commands can be used for any recurring task, such as cronjobs, imports, or other batch jobs.
 Command arguments and options follow the [docopt standard](http://docopt.org/). This library provide several helper for styling of the command's output.
 
-GoConsole is a lightweight equivalent in Go to the [Console Component](https://github.com/symfony/console) of Symfony PHP framework.
+GoConsole is a lightweight equivalent in Go to the [Console Component 3.4](https://github.com/symfony/console/tree/3.4) of Symfony PHP framework.
 
 ## Creating a Console Application
 
