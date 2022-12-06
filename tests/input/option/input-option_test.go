@@ -1,7 +1,7 @@
 package option
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/input/option"
+	"DrSmithFr/go-console/pkg/input/option"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

@@ -3,7 +3,7 @@ package helper
 import (
 	"bytes"
 	"fmt"
-	"github.com/DrSmithFr/go-console/pkg/formatter"
+	"DrSmithFr/go-console/pkg/formatter"
 	"regexp"
 	"unicode"
 	"unicode/utf8"

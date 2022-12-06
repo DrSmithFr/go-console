@@ -1,6 +1,6 @@
 package style
 
-import "github.com/DrSmithFr/go-console/pkg/output"
+import "DrSmithFr/go-console/pkg/output"
 
 type StylerInterface interface {
 	// retrieve OutputInterface

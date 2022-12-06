@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/color"
-	"github.com/DrSmithFr/go-console/pkg/formatter"
-	"github.com/DrSmithFr/go-console/pkg/output"
+	"DrSmithFr/go-console/pkg/color"
+	"DrSmithFr/go-console/pkg/formatter"
+	"DrSmithFr/go-console/pkg/output"
 )
 
 func main() {

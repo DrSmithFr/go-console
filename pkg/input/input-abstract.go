@@ -3,8 +3,8 @@ package input
 import (
 	"errors"
 	"fmt"
-	"github.com/DrSmithFr/go-console/pkg/input/definition"
-	"github.com/DrSmithFr/go-console/pkg/input/option"
+	"DrSmithFr/go-console/pkg/input/definition"
+	"DrSmithFr/go-console/pkg/input/option"
 )
 
 type abstractInput struct {

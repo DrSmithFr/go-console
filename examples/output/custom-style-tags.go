@@ -1,6 +1,6 @@
 package main
 
-import "github.com/DrSmithFr/go-console/pkg/output"
+import "DrSmithFr/go-console/pkg/output"
 
 func main() {
 	// green text

@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/DrSmithFr/go-console/pkg/input/argument"
-	"github.com/DrSmithFr/go-console/pkg/input/option"
-	"github.com/DrSmithFr/go-console/pkg/style"
+	"DrSmithFr/go-console/pkg/input/argument"
+	"DrSmithFr/go-console/pkg/input/option"
+	"DrSmithFr/go-console/pkg/style"
 )
 
 func main() {

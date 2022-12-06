@@ -1,7 +1,7 @@
 package argument
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/input/argument"
+	"DrSmithFr/go-console/pkg/input/argument"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

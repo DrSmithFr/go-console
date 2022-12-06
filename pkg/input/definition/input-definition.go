@@ -3,8 +3,8 @@ package definition
 import (
 	"errors"
 	"fmt"
-	"github.com/DrSmithFr/go-console/pkg/input/argument"
-	"github.com/DrSmithFr/go-console/pkg/input/option"
+	"DrSmithFr/go-console/pkg/input/argument"
+	"DrSmithFr/go-console/pkg/input/option"
 	"strings"
 )
 

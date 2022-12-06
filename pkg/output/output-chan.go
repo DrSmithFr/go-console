@@ -1,6 +1,6 @@
 package output
 
-import "github.com/DrSmithFr/go-console/pkg/formatter"
+import "DrSmithFr/go-console/pkg/formatter"
 
 // constructor
 func NewChanOutput(channel chan string, decorated bool, format *formatter.OutputFormatter) *ChanOutput {

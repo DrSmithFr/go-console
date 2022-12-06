@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/style"
+	"DrSmithFr/go-console/pkg/style"
 )
 
 func main() {

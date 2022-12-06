@@ -3,7 +3,7 @@ package option
 import (
 	"errors"
 	"fmt"
-	"github.com/DrSmithFr/go-console/pkg/helper"
+	"DrSmithFr/go-console/pkg/helper"
 	"regexp"
 	"strings"
 )

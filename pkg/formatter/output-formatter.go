@@ -2,7 +2,7 @@ package formatter
 
 import (
 	"fmt"
-	"github.com/DrSmithFr/go-console/pkg/color"
+	"DrSmithFr/go-console/pkg/color"
 	"regexp"
 	"strings"
 )

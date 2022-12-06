@@ -2,10 +2,10 @@ package style
 
 import (
 	"fmt"
-	"github.com/DrSmithFr/go-console/pkg/formatter"
-	"github.com/DrSmithFr/go-console/pkg/helper"
-	"github.com/DrSmithFr/go-console/pkg/input"
-	"github.com/DrSmithFr/go-console/pkg/output"
+	"DrSmithFr/go-console/pkg/formatter"
+	"DrSmithFr/go-console/pkg/helper"
+	"DrSmithFr/go-console/pkg/input"
+	"DrSmithFr/go-console/pkg/output"
 	"strings"
 )
 
