@@ -7,6 +7,8 @@ jobs:
     steps:
       - checkout
 
+      - run: go get -v -t -d ./...
+
       - run: go test -v ./tests/color/
       - run: go test -v ./tests/formatter/
       - run: go test -v ./tests/input/
