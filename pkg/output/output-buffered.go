@@ -2,7 +2,7 @@ package output
 
 import (
 	"fmt"
-	"DrSmithFr/go-console/pkg/formatter"
+	"github.com/DrSmithFr/go-console/pkg/formatter"
 )
 
 // constructor

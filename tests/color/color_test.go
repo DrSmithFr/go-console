@@ -1,7 +1,7 @@
 package color
 
 import (
-	"DrSmithFr/go-console/pkg/color"
+	"github.com/DrSmithFr/go-console/pkg/color"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

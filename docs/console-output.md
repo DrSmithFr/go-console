@@ -9,9 +9,9 @@ library provide several helper for that.
 package main
 
 import (
-	"DrSmithFr/go-console/pkg/input"
-	"DrSmithFr/go-console/pkg/output"
-	"DrSmithFr/go-console/pkg/style"
+	"github.com/DrSmithFr/go-console/pkg/input"
+	"github.com/DrSmithFr/go-console/pkg/output"
+	"github.com/DrSmithFr/go-console/pkg/style"
 )
 
 func main() {
@@ -233,7 +233,7 @@ Whenever you output text, you can use OutputInterface to surround the text with 
 ```go
 package main
 
-import "DrSmithFr/go-console/pkg/output"
+import "github.com/DrSmithFr/go-console/pkg/output"
 
 func main() {
 	// creating new output
@@ -272,7 +272,7 @@ You can also set these colors and options directly inside the tag name:
 ```go
 package main
 
-import "DrSmithFr/go-console/pkg/output"
+import "github.com/DrSmithFr/go-console/pkg/output"
 
 func main() {
 	// green text
@@ -306,9 +306,9 @@ It is possible to define your own styles using the OutputFormatterStyle
 package main
 
 import (
-	"DrSmithFr/go-console/pkg/color"
-	"DrSmithFr/go-console/pkg/formatter"
-	"DrSmithFr/go-console/pkg/output"
+	"github.com/DrSmithFr/go-console/pkg/color"
+	"github.com/DrSmithFr/go-console/pkg/formatter"
+	"github.com/DrSmithFr/go-console/pkg/output"
 )
 
 func main() {
@@ -343,8 +343,8 @@ package main
 
 import (
 	"fmt"
-	"DrSmithFr/go-console/pkg/color"
-	"DrSmithFr/go-console/pkg/formatter"
+	"github.com/DrSmithFr/go-console/pkg/color"
+	"github.com/DrSmithFr/go-console/pkg/formatter"
 )
 
 func main() {

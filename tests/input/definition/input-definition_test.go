@@ -1,34 +1,34 @@
 package definition
 
 import (
-	"DrSmithFr/go-console/pkg/input/argument"
-	"DrSmithFr/go-console/pkg/input/definition"
-	"DrSmithFr/go-console/pkg/input/option"
+	"github.com/DrSmithFr/go-console/pkg/input/argument"
+	"github.com/DrSmithFr/go-console/pkg/input/definition"
+	"github.com/DrSmithFr/go-console/pkg/input/option"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 var arguments = map[string]argument.InputArgument{
-	"foo":  * argument.New("foo", argument.OPTIONAL),
-	"bar":  * argument.New("bar", argument.OPTIONAL),
-	"foo1": * argument.New("foo", argument.OPTIONAL),
-	"foo2": * argument.New("foo2", argument.REQUIRED),
+	"foo":  *argument.New("foo", argument.OPTIONAL),
+	"bar":  *argument.New("bar", argument.OPTIONAL),
+	"foo1": *argument.New("foo", argument.OPTIONAL),
+	"foo2": *argument.New("foo2", argument.REQUIRED),
 }
 
 var options = map[string]option.InputOption{
-	"foo": * option.
+	"foo": *option.
 		New("foo", option.OPTIONAL).
 		SetShortcut("f"),
-	"bar": * option.
+	"bar": *option.
 		New("bar", option.OPTIONAL).
 		SetShortcut("b"),
-	"foo1": * option.
+	"foo1": *option.
 		New("fooBis", option.OPTIONAL).
 		SetShortcut("f"),
-	"foo2": * option.
+	"foo2": *option.
 		New("foo", option.OPTIONAL).
 		SetShortcut("p"),
-	"multi": * option.
+	"multi": *option.
 		New("multi", option.OPTIONAL).
 		SetShortcut("m|mm|mmm"),
 }

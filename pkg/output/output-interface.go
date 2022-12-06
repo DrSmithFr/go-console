@@ -1,6 +1,6 @@
 package output
 
-import "DrSmithFr/go-console/pkg/formatter"
+import "github.com/DrSmithFr/go-console/pkg/formatter"
 
 // OutputInterface is the interface implemented by all Output classes
 type OutputInterface interface {

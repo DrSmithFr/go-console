@@ -3,7 +3,7 @@ package formatter
 import (
 	"errors"
 	"fmt"
-	"DrSmithFr/go-console/pkg/color"
+	"github.com/DrSmithFr/go-console/pkg/color"
 	"sort"
 	"strings"
 )

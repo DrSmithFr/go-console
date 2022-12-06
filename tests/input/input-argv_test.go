@@ -1,11 +1,11 @@
 package input
 
 import (
-	"DrSmithFr/go-console/pkg/input"
-	"DrSmithFr/go-console/pkg/input/argument"
-	"DrSmithFr/go-console/pkg/input/definition"
-	"DrSmithFr/go-console/pkg/input/option"
-	"DrSmithFr/go-console/tests/test-helper"
+	"github.com/DrSmithFr/go-console/pkg/input"
+	"github.com/DrSmithFr/go-console/pkg/input/argument"
+	"github.com/DrSmithFr/go-console/pkg/input/definition"
+	"github.com/DrSmithFr/go-console/pkg/input/option"
+	"github.com/DrSmithFr/go-console/tests/test-helper"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

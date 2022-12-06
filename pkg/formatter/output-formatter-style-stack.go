@@ -2,7 +2,7 @@ package formatter
 
 import (
 	"errors"
-	"DrSmithFr/go-console/pkg/color"
+	"github.com/DrSmithFr/go-console/pkg/color"
 )
 
 // output formatter style constructor

@@ -3,7 +3,7 @@ package option
 import (
 	"errors"
 	"fmt"
-	"DrSmithFr/go-console/pkg/helper"
+	"github.com/DrSmithFr/go-console/pkg/helper"
 	"regexp"
 	"strings"
 )
@@ -25,7 +25,7 @@ const (
 // constructor
 func New(
 	name string, // The option name
-	mode int,    // The option mode: One of the option constants (default: NONE)
+	mode int, // The option mode: One of the option constants (default: NONE)
 ) *InputOption {
 	if "--" == name[:2] {
 		name = name[2:]

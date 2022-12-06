@@ -3,11 +3,11 @@ package style
 import (
 	"errors"
 	"fmt"
-	"DrSmithFr/go-console/pkg/formatter"
-	"DrSmithFr/go-console/pkg/input"
-	"DrSmithFr/go-console/pkg/input/argument"
-	"DrSmithFr/go-console/pkg/input/option"
-	"DrSmithFr/go-console/pkg/output"
+	"github.com/DrSmithFr/go-console/pkg/formatter"
+	"github.com/DrSmithFr/go-console/pkg/input"
+	"github.com/DrSmithFr/go-console/pkg/input/argument"
+	"github.com/DrSmithFr/go-console/pkg/input/option"
+	"github.com/DrSmithFr/go-console/pkg/output"
 	"os"
 	"strings"
 )

@@ -1,4 +1,4 @@
-module DrSmithFr/go-console
+module github.com/DrSmithFr/go-console
 
 go 1.18
 

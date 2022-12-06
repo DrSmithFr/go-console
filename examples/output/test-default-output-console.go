@@ -1,6 +1,6 @@
 package main
 
-import "DrSmithFr/go-console/pkg/output"
+import "github.com/DrSmithFr/go-console/pkg/output"
 
 func main() {
 	// creating new output

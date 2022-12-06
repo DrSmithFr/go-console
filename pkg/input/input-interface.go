@@ -1,6 +1,6 @@
 package input
 
-import "DrSmithFr/go-console/pkg/input/definition"
+import "github.com/DrSmithFr/go-console/pkg/input/definition"
 
 // InputInterface is the interface implemented by all input classes.
 type InputInterface interface {

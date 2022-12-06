@@ -7,8 +7,6 @@ jobs:
     steps:
       - checkout
 
-      - run: go get github.com/stretchr/testify/assert
-
       - run: go test -v ./tests/color/
       - run: go test -v ./tests/formatter/
       - run: go test -v ./tests/input/

@@ -4,9 +4,8 @@
 
 # The Go console component
 
-[![CircleCI](https://circleci.com/gh/DrSmithFr/go-console.svg?style=shield)](https://circleci.com/gh/DrSmithFr/go-console)
-[![GolangCI](https://golangci.com/badges/github.com/DrSmithFr/go-console.svg)](https://golangci.com/r/github.com/DrSmithFr/go-console)
-[![Go Report Card](https://goreportcard.com/badge/github.com/DrSmithFr/go-console)](https://goreportcard.com/report/github.com/DrSmithFr/go-console)
+[![CircleCI](https://circleci.com/gh/DrSmithFr/go-console.svg?style=shield)](https://circleci.com/gh/github.com/DrSmithFr/go-console)
+[![Go Report Card](https://goreportcard.com/badge/github.com/DrSmithFr/go-console)](https://goreportcard.com/report/github.com/github.com/DrSmithFr/go-console)
 
 > The Console component eases the creation of beautiful and testable command line interfaces.
 
@@ -22,9 +21,9 @@ package main
 
 import (
 	"fmt"
-	"DrSmithFr/go-console/pkg/input/argument"
-	"DrSmithFr/go-console/pkg/input/option"
-	"DrSmithFr/go-console/pkg/style"
+	"github.com/DrSmithFr/go-console/pkg/input/argument"
+	"github.com/DrSmithFr/go-console/pkg/input/option"
+	"github.com/DrSmithFr/go-console/pkg/style"
 )
 
 func main() {
