@@ -2,16 +2,15 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/golang:1.9
+      - image: circleci/golang:1.18
     working_directory: /go/src/github.com/DrSmithFr/go-console
     steps:
       - checkout
-
-      - run: go get -v -t -d ./...
-
-      - run: go test -v ./tests/color/
-      - run: go test -v ./tests/formatter/
-      - run: go test -v ./tests/input/
-      - run: go test -v ./tests/input/argument
-      - run: go test -v ./tests/input/definition
-      - run: go test -v ./tests/input/option
+      - run:
+          name: Install dependencies
+          command: |
+            go get -u github.com/golang/dep/cmd/dep
+            dep ensure
+      - run:
+          name: Run tests
+          command: go test -v ./...
