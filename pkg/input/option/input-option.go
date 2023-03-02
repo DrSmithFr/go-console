@@ -113,6 +113,11 @@ func (a *InputOption) IsValueRequired() bool {
 }
 
 // returns true if the option takes an optional value.
+func (a *InputOption) IsValueNone() bool {
+	return NONE == (NONE & a.mode)
+}
+
+// returns true if the option takes an optional value.
 func (a *InputOption) IsValueOptional() bool {
 	return OPTIONAL == (OPTIONAL & a.mode)
 }

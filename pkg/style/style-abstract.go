@@ -6,6 +6,7 @@ import (
 	"github.com/DrSmithFr/go-console/pkg/helper"
 	"github.com/DrSmithFr/go-console/pkg/input"
 	"github.com/DrSmithFr/go-console/pkg/output"
+	"github.com/DrSmithFr/go-console/pkg/verbosity"
 	"strings"
 )
 
@@ -299,4 +300,24 @@ func (g *abstractStyler) createBlockArray(messages []string, title string, style
 	}
 
 	return formattedLines
+}
+
+func (g *abstractStyler) GetVerbosity() verbosity.Level {
+	return g.out.GetVerbosity()
+}
+
+func (g *abstractStyler) IsQuiet() bool {
+	return g.out.IsQuiet()
+}
+
+func (g *abstractStyler) IsVerbose() bool {
+	return g.out.IsVerbose()
+}
+
+func (g *abstractStyler) IsVeryVerbose() bool {
+	return g.out.IsVeryVerbose()
+}
+
+func (g *abstractStyler) IsDebug() bool {
+	return g.out.IsDebug()
 }

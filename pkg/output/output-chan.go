@@ -1,6 +1,9 @@
 package output
 
-import "github.com/DrSmithFr/go-console/pkg/formatter"
+import (
+	"github.com/DrSmithFr/go-console/pkg/formatter"
+	"github.com/DrSmithFr/go-console/pkg/verbosity"
+)
 
 // constructor
 func NewChanOutput(channel chan string, decorated bool, format *formatter.OutputFormatter) *ChanOutput {
@@ -8,7 +11,7 @@ func NewChanOutput(channel chan string, decorated bool, format *formatter.Output
 		channel: channel,
 	}
 
-	out.doWrite = out.Write
+	out.doWrite = out.Send
 
 	if nil == format {
 		out.formatter = formatter.NewOutputFormatter()
@@ -27,6 +30,12 @@ type ChanOutput struct {
 	channel chan string
 }
 
-func (o *ChanOutput) Write(message string) {
-	o.channel <- o.format(message)
+func (o *ChanOutput) Send(message string, level verbosity.Level) {
+	if o.IsQuiet() {
+		return
+	}
+
+	if o.IsVerbosityAllowed(level) {
+		o.channel <- message
+	}
 }

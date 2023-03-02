@@ -16,12 +16,12 @@ import (
 
 func main() {
 	// create default console styler
-	io := style.NewConsoleStyler()
+	io := style.NewConsoleCommand()
 
 	// or create styler with custom OutputInterface
 	in := input.NewArgvInput(nil)
 	out := output.NewConsoleOutput(true, nil)
-	io := style.NewGoStyler(in, out)
+	io := style.NewCommandStyler(in, out)
 
 	// add title
 	io.Title("Lorem Ipsum Dolor Sit Amet")
@@ -74,9 +74,9 @@ io.Text("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.TextArray([]string{
-"Lorem Ipsum Dolor Sit Amet",
-"Lorem Ipsum Dolor Sit Amet",
-"Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -90,9 +90,9 @@ It displays an unordered list of elements passed as an array:
 
 ```go
 io.Listing([]string{
-"Lorem Ipsum Dolor Sit Amet",
-"Lorem Ipsum Dolor Sit Amet",
-"Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -127,9 +127,9 @@ io.Note("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.NoteArray([]string{
-"Lorem Ipsum Dolor Sit Amet",
-"Lorem Ipsum Dolor Sit Amet",
-"Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -148,9 +148,9 @@ io.Caution("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.CautionArray([]string{
-"Lorem Ipsum Dolor Sit Amet",
-"Lorem Ipsum Dolor Sit Amet",
-"Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -172,9 +172,9 @@ io.Success("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.SuccessArray([]string{
-"Lorem Ipsum Dolor Sit Amet",
-"Lorem Ipsum Dolor Sit Amet",
-"Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -194,9 +194,9 @@ io.Warning("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.WarningArray([]string{
-"Lorem Ipsum Dolor Sit Amet",
-"Lorem Ipsum Dolor Sit Amet",
-"Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -216,9 +216,9 @@ io.Error("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.ErrorArray([]string{
-"Lorem Ipsum Dolor Sit Amet",
-"Lorem Ipsum Dolor Sit Amet",
-"Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
+    "Lorem Ipsum Dolor Sit Amet",
 })
 ```
 

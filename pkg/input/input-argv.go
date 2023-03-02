@@ -95,6 +95,12 @@ func (i *ArgvInput) parseShortOption(token string) {
 	name := token[1:]
 
 	if len(name) > 1 {
+		// allow long shortcut only
+		if i.definition.HasShortcut(name) && i.definition.GetOptionForShortcut(name).IsValueNone() {
+			i.addShortOption(name, "")
+			return
+		}
+
 		shortcut := name[0:1]
 
 		if i.definition.HasShortcut(shortcut) && i.definition.GetOptionForShortcut(shortcut).AcceptValue() {
@@ -103,9 +109,11 @@ func (i *ArgvInput) parseShortOption(token string) {
 		} else {
 			i.parseShortOptionSet(name)
 		}
-	} else {
-		i.addShortOption(name, "")
+
+		return
 	}
+
+	i.addShortOption(name, "")
 }
 
 func (i *ArgvInput) parseShortOptionSet(name string) {

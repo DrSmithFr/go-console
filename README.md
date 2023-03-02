@@ -28,7 +28,7 @@ import (
 
 func main() {
 	io := style.
-		NewConsoleStyler().
+		NewConsoleCommand().
 		AddInputArgument(
 			argument.
 				New("name", argument.REQUIRED),
@@ -38,8 +38,7 @@ func main() {
 				New("foo", option.NONE).
 				SetShortcut("f"),
 		).
-		ParseInput().
-		ValidateInput()
+		Build()
 
 	// enable stylish errors
 	defer io.HandleRuntimeException()
@@ -79,3 +78,4 @@ func main() {
 ## Learn more
 - [How to use input options and arguments](docs/console-input.md)
 - [How to style the console output](docs/console-output.md)
+- [How to use verbosity levels](docs/console-verbosity.md)
