@@ -121,13 +121,13 @@ You can combine `IS_ARRAY` with `REQUIRED` and `OPTIONAL` like this:
 
 ```go
 io := style.
-NewConsoleStyler().
-AddInputArgument(
-argument.
-New("names", argument.IS_ARRAY | argument.REQUIRED),
-).
-ParseInput().
-ValidateInput()
+    NewConsoleStyler().
+    AddInputArgument(
+        argument.
+			New("names", argument.IS_ARRAY | argument.REQUIRED),
+    ).
+    ParseInput().
+    ValidateInput()
 ```
 
 ### Using Command Options
@@ -207,14 +207,14 @@ You can also declare a one-letter shortcut that you can call with a single dash,
 
 ```go
 io := style.
-NewConsoleStyler().
-AddInputOption(
-option.
-New("iterations", option.REQUIRED).
-SetShortcut("i"),
-).
-ParseInput().
-ValidateInput()
+    NewConsoleStyler().
+    AddInputOption(
+        option.
+            New("iterations", option.REQUIRED).
+            SetShortcut("i"),
+    ).
+    ParseInput().
+    ValidateInput()
 ```
 
 Note that to comply with the [docopt standard](http://docopt.org/), long options can specify their values after a white
@@ -244,10 +244,10 @@ You can combine `IS_ARRAY` with `REQUIRED` and `OPTIONAL` like this:
 
 ```go
 io := style.
-NewConsoleStyler().
-AddInputOption(
-option.New("iterations", option.IS_ARRAY | option.REQUIRED),
-).
-ParseInput().
-ValidateInput()
+    NewConsoleStyler().
+    AddInputOption(
+        option.New("iterations", option.IS_ARRAY | option.REQUIRED),
+    ).
+    ParseInput().
+    ValidateInput()
 ```
