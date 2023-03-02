@@ -16,12 +16,12 @@ import (
 
 func main() {
 	// create default console styler
-	io := style.NewConsoleStyler()
+	io := style.NewConsoleCommand()
 
 	// or create styler with custom OutputInterface
 	in := input.NewArgvInput(nil)
 	out := output.NewConsoleOutput(true, nil)
-	io := style.NewGoStyler(in, out)
+	io := style.NewCommandStyler(in, out)
 
 	// add title
 	io.Title("Lorem Ipsum Dolor Sit Amet")

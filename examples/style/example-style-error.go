@@ -6,7 +6,7 @@ import (
 
 func main() {
 	// creating default console styler
-	io := style.NewConsoleStyler()
+	io := style.NewConsoleCommand()
 
 	// according to my terminal size (default: 120)
 	io.SetMaxLineLength(80)

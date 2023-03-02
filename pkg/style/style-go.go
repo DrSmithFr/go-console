@@ -8,20 +8,55 @@ import (
 	"github.com/DrSmithFr/go-console/pkg/input/argument"
 	"github.com/DrSmithFr/go-console/pkg/input/option"
 	"github.com/DrSmithFr/go-console/pkg/output"
+	"github.com/DrSmithFr/go-console/pkg/verbosity"
 	"os"
 	"strings"
 )
 
-// simple constructor
+// Deprecated: NewConsoleStyler is deprecated, use NewConsoleCommand instead.
 func NewConsoleStyler() *GoStyler {
+	return NewConsoleCommand()
+}
+
+// simple constructor
+func NewConsoleCommand() *GoStyler {
 	out := output.NewConsoleOutput(true, nil)
 	in := input.NewArgvInput(nil)
 
-	return NewGoStyler(in, out)
+	// manage verbosity
+	io := NewCommandStyler(in, out)
+	io.
+		AddInputOption(
+			option.
+				New("quiet", option.NONE).
+				SetShortcut("q"),
+		).
+		AddInputOption(
+			option.
+				New("verbose", option.NONE).
+				SetShortcut("v"),
+		).
+		AddInputOption(
+			option.
+				New("very-verbose", option.NONE).
+				SetShortcut("vv"),
+		).
+		AddInputOption(
+			option.
+				New("debug", option.NONE).
+				SetShortcut("vvv"),
+		)
+
+	return io
+}
+
+// Deprecated: NewGoStyler is deprecated, use NewCommandStyler instead.
+func NewGoStyler(in input.InputInterface, out output.OutputInterface) *GoStyler {
+	return NewCommandStyler(in, out)
 }
 
 // custom constructor
-func NewGoStyler(in input.InputInterface, out output.OutputInterface) *GoStyler {
+func NewCommandStyler(in input.InputInterface, out output.OutputInterface) *GoStyler {
 	g := &GoStyler{
 		alreadyParsed: false,
 	}
@@ -65,8 +100,15 @@ func (g *GoStyler) AddInputArgument(arg *argument.InputArgument) *GoStyler {
 	return g
 }
 
-// (helper) parse input argv
-func (g *GoStyler) ParseInput() *GoStyler {
+func (g *GoStyler) Build() *GoStyler {
+	g.parseInput()
+	g.validateInput()
+	g.findOutputVerbosity()
+
+	return g
+}
+
+func (g *GoStyler) parseInput() *GoStyler {
 	if g.alreadyParsed {
 		panic(errors.New("argv is already parsed"))
 	}
@@ -79,8 +121,7 @@ func (g *GoStyler) ParseInput() *GoStyler {
 	return g
 }
 
-// (helper) validate input argv
-func (g *GoStyler) ValidateInput() *GoStyler {
+func (g *GoStyler) validateInput() *GoStyler {
 	if !g.alreadyParsed {
 		panic(errors.New("cannot validate unparsed input"))
 	}
@@ -88,6 +129,24 @@ func (g *GoStyler) ValidateInput() *GoStyler {
 	defer g.handleParsingException()
 
 	g.in.Validate()
+
+	return g
+}
+
+func (g *GoStyler) findOutputVerbosity() *GoStyler {
+	level := verbosity.Normal
+
+	if g.in.GetOption("quiet") == option.DEFINED {
+		level = verbosity.Quiet
+	} else if g.in.GetOption("verbose") == option.DEFINED {
+		level = verbosity.Verbose
+	} else if g.in.GetOption("very-verbose") == option.DEFINED {
+		level = verbosity.VeryVerbose
+	} else if g.in.GetOption("debug") == option.DEFINED {
+		level = verbosity.Debug
+	}
+
+	g.out.SetVerbosity(level)
 
 	return g
 }

@@ -3,6 +3,7 @@ package output
 import (
 	"fmt"
 	"github.com/DrSmithFr/go-console/pkg/formatter"
+	"github.com/DrSmithFr/go-console/pkg/verbosity"
 )
 
 // constructor
@@ -24,17 +25,9 @@ func NewNullOutput(decorated bool, format *formatter.OutputFormatter) *NullOutpu
 
 // Null output classes (~abstract)
 type NullOutput struct {
-	doWrite   func(string)
+	doWrite   func(string, verbosity.Level)
 	formatter *formatter.OutputFormatter
-	verbosity int
-}
-
-func (o *NullOutput) GetVerbosity() int {
-	return o.verbosity
-}
-
-func (o *NullOutput) SetVerbosity(verbosity int) {
-	o.verbosity = verbosity
+	verbosity verbosity.Level
 }
 
 func (o *NullOutput) format(message string) string {
@@ -45,21 +38,30 @@ func (o *NullOutput) format(message string) string {
 	return (*o.formatter).Format(message)
 }
 
-func (o *NullOutput) preWriteEvent(message string)  {
+func (o *NullOutput) preWriteEvent(message string) {
 
 }
 
-func (o *NullOutput) Void(message string)  {
+func (o *NullOutput) Void(message string, level verbosity.Level) {
 	// do nothing
 }
 
 func (o *NullOutput) Write(message string) {
-	o.doWrite(o.format(message))
+	o.doWrite(o.format(message), verbosity.Normal)
 }
 
 // Writes a message to the output and adds a newline at the end
 func (o *NullOutput) Writeln(message string) {
 	o.Write(fmt.Sprintf("%s\n", message))
+}
+
+func (o *NullOutput) WriteOnVerbose(message string, level verbosity.Level) {
+	o.doWrite(o.format(message), level)
+}
+
+// Writes a message to the output and adds a newline at the end
+func (o *NullOutput) WritelnOnVerbose(message string, level verbosity.Level) {
+	o.WriteOnVerbose(fmt.Sprintf("%s\n", message), level)
 }
 
 // Sets the decorated flag
@@ -88,4 +90,32 @@ func (o *NullOutput) SetFormatter(formatter *formatter.OutputFormatter) {
 // Returns current output formatter instance
 func (o *NullOutput) GetFormatter() *formatter.OutputFormatter {
 	return o.formatter
+}
+
+func (o *NullOutput) SetVerbosity(verbosity verbosity.Level) {
+	o.verbosity = verbosity
+}
+
+func (o *NullOutput) GetVerbosity() verbosity.Level {
+	return o.verbosity
+}
+
+func (o *NullOutput) IsQuiet() bool {
+	return o.GetVerbosity() == verbosity.Quiet
+}
+
+func (o *NullOutput) IsVerbose() bool {
+	return o.GetVerbosity() == verbosity.Verbose
+}
+
+func (o *NullOutput) IsVeryVerbose() bool {
+	return o.GetVerbosity() == verbosity.VeryVerbose
+}
+
+func (o *NullOutput) IsDebug() bool {
+	return o.GetVerbosity() == verbosity.Debug
+}
+
+func (o *NullOutput) IsVerbosityAllowed(level verbosity.Level) bool {
+	return level <= o.GetVerbosity()
 }

@@ -1,6 +1,9 @@
 package style
 
-import "github.com/DrSmithFr/go-console/pkg/output"
+import (
+	"github.com/DrSmithFr/go-console/pkg/output"
+	"github.com/DrSmithFr/go-console/pkg/verbosity"
+)
 
 type StylerInterface interface {
 	// retrieve OutputInterface
@@ -61,11 +64,26 @@ type StylerInterface interface {
 	// Formats a caution admonition.
 	CautionArray(message []string)
 
-	// Formats a table.
-	Table(headers []string, rows [][]string)
-
 	// Add newline(s).
 	NewLine(count int)
+
+	// Gets the current verbosity of the output.
+	GetVerbosity() verbosity.Level
+
+	// Returns whether verbosity is quiet (-q)
+	IsQuiet() bool
+
+	// Returns whether verbosity is verbose (-v)
+	IsVerbose() bool
+
+	// Returns whether verbosity is very verbose (-vv)
+	IsVeryVerbose() bool
+
+	// Returns whether verbosity is debug (-vvv)
+	IsDebug() bool
+
+	// TODO Formats a table.
+	// Table(headers []string, rows [][]string)
 
 	// TODO add ask(), askHidden(), confirm() and choice() when questionInterface is ready
 

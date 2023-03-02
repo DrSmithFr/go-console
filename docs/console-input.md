@@ -20,7 +20,7 @@ import (
 
 func main() {
 	io := style.
-		NewConsoleStyler().
+		NewConsoleCommand().
 		AddInputArgument(
 			argument.
 				New("name", argument.REQUIRED).
@@ -31,8 +31,7 @@ func main() {
 				New("last_name", argument.OPTIONAL).
 				SetDescription("Your last name?"),
 		).
-		ParseInput().
-		ValidateInput()
+		Build()
 
 	//
 	// You now have access to a last_name argument in your command:
@@ -77,14 +76,13 @@ import (
 
 func main() {
 	io := style.
-		NewConsoleStyler().
+		NewConsoleCommand().
 		AddInputArgument(
 			argument.
 				New("names", argument.IS_ARRAY).
 				SetDescription("Who do you want to greet?"),
 		).
-		ParseInput().
-		ValidateInput()
+		Build()
 
 	//
 	// You can access the names argument as an array:
@@ -121,7 +119,7 @@ You can combine `IS_ARRAY` with `REQUIRED` and `OPTIONAL` like this:
 
 ```go
 io := style.
-    NewConsoleStyler().
+    NewConsoleCommand().
     AddInputArgument(
         argument.
 			New("names", argument.IS_ARRAY | argument.REQUIRED),
@@ -152,7 +150,7 @@ import (
 
 func main() {
 	io := style.
-		NewConsoleStyler().
+		NewConsoleCommand().
 		AddInputArgument(
 			argument.
 				New("name", argument.REQUIRED).
@@ -164,8 +162,7 @@ func main() {
 				SetDescription("How many times should the message be printed?").
 				SetDefault("1"),
 		).
-		ParseInput().
-		ValidateInput()
+		Build()
 
 	//
 	// Next, use this in the command to print the message multiple times:
@@ -207,7 +204,7 @@ You can also declare a one-letter shortcut that you can call with a single dash,
 
 ```go
 io := style.
-    NewConsoleStyler().
+    NewConsoleCommand().
     AddInputOption(
         option.
             New("iterations", option.REQUIRED).
@@ -244,7 +241,7 @@ You can combine `IS_ARRAY` with `REQUIRED` and `OPTIONAL` like this:
 
 ```go
 io := style.
-    NewConsoleStyler().
+    NewConsoleCommand().
     AddInputOption(
         option.New("iterations", option.IS_ARRAY | option.REQUIRED),
     ).

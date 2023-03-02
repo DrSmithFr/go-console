@@ -9,7 +9,7 @@ import (
 
 func main() {
 	io := style.
-		NewConsoleStyler().
+		NewConsoleCommand().
 		AddInputArgument(
 			argument.
 				New("name", argument.REQUIRED),
@@ -19,8 +19,7 @@ func main() {
 				New("foo", option.NONE).
 				SetShortcut("f"),
 		).
-		ParseInput().
-		ValidateInput()
+		Build()
 
 	// enable stylish errors
 	defer io.HandleRuntimeException()

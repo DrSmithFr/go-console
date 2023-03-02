@@ -3,6 +3,7 @@ package output
 import (
 	"fmt"
 	"github.com/DrSmithFr/go-console/pkg/formatter"
+	"github.com/DrSmithFr/go-console/pkg/verbosity"
 )
 
 // constructor
@@ -27,6 +28,12 @@ type ConsoleOutput struct {
 	NullOutput
 }
 
-func (o *ConsoleOutput) Print(message string) {
-	fmt.Printf(message)
+func (o *ConsoleOutput) Print(message string, level verbosity.Level) {
+	if o.IsQuiet() {
+		return
+	}
+
+	if o.IsVerbosityAllowed(level) {
+		fmt.Printf(message)
+	}
 }

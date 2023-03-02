@@ -3,6 +3,7 @@ package output
 import (
 	"fmt"
 	"github.com/DrSmithFr/go-console/pkg/formatter"
+	"github.com/DrSmithFr/go-console/pkg/verbosity"
 )
 
 // constructor
@@ -30,8 +31,14 @@ type BufferedOutput struct {
 	buffer string
 }
 
-func (o *BufferedOutput) Store(message string) {
-	o.buffer = fmt.Sprintf("%s%s", o.buffer, message)
+func (o *BufferedOutput) Store(message string, level verbosity.Level) {
+	if o.IsQuiet() {
+		return
+	}
+
+	if o.IsVerbosityAllowed(level) {
+		o.buffer = fmt.Sprintf("%s%s", o.buffer, message)
+	}
 }
 
 // Empties buffer and returns its content.
