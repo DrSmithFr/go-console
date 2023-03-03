@@ -1,6 +1,10 @@
 package question
 
-import "errors"
+import (
+	"errors"
+	"github.com/DrSmithFr/go-console/pkg/question/normalizer"
+	"github.com/DrSmithFr/go-console/pkg/question/validator"
+)
 
 type QuestionBasic struct {
 	question            string
@@ -9,8 +13,8 @@ type QuestionBasic struct {
 	hidden              bool
 	hiddenFallback      bool
 	autocompletedValues *[]string
-	validator           *func(string) error
-	normalizer          *func(string) string
+	validator           *validator.Validator
+	normalizer          *normalizer.Normalizer
 }
 
 func NewQuestion(question string) *QuestionBasic {
@@ -91,7 +95,7 @@ func (q *QuestionBasic) SetAutocompletedValues(values *[]string) *QuestionBasic 
 	return q
 }
 
-func (q *QuestionBasic) SetValidator(validator func(string) error) *QuestionBasic {
+func (q *QuestionBasic) SetValidator(validator validator.Validator) *QuestionBasic {
 	q.validator = &validator
 	return q
 }
@@ -106,7 +110,7 @@ func (q *QuestionBasic) SetMaxAttempts(attempts int) *QuestionBasic {
 	return q
 }
 
-func (q *QuestionBasic) SetNormalizer(normalizer func(string) string) *QuestionBasic {
+func (q *QuestionBasic) SetNormalizer(normalizer normalizer.Normalizer) *QuestionBasic {
 	q.normalizer = &normalizer
 	return q
 }

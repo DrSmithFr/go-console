@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/DrSmithFr/go-console/pkg/question/answers"
+	"github.com/DrSmithFr/go-console/pkg/question/normalizer"
+	"github.com/DrSmithFr/go-console/pkg/question/validator"
 	"regexp"
 )
 
@@ -11,6 +13,9 @@ type QuestionConfirmationInterface interface {
 	QuestionBasicInterface
 	GetYesRegex() *regexp.Regexp
 	GetNoRegex() *regexp.Regexp
+	GetErrorMessage() string
+	GetDefaultNormalizer() *normalizer.Normalizer
+	GetDefaultValidator() *validator.Validator
 }
 
 type QuestionConfirmation struct {
@@ -31,8 +36,11 @@ func NewComfirmation(question string) *QuestionConfirmation {
 	q.defaultAnswer = answers.NONE
 	q.errorMessage = "Value '%s' is invalid. yes or no is expected."
 
-	q.normalizer = q.getDefaultNormalizer()
-	q.validator = q.getDefaultValidator()
+	norm := q.GetDefaultNormalizer()
+	validation := q.GetDefaultValidator()
+
+	q.normalizer = &norm
+	q.validator = &validation
 
 	return q
 }
@@ -47,40 +55,40 @@ func (q *QuestionConfirmation) GetNoRegex() *regexp.Regexp {
 	return q.noRegex
 }
 
+func (q *QuestionConfirmation) GetErrorMessage() string {
+	return q.errorMessage
+}
+
 // Implement Custom Methods
 
-func (q *QuestionConfirmation) getDefaultNormalizer() *func(string) string {
-	normaliser := func(answer string) string {
+func (q *QuestionConfirmation) GetDefaultNormalizer() normalizer.Normalizer {
+	return func(answer string) string {
 		if answer == "" {
 			return q.GetDefaultAnswer()
 		}
 
-		if match := q.GetYesRegex().MatchString(answer); match {
+		if q.GetYesRegex().MatchString(answer) {
 			return answers.YES
 		}
 
-		if match := q.GetNoRegex().MatchString(answer); match {
+		if q.GetNoRegex().MatchString(answer) {
 			return answers.NO
 		}
 
 		return answer
 	}
-
-	return &normaliser
 }
 
-func (q *QuestionConfirmation) getDefaultValidator() *func(string) error {
-	validator := func(answer string) error {
+func (q *QuestionConfirmation) GetDefaultValidator() validator.Validator {
+	return func(answer string) error {
 		valid := q.GetYesRegex().MatchString(answer) || q.GetNoRegex().MatchString(answer)
 
 		if !valid {
-			return errors.New(fmt.Sprintf(q.errorMessage, answer))
+			return errors.New(fmt.Sprintf(q.GetErrorMessage(), answer))
 		}
 
 		return nil
 	}
-
-	return &validator
 }
 
 // Implement Fluent setters for QuestionConfirmation
@@ -117,7 +125,7 @@ func (q *QuestionConfirmation) SetAutocompletedValues(values *[]string) *Questio
 	return q
 }
 
-func (q *QuestionConfirmation) SetValidator(validator func(string) error) *QuestionConfirmation {
+func (q *QuestionConfirmation) SetValidator(validator validator.Validator) *QuestionConfirmation {
 	q.validator = &validator
 	return q
 }
@@ -132,7 +140,7 @@ func (q *QuestionConfirmation) SetMaxAttempts(attempts int) *QuestionConfirmatio
 	return q
 }
 
-func (q *QuestionConfirmation) SetNormalizer(normalizer func(string) string) *QuestionConfirmation {
+func (q *QuestionConfirmation) SetNormalizer(normalizer normalizer.Normalizer) *QuestionConfirmation {
 	q.normalizer = &normalizer
 	return q
 }

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/DrSmithFr/go-console/pkg/question"
 	"github.com/DrSmithFr/go-console/pkg/question/answers"
+	"github.com/DrSmithFr/go-console/pkg/question/normalizer"
+	"github.com/DrSmithFr/go-console/pkg/question/validator"
 	"github.com/DrSmithFr/go-console/pkg/style"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -89,4 +91,68 @@ func main() {
 
 		io.Text("Your overall favorite color is " + answer)
 	}
+
+	// simple chain normalizer example
+	answer = qh.Ask(
+		question.
+			NewChoices("What is your favorite color?", []string{"red", "blue", "yellow"}).
+			SetMultiselect(true).
+			SetMaxAttempts(3).
+			SetNormalizer(
+				normalizer.MakeChainedNormalizer(
+					strings.ToLower,
+					normalizer.Ucfirst,
+					func(answer string) string {
+						return answer + "!"
+					},
+				),
+			),
+	)
+	io.Text(answer)
+
+	// chain normalizer example using including the default normalizer
+	q1 := question.
+		NewChoices("What is your favorite color?", []string{"red", "blue", "yellow"}).
+		SetMultiselect(true).
+		SetMaxAttempts(3)
+
+	customNormalizer := normalizer.MakeChainedNormalizer(
+		strings.ToLower,
+		q1.GetDefaultNormalizer(),
+		normalizer.Ucfirst,
+		func(answer string) string {
+			return answer + "!"
+		},
+	)
+
+	data := qh.Ask(
+		q1.SetNormalizer(customNormalizer),
+	)
+	io.Text(data)
+
+	// chain validator example
+	answer = qh.Ask(
+		question.
+			NewQuestion("What is your favorite color?").
+			SetValidator(
+				validator.
+					MakeChainedValidator(
+						func(answer string) error {
+							if answer == "red" {
+								return errors.New("red is mine")
+							}
+
+							return nil
+						},
+						func(answer string) error {
+							if answer == "blue" {
+								return errors.New("blue is disgusting")
+							}
+
+							return nil
+						},
+					),
+			),
+	)
+	io.Text(answer)
 }

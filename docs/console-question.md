@@ -213,10 +213,94 @@ func main() {
 > **Note**
 > 
 > > Adding a custom normalizer on QuestionConfirmation and QuestionChoices will override the default one.
+> > If you want to keep the default behaviour and add your own logic before or after, see the next section about ChainNormalizer.
 > 
 > > The normalizer is called first and the returned value is used as the input of the validator. 
 > > If the answer is invalid, don't throw exceptions in the normalizer and let the validator handle those errors.
 
+#### The ChainNormalizer
+
+The `MakeChainNormalizer` allows you to merge multiple normalizers. Each normalizer will be called in the order they are defined.
+
+```go
+package main
+
+import (
+    "github.com/DrSmithFr/go-console/pkg/question"
+    "github.com/DrSmithFr/go-console/pkg/question/normalizer"
+    "github.com/DrSmithFr/go-console/pkg/style"
+    "os"
+    "strings"
+)
+
+func main() {
+    io := style.NewConsoleCommand().Build()
+    qh := question.NewHelper(os.Stdin, io.GetOutput())
+  
+    // simple chain normalizer example
+    answer := qh.Ask(
+        question.
+            NewChoices("What is your favorite color?", []string{"red", "blue", "yellow"}).
+            SetMultiselect(true).
+            SetMaxAttempts(3).
+            SetNormalizer(
+                normalizer.MakeChainedNormalizer(
+                    strings.ToLower,
+                    normalizer.Ucfirst,
+                    func(answer string) string {
+                      return answer + "!"
+                    },
+                ),
+            ),
+    )
+    io.Text(answer)
+}
+```
+
+> **Note**
+> 
+> > a normalizer is a function that takes a string as input and returns a string as output.
+> > That means you can use any function that respects this signature, from the standard library to your own functions.
+
+With the same logic, you can encapsulate the default normalizer using the `MakeChainNormalizer` method, 
+however, you will need to pass the question as a parameter of `normalizer.DefaultChoicesNormalizer()`.
+
+```go
+package main
+
+import (
+    "github.com/DrSmithFr/go-console/pkg/question"
+    "github.com/DrSmithFr/go-console/pkg/question/normalizer"
+    "github.com/DrSmithFr/go-console/pkg/style"
+    "os"
+    "strings"
+)
+
+func main() {
+    io := style.NewConsoleCommand().Build()
+    qh := question.NewHelper(os.Stdin, io.GetOutput())
+	
+    // chain normalizer example using including the default normalizer
+    q := question.
+        NewChoices("What is your favorite color?", []string{"red", "blue", "yellow"}).
+        SetMultiselect(true).
+        SetMaxAttempts(3)
+  
+    customNormalizer := normalizer.MakeChainedNormalizer(
+        strings.ToLower,
+        q.GetDefaultNormalizer(),
+        normalizer.Ucfirst,
+        func(answer string) string {
+            return answer + "!"
+        },
+    )
+  
+    data := qh.Ask(
+        q.SetNormalizer(customNormalizer),
+    )
+    io.Text(data)
+}
+```
 
 ### Validating the Answer
 
@@ -237,19 +321,19 @@ func main() {
 	io := style.NewConsoleCommand().Build()
 	qh := question.NewHelper(os.Stdin, io.GetOutput())
 
-  // Simple question with custom validator
-  nickname := qh.Ask(
-    question.
-      NewQuestion("What is your nickname?").
-            SetValidator(func(answer string) error {
-              regex := regexp.MustCompile("^(\\w|_|-)*$")
-              if match := regex.MatchString(answer); !match {
-                return errors.New("nickname must be alphanumeric")
-              }
+    // Simple question with custom validator
+    nickname := qh.Ask(
+        question.
+          NewQuestion("What is your nickname?").
+          SetValidator(func(answer string) error {
+            regex := regexp.MustCompile("^(\\w|_|-)*$")
+            if match := regex.MatchString(answer); !match {
+              return errors.New("nickname must be alphanumeric")
+            }
 
-              return nil
-            }),
-  )
+            return nil
+          }),
+    )
   io.Text("Hi " + nickname)
 }
 ```
@@ -261,3 +345,53 @@ The exception message is displayed in the console, so it is a good practice to p
 > **Note**
 >
 > > Adding a custom validator on QuestionConfirmation and QuestionChoices will override the default one.
+> > If you want to keep the default behaviour and add your own logic before or after, see the next section about ChainedValidator.
+
+
+#### The ChainedValidator
+
+The `MakeChainedValidator` allows you to merge multiple validators.
+Each validator will be called in the order they are defined.
+
+```go
+package main
+
+import (
+    "errors"
+	"github.com/DrSmithFr/go-console/pkg/question"
+	"github.com/DrSmithFr/go-console/pkg/style"
+    "github.com/DrSmithFr/go-console/pkg/question/validator"
+	"os"
+)
+
+func main() {
+	io := style.NewConsoleCommand().Build()
+	qh := question.NewHelper(os.Stdin, io.GetOutput())
+
+    // chain validator example
+    answer := qh.Ask(
+        question.
+            NewQuestion("What is your favorite color?").
+            SetValidator(
+                validator.
+                    MakeChainedValidator(
+                        func(answer string) error {
+                          if answer == "red" {
+                            return errors.New("red is mine")
+                          }
+  
+                          return nil
+                        },
+                        func(answer string) error {
+                          if answer == "blue" {
+                            return errors.New("blue is disgusting")
+                          }
+  
+                          return nil
+                        },
+                    ),
+            ),
+    )
+    io.Text(answer)
+}
+```

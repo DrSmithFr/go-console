@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/DrSmithFr/go-console/pkg/helper"
+	"github.com/DrSmithFr/go-console/pkg/question/normalizer"
+	"github.com/DrSmithFr/go-console/pkg/question/validator"
 	"regexp"
 	"strings"
 )
@@ -13,6 +15,9 @@ type QuestionChoicesInterface interface {
 	GetChoices() []string
 	GetPrompt() string
 	IsMultiselect() bool
+	GetErrorMessage() string
+	GetDefaultNormalizer() *normalizer.Normalizer
+	GetDefaultValidator() *validator.Validator
 }
 
 type QuestionChoices struct {
@@ -29,13 +34,16 @@ func NewChoices(question string, choices []string) *QuestionChoices {
 	q.question = question
 
 	q.choices = choices
+	q.autocompletedValues = &choices
 	q.multiselect = false
 	q.prompt = " > "
 	q.errorMessage = "Value '%s' is invalid"
 
-	q.normalizer = q.getDefaultNormalizer()
-	q.validator = q.getDefaultValidator()
-	q.autocompletedValues = &choices
+	norm := q.GetDefaultNormalizer()
+	validation := q.GetDefaultValidator()
+
+	q.normalizer = &norm
+	q.validator = &validation
 
 	return q
 }
@@ -54,20 +62,24 @@ func (q *QuestionChoices) GetPrompt() string {
 	return q.prompt
 }
 
+func (q *QuestionChoices) GetErrorMessage() string {
+	return q.errorMessage
+}
+
 // Implement Custom Methods
 
-func (q *QuestionChoices) getDefaultNormalizer() *func(string) string {
-	normaliser := func(answer string) string {
+func (q *QuestionChoices) GetDefaultNormalizer() normalizer.Normalizer {
+	return func(answer string) string {
 		var selectedChoices []string
 
-		if q.multiselect {
+		if q.IsMultiselect() {
 			// remove right last comma
 			answer = strings.TrimRight(answer, ",")
 
 			// Check for a separated comma values
 			matches := regexp.MustCompile(`^[^,]+(?:,[^,]+)*$`).FindStringSubmatch(answer)
 			if len(matches) == 0 {
-				panic(errors.New(fmt.Sprintf(q.errorMessage, answer)))
+				panic(errors.New(fmt.Sprintf(q.GetErrorMessage(), answer)))
 			}
 
 			selectedChoices = helper.Map(strings.Split(answer, ","), strings.TrimSpace)
@@ -77,15 +89,13 @@ func (q *QuestionChoices) getDefaultNormalizer() *func(string) string {
 
 		return strings.Join(selectedChoices, ",")
 	}
-
-	return &normaliser
 }
 
-func (q *QuestionChoices) getDefaultValidator() *func(string) error {
-	validator := func(answer string) error {
+func (q *QuestionChoices) GetDefaultValidator() validator.Validator {
+	return func(answer string) error {
 		var selectedChoices []string
 
-		if q.multiselect {
+		if q.IsMultiselect() {
 			selectedChoices = strings.Split(answer, ",")
 		} else {
 			selectedChoices = []string{answer}
@@ -94,19 +104,17 @@ func (q *QuestionChoices) getDefaultValidator() *func(string) error {
 		for _, value := range selectedChoices {
 			matched := false
 
-			for _, choice := range q.choices {
+			for _, choice := range q.GetChoices() {
 				matched = matched || choice == value
 			}
 
 			if !matched {
-				return errors.New(fmt.Sprintf(q.errorMessage, value))
+				return errors.New(fmt.Sprintf(q.GetErrorMessage(), value))
 			}
 		}
 
 		return nil
 	}
-
-	return &validator
 }
 
 // Implement Fluent setters for QuestionChoices
@@ -148,7 +156,7 @@ func (q *QuestionChoices) SetAutocompletedValues(values *[]string) *QuestionChoi
 	return q
 }
 
-func (q *QuestionChoices) SetValidator(validator func(string) error) *QuestionChoices {
+func (q *QuestionChoices) SetValidator(validator validator.Validator) *QuestionChoices {
 	q.validator = &validator
 	return q
 }
@@ -163,7 +171,7 @@ func (q *QuestionChoices) SetMaxAttempts(attempts int) *QuestionChoices {
 	return q
 }
 
-func (q *QuestionChoices) SetNormalizer(normalizer func(string) string) *QuestionChoices {
+func (q *QuestionChoices) SetNormalizer(normalizer normalizer.Normalizer) *QuestionChoices {
 	q.normalizer = &normalizer
 	return q
 }
