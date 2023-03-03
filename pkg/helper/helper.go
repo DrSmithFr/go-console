@@ -191,6 +191,16 @@ func Implode(glue string, values []string) string {
 	return result
 }
 
+func Map(strings []string, function func(string) string) []string {
+	result := make([]string, len(strings))
+
+	for i, s := range strings {
+		result[i] = function(s)
+	}
+
+	return result
+}
+
 func ArrayDiffInt(array1 []int, arrayOthers ...[]int) []int {
 	c := make(map[int]bool)
 	for i := 0; i < len(array1); i++ {

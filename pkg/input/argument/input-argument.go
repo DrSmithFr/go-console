@@ -16,7 +16,7 @@ const (
 // constructor
 func New(
 	name string, // The argument name
-	mode int,    // The argument mode: REQUIRED or OPTIONAL (default: OPTIONAL)
+	mode int, // The argument mode: REQUIRED or OPTIONAL (default: OPTIONAL)
 ) *InputArgument {
 	if mode > 7 || mode < 1 {
 		panic(errors.New(fmt.Sprintf("Argument mode '%d' is not valid.", mode)))
@@ -64,7 +64,7 @@ func (a *InputArgument) SetDefault(defaultValue string) *InputArgument {
 	}
 
 	if a.IsArray() {
-		panic(errors.New("cannot use SetDefault() for InputArgument::IS_ARRAY mode, use SetDefaults() instead"))
+		panic(errors.New("cannot use SetDefaultAnswer() for InputArgument::IS_ARRAY mode, use SetDefaults() instead"))
 	}
 
 	a.defaultValue = defaultValue
@@ -78,7 +78,7 @@ func (a *InputArgument) SetDefaults(values []string) *InputArgument {
 	}
 
 	if !a.IsArray() {
-		panic(errors.New("cannot use SetDefaults() except for InputArgument::IS_ARRAY mode, use SetDefault() instead"))
+		panic(errors.New("cannot use SetDefaults() except for InputArgument::IS_ARRAY mode, use SetDefaultAnswer() instead"))
 	}
 
 	a.defaultValues = values
@@ -89,7 +89,7 @@ func (a *InputArgument) SetDefaults(values []string) *InputArgument {
 // Returns the default value.
 func (a *InputArgument) GetDefault() string {
 	if a.IsArray() {
-		panic(errors.New("cannot use GetDefault() for InputArgument::IS_ARRAY mode, use GetDefaults() instead"))
+		panic(errors.New("cannot use GetDefaultAnswer() for InputArgument::IS_ARRAY mode, use GetDefaults() instead"))
 	}
 
 	return a.defaultValue
@@ -98,7 +98,7 @@ func (a *InputArgument) GetDefault() string {
 // Returns the defaults value.
 func (a *InputArgument) GetDefaults() []string {
 	if !a.IsArray() {
-		panic(errors.New("cannot use GetDefaults() except for InputArgument::IS_ARRAY, use GetDefault() instead"))
+		panic(errors.New("cannot use GetDefaults() except for InputArgument::IS_ARRAY, use GetDefaultAnswer() instead"))
 	}
 
 	return a.defaultValues
