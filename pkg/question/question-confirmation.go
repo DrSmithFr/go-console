@@ -14,8 +14,8 @@ type QuestionConfirmationInterface interface {
 	GetYesRegex() *regexp.Regexp
 	GetNoRegex() *regexp.Regexp
 	GetErrorMessage() string
-	GetDefaultNormalizer() *normalizer.Normalizer
-	GetDefaultValidator() *validator.Validator
+	GetDefaultNormalizer() normalizer.Normalizer
+	GetDefaultValidator() validator.Validator
 }
 
 type QuestionConfirmation struct {

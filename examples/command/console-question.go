@@ -53,6 +53,14 @@ func main() {
 	)
 	io.Text("Hi " + nickname)
 
+	// Simple question with hidden input
+	password := qh.Ask(
+		question.
+			NewQuestion("What is your password?").
+			SetHidden(true),
+	)
+	io.Text("Password: " + password)
+
 	// Simple confirmation question
 	answer := qh.Ask(
 		question.
@@ -100,11 +108,8 @@ func main() {
 			SetMaxAttempts(3).
 			SetNormalizer(
 				normalizer.MakeChainedNormalizer(
-					strings.ToLower,
 					normalizer.Ucfirst,
-					func(answer string) string {
-						return answer + "!"
-					},
+					strings.ToLower,
 				),
 			),
 	)
@@ -119,10 +124,6 @@ func main() {
 	customNormalizer := normalizer.MakeChainedNormalizer(
 		strings.ToLower,
 		q1.GetDefaultNormalizer(),
-		normalizer.Ucfirst,
-		func(answer string) string {
-			return answer + "!"
-		},
 	)
 
 	data := qh.Ask(

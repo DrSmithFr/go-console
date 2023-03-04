@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"github.com/DrSmithFr/go-console/pkg/output"
 	"github.com/DrSmithFr/go-console/pkg/question/answers"
+	"golang.org/x/term"
 	"io"
 	"strings"
+	"syscall"
 )
 
 type Helper struct {
@@ -62,7 +64,18 @@ func (h *Helper) Ask(question QuestionBasicInterface) string {
 func (h *Helper) doAsk(question QuestionBasicInterface) (string, error) {
 	h.writePrompt(question)
 
-	rawText, _ := bufio.NewReader(h.in).ReadString('\n')
+	var rawText string
+
+	if question.IsHidden() {
+		bytes, _ := term.ReadPassword(syscall.Stdin)
+		rawText = string(bytes)
+		h.out.Writeln("")
+	} else {
+		rawText, _ = bufio.
+			NewReader(h.in).
+			ReadString('\n')
+	}
+
 	answer := strings.TrimSpace(rawText)
 
 	if len(answer) == 0 {
@@ -84,29 +97,29 @@ func (h *Helper) doAsk(question QuestionBasicInterface) (string, error) {
 
 func (h *Helper) writePrompt(question QuestionBasicInterface) {
 	if choices, ok := question.(QuestionChoicesInterface); ok {
-		h.out.Writeln(choices.GetQuestion())
+		h.out.Writeln(fmt.Sprintf("<question>%s</question>", choices.GetQuestion()))
 
 		for _, line := range h.formatChoiceQuestionChoices(choices, "info") {
 			h.out.Writeln(line)
 		}
 
-		h.out.Writeln(choices.GetPrompt())
+		h.out.Write(choices.GetPrompt())
 		return
 	}
 
 	if confirmation, ok := question.(QuestionConfirmationInterface); ok {
 		message := fmt.Sprintf(
-			"%s [<info>%s</info>/<info>%s</info>] ",
+			"<question>%s</question> [<info>%s</info>/<info>%s</info>] ",
 			confirmation.GetQuestion(),
 			answers.YES,
 			answers.NO,
 		)
 
-		h.out.Writeln(message)
+		h.out.Write(message)
 		return
 	}
 
-	h.out.Writeln(question.GetQuestion())
+	h.out.Write(fmt.Sprintf("<question>%s</question> ", question.GetQuestion()))
 }
 
 func (h *Helper) formatChoiceQuestionChoices(question QuestionChoicesInterface, tag string) []string {

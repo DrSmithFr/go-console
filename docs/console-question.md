@@ -53,6 +53,34 @@ The user will be asked "What is your name?".
 They can type some name which will be returned by the ask() method. 
 If they leave it empty, the default value ("John Doe" here) is returned.
 
+#### Hiding the User's Response
+
+You can also ask a question and hide the response. This is particularly convenient for passwords:
+
+```go
+package main
+
+import (
+	"github.com/DrSmithFr/go-console/pkg/question"
+	"github.com/DrSmithFr/go-console/pkg/question/answers"
+	"github.com/DrSmithFr/go-console/pkg/style"
+	"os"
+)
+
+func main() {
+	io := style.NewConsoleCommand().Build()
+	qh := question.NewHelper(os.Stdin, io.GetOutput())
+
+	// Simple question with hidden answer
+	pass := qh.Ask(
+		question.
+			NewQuestion("What is your password?").
+			SetHidden(true),
+	)
+	io.Text("Password: " + pass)
+}
+```
+
 ### Asking the User for Confirmation
 
 Suppose you want to confirm an action before actually executing it. Add the following to your command:

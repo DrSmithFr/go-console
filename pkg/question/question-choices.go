@@ -16,8 +16,8 @@ type QuestionChoicesInterface interface {
 	GetPrompt() string
 	IsMultiselect() bool
 	GetErrorMessage() string
-	GetDefaultNormalizer() *normalizer.Normalizer
-	GetDefaultValidator() *validator.Validator
+	GetDefaultNormalizer() normalizer.Normalizer
+	GetDefaultValidator() validator.Validator
 }
 
 type QuestionChoices struct {
