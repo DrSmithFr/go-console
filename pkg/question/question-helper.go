@@ -57,8 +57,7 @@ func (h *Helper) Ask(question QuestionBasicInterface) string {
 		}
 	}
 
-	h.out.Writeln("<error>maximum number of maxAttempts reached</error>")
-	panic(errors.New("aborting"))
+	panic(errors.New("maximum number of maxAttempts reached"))
 }
 
 func (h *Helper) doAsk(question QuestionBasicInterface) (string, error) {

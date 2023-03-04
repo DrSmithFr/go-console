@@ -50,8 +50,17 @@ func main() {
 ```
 
 The user will be asked "What is your name?". 
-They can type some name which will be returned by the ask() method. 
+They can type some name which will be returned by the ask() method.
+
+<p align="center">
+    <img src="assets/question/asking-user-info.png">
+</p>
+
 If they leave it empty, the default value ("John Doe" here) is returned.
+
+<p align="center">
+    <img src="assets/question/asking-user-info-empty.png">
+</p>
 
 #### Hiding the User's Response
 
@@ -62,7 +71,6 @@ package main
 
 import (
 	"github.com/DrSmithFr/go-console/pkg/question"
-	"github.com/DrSmithFr/go-console/pkg/question/answers"
 	"github.com/DrSmithFr/go-console/pkg/style"
 	"os"
 )
@@ -80,6 +88,10 @@ func main() {
 	io.Text("Password: " + pass)
 }
 ```
+
+<p align="center">
+    <img src="assets/question/asking-user-password.png">
+</p>
 
 ### Asking the User for Confirmation
 
@@ -116,6 +128,10 @@ func main() {
 
 In this case, the user will be asked "Continue with this action?". If the user answers with y it returns "yes" (`answers.YES`) or "no" (`answers.NO`) if they answer with n. 
 The default value to return if the user doesn't enter any valid input can be modify using the `SetDefaultAnswer()` (By default it is set to `answers.NONE` forcing the user to answer).
+
+<p align="center">
+    <img src="assets/question/asking-user-confirmation.png">
+</p>
 
 > **Note**
 > 
@@ -157,8 +173,16 @@ func main() {
 }
 ```
 
+<p align="center">
+    <img src="assets/question/asking-user-choice.png">
+</p>
+
 If the user enters an invalid or empty string, an error message is shown and the user is asked to provide the answer another time, 
 until they enter a valid string or reach the maximum number of attempts.
+
+<p align="center">
+    <img src="assets/question/asking-user-choice-max-attempts.png">
+</p>
 
 > **Note**
 > > The default value for the maximum number of attempts is 0. which means an infinite number of attempts.
@@ -176,7 +200,6 @@ package main
 
 import (
 	"github.com/DrSmithFr/go-console/pkg/question"
-	"github.com/DrSmithFr/go-console/pkg/question/answers"
 	"github.com/DrSmithFr/go-console/pkg/style"
 	"os"
 	"strings"
@@ -204,6 +227,10 @@ func main() {
 	}
 }
 ```
+
+<p align="center">
+    <img src="assets/question/asking-user-choice-multiple.png">
+</p>
 
 ### Normalizing the Answer
 
@@ -238,6 +265,10 @@ func main() {
 }
 ```
 
+<p align="center">
+    <img src="assets/question/normalizing-input.png">
+</p>
+
 > **Note**
 > 
 > > Adding a custom normalizer on QuestionConfirmation and QuestionChoices will override the default one.
@@ -265,12 +296,10 @@ func main() {
     io := style.NewConsoleCommand().Build()
     qh := question.NewHelper(os.Stdin, io.GetOutput())
   
-    // simple chain normalizer example
-    answer := qh.Ask(
+    // Simple question with normalizer
+    firstname := qh.Ask(
         question.
-            NewChoices("What is your favorite color?", []string{"red", "blue", "yellow"}).
-            SetMultiselect(true).
-            SetMaxAttempts(3).
+            NewQuestion("What is your name?").
             SetNormalizer(
                 normalizer.MakeChainedNormalizer(
                     strings.ToLower,
@@ -281,9 +310,13 @@ func main() {
                 ),
             ),
     )
-    io.Text(answer)
+    io.Text("Hello " + firstname)
 }
 ```
+
+<p align="center">
+    <img src="assets/question/normalizing-chain.png">
+</p>
 
 > **Note**
 > 
@@ -299,34 +332,27 @@ package main
 import (
     "github.com/DrSmithFr/go-console/pkg/question"
     "github.com/DrSmithFr/go-console/pkg/question/normalizer"
-    "github.com/DrSmithFr/go-console/pkg/style"
-    "os"
     "strings"
 )
 
 func main() {
-    io := style.NewConsoleCommand().Build()
-    qh := question.NewHelper(os.Stdin, io.GetOutput())
-	
     // chain normalizer example using including the default normalizer
     q := question.
         NewChoices("What is your favorite color?", []string{"red", "blue", "yellow"}).
         SetMultiselect(true).
         SetMaxAttempts(3)
+
+    customNormalizer := normalizer.
+        MakeChainedNormalizer(
+            strings.ToLower,
+            q.GetDefaultNormalizer(),
+            normalizer.Ucfirst,
+            func(answer string) string {
+              return answer + "!"
+            },
+        )
   
-    customNormalizer := normalizer.MakeChainedNormalizer(
-        strings.ToLower,
-        q.GetDefaultNormalizer(),
-        normalizer.Ucfirst,
-        func(answer string) string {
-            return answer + "!"
-        },
-    )
-  
-    data := qh.Ask(
-        q.SetNormalizer(customNormalizer),
-    )
-    io.Text(data)
+    q.SetNormalizer(customNormalizer)
 }
 ```
 
@@ -366,9 +392,12 @@ func main() {
 }
 ```
 
-The validator is a callback which handles the validation. 
-It should return an exception if there is something wrong.
-The exception message is displayed in the console, so it is a good practice to put some useful information in it.
+It should return an error if there is something wrong.
+The error message is displayed in the console, so it is a good practice to put some useful information in it.
+
+<p align="center">
+    <img src="assets/question/validation.png">
+</p>
 
 > **Note**
 >
@@ -423,3 +452,7 @@ func main() {
     io.Text(answer)
 }
 ```
+
+<p align="center">
+    <img src="assets/question/validation-chain.png">
+</p>
