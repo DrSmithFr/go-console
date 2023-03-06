@@ -96,14 +96,14 @@ func main() {
 		NewRender(out).
 		SetContent(tab)
 
-	//render.SetColumnsWidths(map[int]int{
+	//render.SetColumnsMinWidths(map[int]int{
 	//	0: 10,
 	//	1: 0,
 	//	2: 30,
 	//})
 
-	render.SetColumnWidth(0, 5)
-	render.SetColumnWidth(1, 10)
+	render.SetColumnMinWidth(0, 5)
+	render.SetColumnMinWidth(1, 10)
 
 	//render.SetStyle("compact")
 	//render.SetStyle("borderless")

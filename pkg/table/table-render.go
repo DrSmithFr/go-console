@@ -19,8 +19,8 @@ type TableRender struct {
 	output output.OutputInterface
 	style  TableStyleInterface
 
-	columnsStyles map[int]TableStyleInterface
-	columnsWidths map[int]int
+	columnsStyles    map[int]TableStyleInterface
+	columnsMinWidths map[int]int
 
 	numberOfColumns       int
 	effectiveColumnWidths map[int]int
@@ -39,7 +39,7 @@ func NewRender(output output.OutputInterface) *TableRender {
 	t.content = NewTable()
 
 	t.columnsStyles = map[int]TableStyleInterface{}
-	t.columnsWidths = map[int]int{}
+	t.columnsMinWidths = map[int]int{}
 
 	t.effectiveColumnWidths = map[int]int{}
 
@@ -72,20 +72,20 @@ func (t *TableRender) SetColumnStyle(column int, name string) *TableRender {
 	return t
 }
 
-func (t *TableRender) SetColumnWidth(column int, width int) *TableRender {
-	t.columnsWidths[column] = width
+func (t *TableRender) SetColumnMinWidth(column int, width int) *TableRender {
+	t.columnsMinWidths[column] = width
 	return t
 }
 
-func (t *TableRender) GetColumnWidth(column int) int {
-	return t.columnsWidths[column]
+func (t *TableRender) GetColumnMinWidth(column int) int {
+	return t.columnsMinWidths[column]
 }
 
-func (t *TableRender) SetColumnsWidths(widths map[int]int) *TableRender {
-	t.columnsWidths = map[int]int{}
+func (t *TableRender) SetColumnsMinWidths(widths map[int]int) *TableRender {
+	t.columnsMinWidths = map[int]int{}
 
 	for column, width := range widths {
-		t.SetColumnWidth(column, width)
+		t.SetColumnMinWidth(column, width)
 	}
 
 	return t
@@ -104,7 +104,7 @@ func (t *TableRender) SetEffectiveColumnsWidths(widths map[int]int) *TableRender
 	t.effectiveColumnWidths = map[int]int{}
 
 	for column, width := range widths {
-		t.SetColumnWidth(column, width)
+		t.SetColumnMinWidth(column, width)
 	}
 
 	return t
@@ -610,11 +610,11 @@ func (t *TableRender) getCellWidth(rows TableRowInterface, columnIndex int) int 
 		cellWidth = helper.StrlenWithoutDecoration(t.output.GetFormatter(), cell.GetValue())
 	}
 
-	if cellWidth > t.GetColumnWidth(columnIndex) {
+	if cellWidth > t.GetColumnMinWidth(columnIndex) {
 		return cellWidth
 	}
 
-	return t.GetColumnWidth(columnIndex)
+	return t.GetColumnMinWidth(columnIndex)
 }
 
 func (t *TableRender) cleanup() {
