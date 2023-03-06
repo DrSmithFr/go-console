@@ -22,19 +22,3 @@ func (t *TableSeparator) IsSeparator() bool {
 // Implement TableCell fluent setters
 
 var _ TableSeparatorInterface = (*TableSeparator)(nil)
-var _ TableSeparatorInterface = (*TableSeparator)(nil)
-
-func (t *TableSeparator) SetValue(value string) *TableSeparator {
-	t.Value = value
-	return t
-}
-
-func (t *TableSeparator) SetRowspan(rowspan int) *TableSeparator {
-	t.Rowspan = rowspan
-	return t
-}
-
-func (t *TableSeparator) SetColspan(colspan int) *TableSeparator {
-	t.Colspan = colspan
-	return t
-}

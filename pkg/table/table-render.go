@@ -19,8 +19,10 @@ type TableRender struct {
 	output output.OutputInterface
 	style  TableStyleInterface
 
-	columnsStyles    map[int]TableStyleInterface
+	columnsStyles map[int]TableStyleInterface
+
 	columnsMinWidths map[int]int
+	columnsMaxWidths map[int]int
 
 	numberOfColumns       int
 	effectiveColumnWidths map[int]int
@@ -39,7 +41,9 @@ func NewRender(output output.OutputInterface) *TableRender {
 	t.content = NewTable()
 
 	t.columnsStyles = map[int]TableStyleInterface{}
+
 	t.columnsMinWidths = map[int]int{}
+	t.columnsMaxWidths = map[int]int{}
 
 	t.effectiveColumnWidths = map[int]int{}
 
@@ -72,6 +76,8 @@ func (t *TableRender) SetColumnStyle(column int, name string) *TableRender {
 	return t
 }
 
+// External width management
+
 func (t *TableRender) SetColumnMinWidth(column int, width int) *TableRender {
 	t.columnsMinWidths[column] = width
 	return t
@@ -91,16 +97,37 @@ func (t *TableRender) SetColumnsMinWidths(widths map[int]int) *TableRender {
 	return t
 }
 
-func (t *TableRender) SetEffectiveColumnWidth(column int, width int) *TableRender {
+func (t *TableRender) SetColumnMaxWidth(column int, width int) *TableRender {
+	t.columnsMaxWidths[column] = width
+	return t
+}
+
+func (t *TableRender) GetColumnMaxWidth(column int) int {
+	return t.columnsMaxWidths[column]
+}
+
+func (t *TableRender) SetColumnsMaxWidths(widths map[int]int) *TableRender {
+	t.columnsMaxWidths = map[int]int{}
+
+	for column, width := range widths {
+		t.SetColumnMinWidth(column, width)
+	}
+
+	return t
+}
+
+// Internal width management
+
+func (t *TableRender) setEffectiveColumnWidth(column int, width int) *TableRender {
 	t.effectiveColumnWidths[column] = width
 	return t
 }
 
-func (t *TableRender) GetEffectiveColumnWidth(column int) int {
+func (t *TableRender) getEffectiveColumnWidth(column int) int {
 	return t.effectiveColumnWidths[column]
 }
 
-func (t *TableRender) SetEffectiveColumnsWidths(widths map[int]int) *TableRender {
+func (t *TableRender) setEffectiveColumnsWidths(widths map[int]int) *TableRender {
 	t.effectiveColumnWidths = map[int]int{}
 
 	for column, width := range widths {
@@ -218,7 +245,7 @@ func (t *TableRender) getRowSeparator() string {
 
 	markup := t.style.GetCrossingChar()
 	for column := 0; column < count; column++ {
-		markup += strings.Repeat(t.style.GetHorizontalBorderChar(), t.GetEffectiveColumnWidth(column)) + t.style.GetCrossingChar()
+		markup += strings.Repeat(t.style.GetHorizontalBorderChar(), t.getEffectiveColumnWidth(column)) + t.style.GetCrossingChar()
 	}
 
 	return fmt.Sprintf(t.style.GetBorderFormat(), markup)
@@ -285,13 +312,13 @@ func (t *TableRender) renderCell(row TableRowInterface, columnIndex int, cellFor
 		cell = column.GetCell()
 	}
 
-	width := t.GetEffectiveColumnWidth(columnIndex)
+	width := t.getEffectiveColumnWidth(columnIndex)
 
 	if cell.GetColspan() > 1 {
 		nextColumns := helper.RangeInt(columnIndex+1, columnIndex+cell.GetColspan()-1)
 
 		for _, nextColumn := range nextColumns {
-			width += t.getColumnSeparatorWidth() + t.GetEffectiveColumnWidth(nextColumn)
+			width += t.getColumnSeparatorWidth() + t.getEffectiveColumnWidth(nextColumn)
 		}
 	}
 
@@ -370,6 +397,24 @@ func (t *TableRender) buildTableRows(data *TableData) *TableData {
 		for _, columnIndex := range data.rows[rowKey].GetColumnsSortedKeys() {
 			column := data.rows[rowKey].GetColumn(columnIndex)
 			cell := column.GetCell()
+
+			// Managing column max width
+			maxWidth := t.GetColumnMaxWidth(columnIndex)
+			if maxWidth > 0 {
+				if cell.GetColspan() > 1 {
+					for i := 0; i < cell.GetColspan(); i++ {
+						maxWidth += t.GetColumnMaxWidth(columnIndex+i) + t.getColumnSeparatorWidth()
+					}
+				}
+
+				cellValue := cell.GetValue()
+				cellWidth := utf8.RuneCountInString(cellValue)
+
+				if cellWidth > maxWidth {
+					newValue := helper.InsertNth(cell.GetValue(), maxWidth, '\n')
+					cell.SetValue(newValue)
+				}
+			}
 
 			if -1 == strings.Index(cell.GetValue(), "\n") {
 				continue
@@ -593,7 +638,7 @@ func (t *TableRender) calculateColumnsWidth(data *TableData) {
 			lengths = append(lengths, t.getCellWidth(row, columnIndex))
 		}
 
-		t.SetEffectiveColumnWidth(columnIndex, helper.MaxInt(lengths)+helper.Strlen(t.style.GetCellRowContentFormat())-2)
+		t.setEffectiveColumnWidth(columnIndex, helper.MaxInt(lengths)+helper.Strlen(t.style.GetCellRowContentFormat())-2)
 	}
 }
 

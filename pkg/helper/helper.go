@@ -208,3 +208,19 @@ func StrSplit(data string, length int) []string {
 
 	return result
 }
+
+func InsertNth(s string, n int, insert rune) string {
+	var buffer bytes.Buffer
+
+	var precedent = n - 1
+	var last = len(s) - 1
+
+	for i, r := range s {
+		buffer.WriteRune(r)
+		if i%n == precedent && i != last {
+			buffer.WriteRune(insert)
+		}
+	}
+
+	return buffer.String()
+}

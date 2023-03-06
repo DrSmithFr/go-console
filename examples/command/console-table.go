@@ -46,64 +46,64 @@ func main() {
 			},
 		)
 
-	tab.
-		AddTableSeparator().
-		AddRow(
-			table.
-				NewTableRow().
-				AddColumn(
-					table.
-						NewTableColumn().
-						SetCell(
-							table.
-								NewTableCell("This value spans 2 columns.").
-								SetColspan(2),
-						),
-				).
-				AddColumn(
-					table.
-						NewTableColumn().
-						SetCell(
-							table.
-								NewTableCell("stand alone value"),
-						),
-				),
-		)
-
-	tab.
-		AddTableSeparator().
-		AddRow(
-			&table.TableRow{
-				Columns: map[int]table.TableColumnInterface{
-					0: &table.TableColumn{
-						Cell: &table.TableCell{
-							Value:   "<question>This value spans use 3 lines \nto get fully displayed.</question>",
-							Colspan: 3,
-						},
-					},
-				},
-			},
-		).
-		AddTableSeparator().
-		AddRowsFromString(
-			[][]string{
-				{"960-425-059-0", "The Lord of the Rings", "J. R. R. Tolkien"},
-				{"80-902734-1-6", "And Then There Were None", "Agatha Christie"},
-			},
-		)
+	//tab.
+	//	AddTableSeparator().
+	//	AddRow(
+	//		table.
+	//			NewTableRow().
+	//			AddColumn(
+	//				table.
+	//					NewTableColumn().
+	//					SetCell(
+	//						table.
+	//							NewTableCell("This value spans 2 columns.").
+	//							SetColspan(2),
+	//					),
+	//			).
+	//			AddColumn(
+	//				table.
+	//					NewTableColumn().
+	//					SetCell(
+	//						table.
+	//							NewTableCell("stand alone value"),
+	//					),
+	//			),
+	//	)
+	//
+	//tab.
+	//	AddTableSeparator().
+	//	AddRow(
+	//		&table.TableRow{
+	//			Columns: map[int]table.TableColumnInterface{
+	//				0: &table.TableColumn{
+	//					Cell: &table.TableCell{
+	//						Value:   "<question>This value spans use 3 lines \nto get fully displayed.</question>",
+	//						Colspan: 3,
+	//					},
+	//				},
+	//			},
+	//		},
+	//	).
+	//	AddTableSeparator().
+	//	AddRowsFromString(
+	//		[][]string{
+	//			{"960-425-059-0", "The Lord of the Rings", "J. R. R. Tolkien"},
+	//			{"80-902734-1-6", "And Then There Were None", "Agatha Christie"},
+	//		},
+	//	)
 
 	render := table.
 		NewRender(out).
 		SetContent(tab)
 
-	//render.SetColumnsMinWidths(map[int]int{
-	//	0: 10,
-	//	1: 0,
-	//	2: 30,
-	//})
+	render.SetColumnsMinWidths(map[int]int{
+		0: 10,
+		1: 0,
+		2: 30,
+	})
 
-	render.SetColumnMinWidth(0, 5)
-	render.SetColumnMinWidth(1, 10)
+	//render.SetColumnMaxWidth(0, 10)
+	//render.SetColumnMaxWidth(1, 10)
 
 	//render.SetStyle("compact")
 	//render.SetStyle("borderless")

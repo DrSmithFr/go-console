@@ -2,6 +2,8 @@ package table
 
 type TableCellInterface interface {
 	GetValue() string
+	SetValue(value string) *TableCell
+
 	GetRowspan() int
 	GetColspan() int
 	GetPadType() PaddingType
