@@ -31,10 +31,18 @@ func (t *TableCell) GetValue() string {
 }
 
 func (t *TableCell) GetRowspan() int {
+	if t.Rowspan == 0 {
+		return 1
+	}
+
 	return t.Rowspan
 }
 
 func (t *TableCell) GetColspan() int {
+	if t.Colspan == 0 {
+		return 1
+	}
+
 	return t.Colspan
 }
 

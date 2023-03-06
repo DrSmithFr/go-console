@@ -13,14 +13,26 @@ func main() {
 		NewTable().
 		SetHeaderTitle("Books").
 		SetFooterTitle("Page 1/2").
-		SetHeadersFromString(
+		AddHeader(
+			&table.TableRow{
+				Columns: map[int]table.TableColumnInterface{
+					0: &table.TableColumn{
+						Cell: &table.TableCell{
+							Value:   "Main table title",
+							Colspan: 3,
+						},
+					},
+				},
+			},
+		).
+		AddHeadersFromString(
 			[][]string{
 				{"ISBN", "Title", "Author"},
 			},
 		).
 		AddRowsFromString(
 			[][]string{
-				{"99921-58-10-7", "Divine \nComedy", "Dante Alighieri"},
+				{"99921-58-10-7", "The \nDivine \nComedy", "Dante Alighieri"},
 				{"9971-5-0210-0", "A Tale of Two Cities", "Charles Dickens"},
 			},
 		).

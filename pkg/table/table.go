@@ -117,6 +117,43 @@ func (t *Table) SetHeadersFromString(rows [][]string) *Table {
 	return t
 }
 
+func (t *Table) AddHeaders(rows []TableRowInterface) *Table {
+	for _, row := range rows {
+		t.AddHeader(row)
+	}
+
+	return t
+}
+
+func (t *Table) AddHeadersFromString(rows [][]string) *Table {
+	for _, row := range rows {
+		t.AddHeaderFromString(row)
+	}
+
+	return t
+}
+
+func (t *Table) AddHeader(row TableRowInterface) *Table {
+	t.headers.AddRow(row)
+	return t
+}
+
+func (t *Table) AddHeaderFromString(row []string) *Table {
+	t.headers.AddRowFromString(row)
+	return t
+}
+
+func (t *Table) setHeader(column int, row TableRowInterface) *Table {
+	t.headers.SetRow(column, row)
+	return t
+}
+
+func (t *Table) setHeaderFromString(column int, rowData []string) *Table {
+	row := MakeRowFromStrings(rowData)
+	t.headers.SetRow(column, row)
+	return t
+}
+
 // Data injections Helpers for Rows
 
 func (t *Table) SetRowsFromString(rows [][]string) *Table {
