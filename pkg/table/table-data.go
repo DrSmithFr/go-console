@@ -6,7 +6,7 @@ type TableDataInterface interface {
 	SetRows(lines map[int]TableRowInterface) *TableData
 	GetRows() map[int]TableRowInterface
 
-	SortedKeys() []int
+	GetRowsSortedKeys() []int
 
 	SetRow(index int, row TableRowInterface) *TableData
 	GetRow(index int) TableRowInterface
@@ -59,8 +59,8 @@ func (t *TableData) GetRows() map[int]TableRowInterface {
 	return t.rows
 }
 
-func (t *TableData) SortedKeys() []int {
-	keys := make([]int, 0, len(t.rows))
+func (t *TableData) GetRowsSortedKeys() []int {
+	keys := []int{}
 
 	for k := range t.rows {
 		keys = append(keys, k)
@@ -141,7 +141,7 @@ func (t *TableData) AddRowsFromString(rows [][]string) *TableData {
 }
 
 func (t *TableData) AddRow(row TableRowInterface) *TableData {
-	addIndex := 0
+	addIndex := -1
 
 	for index := range t.rows {
 		if index > addIndex {

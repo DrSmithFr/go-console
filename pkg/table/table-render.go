@@ -19,11 +19,14 @@ type TableRender struct {
 	output output.OutputInterface
 	style  TableStyleInterface
 
-	columnStyles map[int]TableStyleInterface
-	columnWidths map[int]int
+	columnsStyles map[int]TableStyleInterface
+	columnsWidths map[int]int
 
 	numberOfColumns       int
 	effectiveColumnWidths map[int]int
+
+	// TODO: find where everything get shifted by 1
+	offset int
 }
 
 // Table constructor
@@ -38,12 +41,14 @@ func NewRender(output output.OutputInterface) *TableRender {
 
 	t.content = NewTable()
 
-	t.columnStyles = map[int]TableStyleInterface{}
-	t.columnWidths = map[int]int{}
+	t.columnsStyles = map[int]TableStyleInterface{}
+	t.columnsWidths = map[int]int{}
 
 	t.effectiveColumnWidths = map[int]int{}
 
 	t.SetStyle("default")
+
+	t.offset = 1
 
 	return t
 }
@@ -53,8 +58,8 @@ func NewRender(output output.OutputInterface) *TableRender {
 var _ TableRenderInterface = (*TableRender)(nil)
 
 func (t *TableRender) GetColumnStyle(column int) TableStyleInterface {
-	if t.columnStyles[column] != nil {
-		return t.columnStyles[column]
+	if t.columnsStyles[column] != nil {
+		return t.columnsStyles[column]
 	}
 
 	return t.style
@@ -68,17 +73,40 @@ func (t *TableRender) SetStyle(name string) *TableRender {
 }
 
 func (t *TableRender) SetColumnStyle(column int, name string) *TableRender {
-	t.columnStyles[column] = GetStyleDefinition(name)
+	t.columnsStyles[column] = GetStyleDefinition(name)
 	return t
 }
 
 func (t *TableRender) SetColumnWidth(column int, width int) *TableRender {
-	t.columnWidths[column] = width
+	t.columnsWidths[column] = width
 	return t
 }
 
-func (t *TableRender) SetColumnWidths(widths map[int]int) *TableRender {
-	t.columnWidths = map[int]int{}
+func (t *TableRender) GetColumnWidth(column int) int {
+	return t.columnsWidths[column]
+}
+
+func (t *TableRender) SetColumnsWidths(widths map[int]int) *TableRender {
+	t.columnsWidths = map[int]int{}
+
+	for column, width := range widths {
+		t.SetColumnWidth(column, width)
+	}
+
+	return t
+}
+
+func (t *TableRender) SetEffectiveColumnWidth(column int, width int) *TableRender {
+	t.effectiveColumnWidths[column] = width
+	return t
+}
+
+func (t *TableRender) GetEffectiveColumnWidth(column int) int {
+	return t.effectiveColumnWidths[column]
+}
+
+func (t *TableRender) SetEffectiveColumnsWidths(widths map[int]int) *TableRender {
+	t.effectiveColumnWidths = map[int]int{}
 
 	for column, width := range widths {
 		t.SetColumnWidth(column, width)
@@ -103,61 +131,102 @@ func (t *TableRender) GetContent() *Table {
 func (t *TableRender) Render() {
 	mergedData := MergeData(t.content.GetHeaders(), t.content.GetRows())
 
-	t.calculateNumberOfColumns(*mergedData)
+	t.calculateNumberOfColumns(mergedData)
+	t.completeTableSeparator(mergedData)
 
-	rowsData := t.content.GetRows()
-	headersData := t.content.GetHeaders()
+	rows := t.content.GetRows()
+	headers := t.content.GetHeaders()
 
-	//rowsData := t.buildTableRows(t.content.GetRows())
-	//headersData := t.buildTableRows(t.content.GetHeaders())
+	rowsData := t.buildTableRows(rows)
+	headersData := t.buildTableRows(headers)
 
 	t.calculateColumnsWidth(mergedData)
-	t.renderRowSeparator()
+	t.renderRowTitleSeparator(t.content.GetHeaderTitle())
 
 	if len(headersData.GetRows()) > 0 {
-		for index := range headersData.SortedKeys() {
+		for _, index := range headersData.GetRowsSortedKeys() {
 			header := headersData.GetRow(index)
 			t.renderRow(header, t.style.GetCellHeaderFormat())
-			t.renderRowSeparator()
+
+			if len(rowsData.GetRows()) == 0 {
+				t.renderRowTitleSeparator(t.content.GetFooterTitle())
+			} else {
+				t.renderRowSeparator()
+			}
 		}
 	}
 
-	for index := range rowsData.SortedKeys() {
+	for _, index := range rowsData.GetRowsSortedKeys() {
 		row := rowsData.GetRow(index)
 		t.renderRow(row, t.style.GetCellRowFormat())
 	}
 
 	if len(rowsData.GetRows()) > 0 {
-		t.renderRowSeparator()
+		t.renderRowTitleSeparator(t.content.GetFooterTitle())
 	}
 
 	t.cleanup()
 }
 
+func (t *TableRender) renderRowTitleSeparator(title string) {
+	separator := t.getRowSeparator()
+
+	if len(separator) == 0 {
+		return
+	}
+
+	paddedTitle := fmt.Sprintf(" %s ", title)
+
+	if len(paddedTitle) >= len(separator) {
+		t.output.Writeln(paddedTitle)
+		return
+	}
+
+	separatorCrop := len(separator) - len(paddedTitle)
+
+	separatorCropLeft := separatorCrop / 2
+	separatorCropRight := separatorCrop - separatorCropLeft
+
+	separatorLeft := separator[0:separatorCropLeft]
+	separatorRight := separator[len(separator)-separatorCropRight:]
+
+	t.output.Writeln(fmt.Sprintf("%s<b>%s</b>%s", separatorLeft, paddedTitle, separatorRight))
+}
+
+func (t *TableRender) renderRowSeparator() {
+	separator := t.getRowSeparator()
+
+	if len(separator) == 0 {
+		return
+	}
+
+	t.output.Writeln(separator)
+}
+
 /**
- * Renders horizontal header separator.
+ * Return horizontal separator.
  *
  * Example:
  *
  *     +-----+-----------+-------+
  */
-func (t *TableRender) renderRowSeparator() {
+func (t *TableRender) getRowSeparator() string {
 	count := t.numberOfColumns
 
 	if count == 0 {
-		return
+		return ""
 	}
 
 	if len(t.style.GetHorizontalBorderChar()) == 0 && len(t.style.GetCrossingChar()) == 0 {
-		return
+		return ""
 	}
 
 	markup := t.style.GetCrossingChar()
 	for column := 0; column < count; column++ {
-		markup += strings.Repeat(t.style.GetHorizontalBorderChar(), t.effectiveColumnWidths[column]) + t.style.GetCrossingChar()
+		markup += strings.Repeat(t.style.GetHorizontalBorderChar(), t.GetEffectiveColumnWidth(column)) + t.style.GetCrossingChar()
 	}
 
-	t.output.Writeln(fmt.Sprintf(t.style.GetBorderFormat(), markup))
+	return fmt.Sprintf(t.style.GetBorderFormat(), markup)
 }
 
 /**
@@ -181,7 +250,7 @@ func (t *TableRender) renderRow(row TableRowInterface, cellFormat string) {
 
 	rowContent := t.renderColumnSeparator()
 
-	for index := range row.SortedKeys() {
+	for _, index := range row.GetColumnsSortedKeys() {
 		rowContent += t.renderCell(row, index, cellFormat)
 		rowContent += t.renderColumnSeparator()
 	}
@@ -191,7 +260,6 @@ func (t *TableRender) renderRow(row TableRowInterface, cellFormat string) {
 
 /**
  * Renders table cell with padding.
- * TODO
  */
 func (t *TableRender) renderCell(row TableRowInterface, columnIndex int, cellFormat string) string {
 	var cell TableCellInterface
@@ -203,11 +271,12 @@ func (t *TableRender) renderCell(row TableRowInterface, columnIndex int, cellFor
 		cell = column.GetCell()
 	}
 
-	width := t.effectiveColumnWidths[columnIndex]
+	// TODO: find why column index get shifted
+	width := t.GetEffectiveColumnWidth(columnIndex - t.offset)
 
 	if _, ok := cell.(TableSeparatorInterface); !ok && cell.GetColspan() > 1 {
 		for nextColumn := range helper.RangeInt(columnIndex+1, columnIndex+cell.GetColspan()-1) {
-			width += t.getColumnSeparatorWidth() + t.effectiveColumnWidths[nextColumn]
+			width += t.getColumnSeparatorWidth() + t.GetEffectiveColumnWidth(nextColumn)
 		}
 	}
 
@@ -230,7 +299,7 @@ func (t *TableRender) renderCell(row TableRowInterface, columnIndex int, cellFor
 	return result
 }
 
-func (t *TableRender) calculateNumberOfColumns(data TableData) {
+func (t *TableRender) calculateNumberOfColumns(data *TableData) {
 	if t.numberOfColumns != 0 {
 		return
 	}
@@ -247,15 +316,34 @@ func (t *TableRender) calculateNumberOfColumns(data TableData) {
 	t.numberOfColumns = helper.MaxInt(columns)
 }
 
+func (t *TableRender) completeTableSeparator(data *TableData) {
+	for columnIndex := 1; columnIndex < t.numberOfColumns+t.offset; columnIndex++ {
+		for _, rowKey := range data.GetRowsSortedKeys() {
+			row := data.GetRow(rowKey)
+			firstColumn := row.GetColumn(0 + t.offset)
+
+			if firstColumn == nil {
+				continue
+			}
+
+			if _, ok := firstColumn.GetCell().(TableSeparatorInterface); ok {
+				separatorColumn := NewTableColumn().SetCell(NewTableSeparator())
+				row.SetColumn(columnIndex, separatorColumn)
+			}
+		}
+	}
+}
+
 // TODO: check
 func (t *TableRender) buildTableRows(data *TableData) *TableData {
 	unmergedRows := map[int]map[int]map[int]TableCellInterface{}
 
-	for rowKey := 0; rowKey < len(data.rows); rowKey++ {
+	for _, rowKey := range data.GetRowsSortedKeys() {
 		rows := t.fillNextRows(*data, rowKey)
 
 		// Remove any new line breaks and replace it with a new line
-		for columnIndex, column := range data.rows[rowKey].GetColumns() {
+		for _, columnIndex := range data.rows[rowKey].GetColumnsSortedKeys() {
+			column := data.rows[rowKey].GetColumn(columnIndex)
 			cell := column.GetCell()
 
 			if -1 == strings.Index(cell.GetValue(), "\n") {
@@ -283,7 +371,8 @@ func (t *TableRender) buildTableRows(data *TableData) *TableData {
 	}
 
 	tableRows := NewTableData()
-	for rowKey, row := range data.rows {
+	for _, rowKey := range data.GetRowsSortedKeys() {
+		row := data.GetRow(rowKey)
 		tableRows.AddRow(t.fillCells(row))
 		if _, ok := unmergedRows[rowKey]; ok {
 			newRow := NewTableRow()
@@ -305,7 +394,8 @@ func (t *TableRender) fillNextRows(data TableData, line int) TableData {
 	unmergedRows := map[int]map[int]TableCellInterface{}
 
 	row := data.GetRow(line)
-	for columnIndex, column := range row.GetColumns() {
+	for _, columnIndex := range row.GetColumnsSortedKeys() {
+		column := row.GetColumn(columnIndex)
 		cell := column.GetCell()
 
 		if _, ok := cell.(TableSeparatorInterface); ok {
@@ -376,7 +466,8 @@ func (t *TableRender) fillNextRows(data TableData, line int) TableData {
 func (t *TableRender) fillCells(row TableRowInterface) TableRowInterface {
 	newRow := NewTableRow()
 
-	for columnIndex, column := range row.GetColumns() {
+	for _, columnIndex := range row.GetColumnsSortedKeys() {
+		column := row.GetColumn(columnIndex)
 		cell := column.GetCell()
 		newRow.AddColumn(NewTableColumn().SetCell(cell))
 
@@ -398,7 +489,8 @@ func (t *TableRender) fillCells(row TableRowInterface) TableRowInterface {
 func (t *TableRender) copyRow(rows TableData, line int) TableRowInterface {
 	row := rows.GetRow(line)
 
-	for columnIndex, column := range row.GetColumns() {
+	for _, columnIndex := range row.GetColumnsSortedKeys() {
+		column := row.GetColumn(columnIndex)
 		row.GetColumn(columnIndex).SetCell(NewTableCell(""))
 
 		if _, ok := column.(TableSeparatorInterface); !ok {
@@ -437,8 +529,11 @@ func (t *TableRender) calculateColumnsWidth(data *TableData) {
 	for columnIndex := 0; columnIndex < t.numberOfColumns; columnIndex++ {
 		lengths := []int{}
 
-		for _, row := range data.GetRows() {
-			for i, column := range row.GetColumns() {
+		for _, rowKey := range data.GetRowsSortedKeys() {
+			row := data.GetRow(rowKey)
+
+			for _, i := range row.GetColumnsSortedKeys() {
+				column := row.GetColumn(i)
 				cell := column.GetCell()
 
 				if _, ok := cell.(TableSeparatorInterface); ok {
@@ -460,7 +555,7 @@ func (t *TableRender) calculateColumnsWidth(data *TableData) {
 			lengths = append(lengths, t.getCellWidth(row, columnIndex))
 		}
 
-		t.effectiveColumnWidths[columnIndex] = helper.MaxInt(lengths) + helper.Strlen(t.style.GetCellRowContentFormat()) - 2
+		t.SetEffectiveColumnWidth(columnIndex, helper.MaxInt(lengths)+helper.Strlen(t.style.GetCellRowContentFormat())-2)
 	}
 }
 
@@ -477,11 +572,11 @@ func (t *TableRender) getCellWidth(rows TableRowInterface, columnIndex int) int 
 		cellWidth = helper.StrlenWithoutDecoration(t.output.GetFormatter(), cell.GetValue())
 	}
 
-	if cellWidth > t.columnWidths[columnIndex] {
+	if cellWidth > t.GetColumnWidth(columnIndex) {
 		return cellWidth
 	}
 
-	return t.columnWidths[columnIndex]
+	return t.GetColumnWidth(columnIndex)
 }
 
 func (t *TableRender) cleanup() {

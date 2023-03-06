@@ -7,6 +7,12 @@ type TableInterface interface {
 	SetRows(data *TableData) *Table
 	GetRows() *TableData
 
+	SetHeaderTitle(title string) *Table
+	GetHeaderTitle() string
+
+	SetFooterTitle(title string) *Table
+	GetFooterTitle() string
+
 	GetLinesAsList() []TableRowInterface
 	GetColumnsAsList() []TableColumnInterface
 	GetCellsAsList() []TableCellInterface
@@ -15,6 +21,9 @@ type TableInterface interface {
 type Table struct {
 	headers *TableData
 	rows    *TableData
+
+	headerTitle string
+	footerTitle string
 }
 
 // Table constructors
@@ -60,6 +69,24 @@ func (t *Table) GetLinesAsList() []TableRowInterface {
 	}
 
 	return lines
+}
+
+func (t *Table) SetHeaderTitle(title string) *Table {
+	t.headerTitle = title
+	return t
+}
+
+func (t *Table) GetHeaderTitle() string {
+	return t.headerTitle
+}
+
+func (t *Table) SetFooterTitle(title string) *Table {
+	t.footerTitle = title
+	return t
+}
+
+func (t *Table) GetFooterTitle() string {
+	return t.footerTitle
 }
 
 // Computations Helpers
@@ -132,5 +159,17 @@ func (t *Table) setRow(column int, row TableRowInterface) *Table {
 func (t *Table) setRowFromString(column int, rowData []string) *Table {
 	row := MakeRowFromStrings(rowData)
 	t.rows.SetRow(column, row)
+	return t
+}
+
+func (t *Table) AddTableSeparator() *Table {
+	row := NewTableRow().
+		AddColumn(
+			NewTableColumn().
+				SetCell(NewTableSeparator()),
+		)
+
+	t.AddRow(row)
+
 	return t
 }

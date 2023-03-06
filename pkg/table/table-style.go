@@ -45,7 +45,7 @@ func NewTableStyle() *TableStyle {
 	s.horizontalBorderChar = "-"
 	s.verticalBorderChar = "|"
 	s.crossingChar = "+"
-	s.cellHeaderFormat = "<info>%s<info>"
+	s.cellHeaderFormat = "<info>%s</info>"
 	s.cellRowFormat = "%s"
 	s.cellRowContentFormat = " %s "
 	s.borderFormat = "%s"

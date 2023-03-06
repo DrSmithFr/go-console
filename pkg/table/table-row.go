@@ -6,7 +6,7 @@ type TableRowInterface interface {
 	SetColumns(columns map[int]TableColumnInterface) *TableRow
 	GetColumns() map[int]TableColumnInterface
 
-	SortedKeys() []int
+	GetColumnsSortedKeys() []int
 
 	SetColumn(index int, cell TableColumnInterface) *TableRow
 	GetColumn(column int) TableColumnInterface
@@ -43,7 +43,7 @@ func (t *TableRow) GetColumns() map[int]TableColumnInterface {
 	return t.columns
 }
 
-func (t *TableRow) SortedKeys() []int {
+func (t *TableRow) GetColumnsSortedKeys() []int {
 	keys := make([]int, 0, len(t.columns))
 
 	for k := range t.columns {
