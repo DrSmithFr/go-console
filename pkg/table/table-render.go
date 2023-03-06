@@ -245,8 +245,17 @@ func (t *TableRender) renderRow(row TableRowInterface, cellFormat string) {
 
 	rowContent := t.renderColumnSeparator()
 
-	for _, index := range row.GetColumnsSortedKeys() {
+	for index := 0; index < t.numberOfColumns; {
+		//for _, index := range row.GetColumnsSortedKeys() {
 		column := row.GetColumn(index)
+
+		if column == nil {
+			rowContent += t.renderCell(row, index, cellFormat)
+			rowContent += t.renderColumnSeparator()
+			index++
+			continue
+		}
+
 		cell := column.GetCell()
 
 		if _, ok := cell.(TableSeparatorInterface); ok {
@@ -256,6 +265,8 @@ func (t *TableRender) renderRow(row TableRowInterface, cellFormat string) {
 
 		rowContent += t.renderCell(row, index, cellFormat)
 		rowContent += t.renderColumnSeparator()
+
+		index += cell.GetColspan()
 	}
 
 	t.output.Writeln(rowContent)
@@ -363,8 +374,9 @@ func (t *TableRender) buildTableRows(data *TableData) *TableData {
 				newCell := NewTableCell(line)
 
 				if _, ok := cell.(TableSeparatorInterface); !ok {
-					newCell = NewTableCell(line).SetColspan(t.numberOfColumns)
+					newCell.SetColspan(cell.GetColspan())
 				}
+
 				if 0 == lineKey {
 					rows.GetRow(rowKey).GetColumn(columnIndex).SetCell(newCell)
 				} else {
@@ -383,19 +395,18 @@ func (t *TableRender) buildTableRows(data *TableData) *TableData {
 	}
 
 	tableRows := NewTableData()
-	for _, rowKey := range data.GetRowsSortedKeys() {
+	rowKeys := data.GetRowsSortedKeys()
+	for _, rowKey := range rowKeys {
 		row := data.GetRow(rowKey)
 		tableRows.AddRow(t.fillCells(row))
 		if _, ok := unmergedRows[rowKey]; ok {
-			newRow := NewTableRow()
-
 			for _, column := range unmergedRows[rowKey] {
+				newRow := NewTableRow()
 				for columnIndex, cell := range column {
 					newRow.SetColumn(columnIndex, NewTableColumn().SetCell(cell))
 				}
+				tableRows.AddRow(newRow)
 			}
-
-			tableRows.AddRow(newRow)
 		}
 	}
 

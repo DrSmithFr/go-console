@@ -20,7 +20,7 @@ func main() {
 		).
 		AddRowsFromString(
 			[][]string{
-				{"99921-58-10-7", "Divine Comedy", "Dante Alighieri"},
+				{"99921-58-10-7", "Divine \nComedy", "Dante Alighieri"},
 				{"9971-5-0210-0", "A Tale of Two Cities", "Charles Dickens"},
 			},
 		).
@@ -63,7 +63,7 @@ func main() {
 				Columns: map[int]table.TableColumnInterface{
 					0: &table.TableColumn{
 						Cell: &table.TableCell{
-							Value:   "This value spans \nuse 3 lines to \nget fully displayed.",
+							Value:   "This value spans use 3 lines \nto get fully displayed.",
 							Colspan: 3,
 						},
 					},
