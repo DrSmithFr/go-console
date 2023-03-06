@@ -6,14 +6,14 @@ type TableColumnInterface interface {
 }
 
 type TableColumn struct {
-	cell TableCellInterface
+	Cell TableCellInterface
 }
 
 // constructors
 
 func NewTableColumn() *TableColumn {
 	return &TableColumn{
-		cell: NewTableCell(""),
+		Cell: NewTableCell(""),
 	}
 }
 
@@ -26,17 +26,17 @@ func MakeColumnFromString(cells string) *TableColumn {
 var _ TableColumnInterface = (*TableColumn)(nil)
 
 func (t *TableColumn) SetCell(cell TableCellInterface) *TableColumn {
-	t.cell = cell
+	t.Cell = cell
 	return t
 }
 
 func (t *TableColumn) GetCell() TableCellInterface {
-	return t.cell
+	return t.Cell
 }
 
 // Data injections Helpers
 
 func (t *TableColumn) setColumnFromString(row string) *TableColumn {
-	t.cell = NewTableCell(row)
+	t.Cell = NewTableCell(row)
 	return t
 }

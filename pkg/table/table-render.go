@@ -24,9 +24,6 @@ type TableRender struct {
 
 	numberOfColumns       int
 	effectiveColumnWidths map[int]int
-
-	// TODO: find where everything get shifted by 1
-	offset int
 }
 
 // Table constructor
@@ -47,8 +44,6 @@ func NewRender(output output.OutputInterface) *TableRender {
 	t.effectiveColumnWidths = map[int]int{}
 
 	t.SetStyle("default")
-
-	t.offset = 1
 
 	return t
 }
@@ -251,6 +246,14 @@ func (t *TableRender) renderRow(row TableRowInterface, cellFormat string) {
 	rowContent := t.renderColumnSeparator()
 
 	for _, index := range row.GetColumnsSortedKeys() {
+		column := row.GetColumn(index)
+		cell := column.GetCell()
+
+		if _, ok := cell.(TableSeparatorInterface); ok {
+			rowContent = t.getRowSeparator()
+			break
+		}
+
 		rowContent += t.renderCell(row, index, cellFormat)
 		rowContent += t.renderColumnSeparator()
 	}
@@ -259,7 +262,7 @@ func (t *TableRender) renderRow(row TableRowInterface, cellFormat string) {
 }
 
 /**
- * Renders table cell with padding.
+ * Renders table Cell with padding.
  */
 func (t *TableRender) renderCell(row TableRowInterface, columnIndex int, cellFormat string) string {
 	var cell TableCellInterface
@@ -271,11 +274,12 @@ func (t *TableRender) renderCell(row TableRowInterface, columnIndex int, cellFor
 		cell = column.GetCell()
 	}
 
-	// TODO: find why column index get shifted
-	width := t.GetEffectiveColumnWidth(columnIndex - t.offset)
+	width := t.GetEffectiveColumnWidth(columnIndex)
 
-	if _, ok := cell.(TableSeparatorInterface); !ok && cell.GetColspan() > 1 {
-		for nextColumn := range helper.RangeInt(columnIndex+1, columnIndex+cell.GetColspan()-1) {
+	if cell.GetColspan() > 1 {
+		nextColumns := helper.RangeInt(columnIndex+1, columnIndex+cell.GetColspan()-1)
+
+		for _, nextColumn := range nextColumns {
 			width += t.getColumnSeparatorWidth() + t.GetEffectiveColumnWidth(nextColumn)
 		}
 	}
@@ -317,10 +321,10 @@ func (t *TableRender) calculateNumberOfColumns(data *TableData) {
 }
 
 func (t *TableRender) completeTableSeparator(data *TableData) {
-	for columnIndex := 1; columnIndex < t.numberOfColumns+t.offset; columnIndex++ {
+	for columnIndex := 1; columnIndex < t.numberOfColumns; columnIndex++ {
 		for _, rowKey := range data.GetRowsSortedKeys() {
 			row := data.GetRow(rowKey)
-			firstColumn := row.GetColumn(0 + t.offset)
+			firstColumn := row.GetColumn(0)
 
 			if firstColumn == nil {
 				continue
@@ -359,11 +363,19 @@ func (t *TableRender) buildTableRows(data *TableData) *TableData {
 				newCell := NewTableCell(line)
 
 				if _, ok := cell.(TableSeparatorInterface); !ok {
-					newCell = NewTableCell(line).SetColspan(cell.GetColspan())
+					newCell = NewTableCell(line).SetColspan(t.numberOfColumns)
 				}
 				if 0 == lineKey {
 					rows.GetRow(rowKey).GetColumn(columnIndex).SetCell(newCell)
 				} else {
+					if _, ok := unmergedRows[rowKey]; !ok {
+						unmergedRows[rowKey] = map[int]map[int]TableCellInterface{}
+					}
+
+					if _, ok := unmergedRows[rowKey][lineKey]; !ok {
+						unmergedRows[rowKey][lineKey] = map[int]TableCellInterface{}
+					}
+
 					unmergedRows[rowKey][lineKey][columnIndex] = newCell
 				}
 			}
@@ -415,7 +427,7 @@ func (t *TableRender) fillNextRows(data TableData, line int) TableData {
 					lines = lines[1:]
 				}
 
-				// create a two dimensional array (rowspan x colspan)
+				// create a two dimensional array (Rowspan x Colspan)
 				filler := RowMapFill(line+1, nbLines, NewTableRow())
 				unmergedRows = RowMapReplaceRecursive(filler, unmergedRows)
 
@@ -442,7 +454,7 @@ func (t *TableRender) fillNextRows(data TableData, line int) TableData {
 
 		if row != nil && row.GetColumns() != nil && (t.getNumberOfColumns(row)+t.getNumberOfColumns(row) <= t.numberOfColumns) {
 			for cellKey, cell := range unmergedRow {
-				// insert cell into row at cellKey position
+				// insert Cell into row at cellKey position
 				for columnIndex, cell := range MapCellSplice(unmergedRow, cellKey, cell) {
 					data.GetRow(unmergedRowKey).SetColumn(columnIndex, NewTableColumn().SetCell(cell))
 				}
@@ -463,20 +475,25 @@ func (t *TableRender) fillNextRows(data TableData, line int) TableData {
 	return data
 }
 
+/**
+ * fill cells for a row that contains colspan > 1.
+ */
 func (t *TableRender) fillCells(row TableRowInterface) TableRowInterface {
 	newRow := NewTableRow()
 
 	for _, columnIndex := range row.GetColumnsSortedKeys() {
 		column := row.GetColumn(columnIndex)
 		cell := column.GetCell()
+
 		newRow.AddColumn(NewTableColumn().SetCell(cell))
 
-		if _, ok := cell.(TableSeparatorInterface); !ok {
-
-			for position := range helper.RangeInt(columnIndex+1, columnIndex+cell.GetColspan()-1) {
-				newRow.SetColumn(position, NewTableColumn().SetCell(NewTableCell("")))
-			}
-		}
+		// TODO: Find why empty cells keep being inserted
+		//if _, ok := cell.(TableSeparatorInterface); !ok && cell.GetColspan() > 1 {
+		//	positions := helper.RangeInt(columnIndex+1, columnIndex+cell.GetColspan()-1)
+		//	for _, position := range positions {
+		//		newRow.SetColumn(position, NewTableColumn().SetCell(NewTableCell("")))
+		//	}
+		//}
 	}
 
 	if len(newRow.GetColumns()) > 0 {

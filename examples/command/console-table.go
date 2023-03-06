@@ -32,21 +32,51 @@ func main() {
 			},
 		)
 
-	//tab.
-	//	AddTableSeparator().
-	//	AddRow(
-	//		table.
-	//			NewTableRow().
-	//			AddColumn(
-	//				table.
-	//					NewTableColumn().
-	//					SetCell(
-	//						table.
-	//							NewTableCell("This value spans 3 columns.").
-	//							SetColspan(3),
-	//					),
-	//			),
-	//	)
+	tab.
+		AddTableSeparator().
+		AddRow(
+			table.
+				NewTableRow().
+				AddColumn(
+					table.
+						NewTableColumn().
+						SetCell(
+							table.
+								NewTableCell("This value spans 2 columns.").
+								SetColspan(2),
+						),
+				).
+				AddColumn(
+					table.
+						NewTableColumn().
+						SetCell(
+							table.
+								NewTableCell("stand alone value"),
+						),
+				),
+		)
+
+	tab.
+		AddTableSeparator().
+		AddRow(
+			&table.TableRow{
+				Columns: map[int]table.TableColumnInterface{
+					0: &table.TableColumn{
+						Cell: &table.TableCell{
+							Value:   "This value spans \nuse 3 lines to \nget fully displayed.",
+							Colspan: 3,
+						},
+					},
+				},
+			},
+		).
+		AddTableSeparator().
+		AddRowsFromString(
+			[][]string{
+				{"960-425-059-0", "The Lord of the Rings", "J. R. R. Tolkien"},
+				{"80-902734-1-6", "And Then There Were None", "Agatha Christie"},
+			},
+		)
 
 	render := table.
 		NewRender(out).

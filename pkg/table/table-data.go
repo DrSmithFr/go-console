@@ -142,14 +142,26 @@ func (t *TableData) AddRowsFromString(rows [][]string) *TableData {
 
 func (t *TableData) AddRow(row TableRowInterface) *TableData {
 	addIndex := -1
+	rowspanOffset := 0
 
 	for index := range t.rows {
 		if index > addIndex {
 			addIndex = index
 		}
+
+		for _, column := range t.rows[index].GetColumnsSortedKeys() {
+			column := t.rows[index].GetColumn(column)
+			cell := column.GetCell()
+
+			if _, ok := cell.(TableSeparatorInterface); ok {
+				rowspanOffset++
+			} else {
+				rowspanOffset += column.GetCell().GetRowspan() - 1
+			}
+		}
 	}
 
-	t.rows[addIndex+1] = row
+	t.rows[addIndex+rowspanOffset+1] = row
 
 	return t
 }

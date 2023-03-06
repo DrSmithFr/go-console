@@ -15,14 +15,14 @@ type TableRowInterface interface {
 }
 
 type TableRow struct {
-	columns map[int]TableColumnInterface
+	Columns map[int]TableColumnInterface
 }
 
 // TableRow constructors
 
 func NewTableRow() *TableRow {
 	return &TableRow{
-		columns: make(map[int]TableColumnInterface),
+		Columns: make(map[int]TableColumnInterface),
 	}
 }
 
@@ -35,18 +35,18 @@ func MakeRowFromStrings(column []string) *TableRow {
 var _ TableRowInterface = (*TableRow)(nil)
 
 func (t *TableRow) SetColumns(columns map[int]TableColumnInterface) *TableRow {
-	t.columns = columns
+	t.Columns = columns
 	return t
 }
 
 func (t *TableRow) GetColumns() map[int]TableColumnInterface {
-	return t.columns
+	return t.Columns
 }
 
 func (t *TableRow) GetColumnsSortedKeys() []int {
-	keys := make([]int, 0, len(t.columns))
+	keys := make([]int, 0, len(t.Columns))
 
-	for k := range t.columns {
+	for k := range t.Columns {
 		keys = append(keys, k)
 	}
 
@@ -56,18 +56,18 @@ func (t *TableRow) GetColumnsSortedKeys() []int {
 }
 
 func (t *TableRow) SetColumn(index int, column TableColumnInterface) *TableRow {
-	t.columns[index] = column
+	t.Columns[index] = column
 	return t
 }
 
 func (t *TableRow) GetColumn(column int) TableColumnInterface {
-	return t.columns[column]
+	return t.Columns[column]
 }
 
 func (t *TableRow) GetCellsAsList() []TableCellInterface {
 	cells := []TableCellInterface{}
 
-	for _, column := range t.columns {
+	for _, column := range t.Columns {
 		cells = append(cells, column.GetCell())
 	}
 
@@ -85,15 +85,18 @@ func (t *TableRow) setRowFromString(row []string) *TableRow {
 }
 
 func (t *TableRow) AddColumn(column TableColumnInterface) *TableRow {
-	addIndex := 0
+	addIndex := -1
+	colspanOffset := 0
 
-	for index := range t.columns {
+	for index, column := range t.Columns {
 		if index > addIndex {
 			addIndex = index
 		}
+
+		colspanOffset += column.GetCell().GetColspan() - 1
 	}
 
-	t.columns[addIndex+1] = column
+	t.Columns[addIndex+colspanOffset+1] = column
 
 	return t
 }
