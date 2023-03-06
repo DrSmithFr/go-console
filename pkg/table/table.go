@@ -24,14 +24,17 @@ type Table struct {
 
 	headerTitle string
 	footerTitle string
+
+	columnsPadding map[int]PaddingType
 }
 
 // Table constructors
 
 func NewTable() *Table {
 	return &Table{
-		headers: NewTableData(),
-		rows:    NewTableData(),
+		headers:        NewTableData(),
+		rows:           NewTableData(),
+		columnsPadding: map[int]PaddingType{},
 	}
 }
 
@@ -209,4 +212,19 @@ func (t *Table) AddTableSeparator() *Table {
 	t.AddRow(row)
 
 	return t
+}
+
+// Columns Padding
+
+func (t *Table) SetColumnPadding(column int, padding PaddingType) *Table {
+	t.columnsPadding[column-1] = padding
+	return t
+}
+
+func (t *Table) GetColumnPadding(column int) PaddingType {
+	if _, ok := t.columnsPadding[column-1]; ok {
+		return PadDefault
+	}
+
+	return t.columnsPadding[column]
 }

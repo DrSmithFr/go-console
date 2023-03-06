@@ -13,13 +13,15 @@ func main() {
 		NewTable().
 		SetHeaderTitle("Books").
 		SetFooterTitle("Page 1/2").
+		SetColumnPadding(3, table.PadToRight).
 		AddHeader(
 			&table.TableRow{
 				Columns: map[int]table.TableColumnInterface{
 					0: &table.TableColumn{
 						Cell: &table.TableCell{
-							Value:   "Main table title",
+							Value:   "Centred Header Cell",
 							Colspan: 3,
+							PadType: table.PadToCenter,
 						},
 					},
 				},
@@ -32,7 +34,7 @@ func main() {
 		).
 		AddRowsFromString(
 			[][]string{
-				{"99921-58-10-7", "The \nDivine \nComedy", "Dante Alighieri"},
+				{"99921-58-10-7", "The Divine Comedy", "Dante \nAlighieri"},
 				{"9971-5-0210-0", "A Tale of Two Cities", "Charles Dickens"},
 			},
 		).
@@ -75,7 +77,7 @@ func main() {
 				Columns: map[int]table.TableColumnInterface{
 					0: &table.TableColumn{
 						Cell: &table.TableCell{
-							Value:   "This value spans use 3 lines \nto get fully displayed.",
+							Value:   "<question>This value spans use 3 lines \nto get fully displayed.</question>",
 							Colspan: 3,
 						},
 					},

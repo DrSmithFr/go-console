@@ -309,7 +309,17 @@ func (t *TableRender) renderCell(row TableRowInterface, columnIndex int, cellFor
 	width += helper.Strlen(cell.GetValue()) - helper.StrlenWithoutDecoration(t.output.GetFormatter(), cell.GetValue())
 	content := fmt.Sprintf(style.GetCellRowContentFormat(), cell.GetValue())
 
-	result := fmt.Sprintf(cellFormat, style.Pad(content, width, style.GetPaddingChar(), style.GetPadType()))
+	cellPad := cell.GetPadType()
+
+	if cellPad == PadDefault {
+		cellPad = t.content.GetColumnPadding(columnIndex)
+	}
+
+	if cellPad == PadDefault {
+		cellPad = style.GetPadType()
+	}
+
+	result := fmt.Sprintf(cellFormat, style.Pad(content, width, style.GetPaddingChar(), cellPad))
 
 	return result
 }

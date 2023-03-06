@@ -8,9 +8,10 @@ import (
 type PaddingType int
 
 const (
-	STR_PAD_LEFT  PaddingType = iota
-	STR_PAD_RIGHT PaddingType = iota
-	STR_PAD_BOTH  PaddingType = iota
+	PadDefault  PaddingType = 0
+	PadToRight  PaddingType = 1
+	PadToLeft   PaddingType = 2
+	PadToCenter PaddingType = 3
 )
 
 type TableStyleInterface interface {
@@ -49,7 +50,7 @@ func NewTableStyle() *TableStyle {
 	s.cellRowFormat = "%s"
 	s.cellRowContentFormat = " %s "
 	s.borderFormat = "%s"
-	s.padType = STR_PAD_RIGHT
+	s.padType = PadToLeft
 
 	return s
 }
@@ -63,11 +64,11 @@ func (t TableStyle) Pad(content string, length int, pad string, direction Paddin
 
 	numPads := int(math.Ceil(float64(length-contentLen) / float64(len(pad))))
 	switch direction {
-	case STR_PAD_LEFT:
+	case PadToRight:
 		return strings.Repeat(pad, numPads) + content
-	case STR_PAD_RIGHT:
+	case PadToLeft:
 		return content + strings.Repeat(pad, numPads)
-	case STR_PAD_BOTH:
+	case PadToCenter:
 		quotient := numPads / 2
 		remainder := numPads % 2
 		return strings.Repeat(pad, quotient) + content + strings.Repeat(pad, quotient+remainder)
