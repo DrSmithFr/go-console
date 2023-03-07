@@ -208,7 +208,7 @@ func (t *TableRender) Render() {
 }
 
 func (t *TableRender) renderRowTitleSeparator(title string, direction rowType) {
-	if len(title) == 0 {
+	if utf8.RuneCountInString(title) == 0 {
 		t.renderRowSeparator(direction)
 		return
 	}
@@ -424,9 +424,9 @@ func (t *TableRender) renderCell(row TableRowInterface, columnIndex int, cellFor
 	}
 
 	// str_pad won't work properly with multi-byte strings, we need to fix the padding
-	if utf8.ValidString(cell.GetValue()) {
-		width += len(cell.GetValue()) - helper.Strlen(cell.GetValue())
-	}
+	//if utf8.ValidString(cell.GetValue()) {
+	//	width += len(cell.GetValue()) - helper.Strlen(cell.GetValue())
+	//}
 
 	style := t.GetColumnStyle(columnIndex)
 
@@ -745,7 +745,7 @@ func (t *TableRender) calculateColumnsWidth(data *TableData) {
 				}
 
 				textContent := helper.RemoveDecoration(t.output.GetFormatter(), cell.GetValue())
-				textLenght := helper.Strlen(textContent)
+				textLenght := utf8.RuneCountInString(textContent)
 
 				if textLenght > 0 {
 					contentColumns := helper.StrSplit(textContent, int(math.Ceil(float64(textLenght)/float64(cell.GetColspan()))))
@@ -759,12 +759,12 @@ func (t *TableRender) calculateColumnsWidth(data *TableData) {
 			lengths = append(lengths, t.getCellWidth(row, columnIndex))
 		}
 
-		t.setEffectiveColumnWidth(columnIndex, helper.MaxInt(lengths)+helper.Strlen(t.style.GetCellRowContentFormat())-2)
+		t.setEffectiveColumnWidth(columnIndex, helper.MaxInt(lengths)+utf8.RuneCountInString(t.style.GetCellRowContentFormat())-2)
 	}
 }
 
 func (t *TableRender) getColumnSeparatorWidth() int {
-	return helper.Strlen(fmt.Sprintf(t.style.GetBorderFormat(), t.style.GetVerticalInsideBorderChar()))
+	return utf8.RuneCountInString(fmt.Sprintf(t.style.GetBorderFormat(), t.style.GetVerticalInsideBorderChar()))
 }
 
 func (t *TableRender) getCellWidth(rows TableRowInterface, columnIndex int) int {
