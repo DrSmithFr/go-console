@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/DrSmithFr/go-console/pkg/helper"
 	"github.com/DrSmithFr/go-console/pkg/output"
-	"math"
 	"sort"
 	"strings"
 	"unicode/utf8"
@@ -191,13 +190,14 @@ func (t *TableRender) Render() {
 	t.calculateNumberOfColumns(mergedData)
 	t.completeTableSeparator(mergedData)
 
+	t.calculateColumnsWidth(mergedData)
+
 	rows := t.content.GetRows()
 	headers := t.content.GetHeaders()
 
 	rowsData := t.buildTableRows(rows)
 	headersData := t.buildTableRows(headers)
 
-	t.calculateColumnsWidth(mergedData)
 	t.renderRowTitleSeparator(t.content.GetHeaderTitle(), rowTop)
 
 	if len(headersData.GetRows()) > 0 {
@@ -754,24 +754,28 @@ func (t *TableRender) calculateColumnsWidth(data *TableData) {
 		for _, rowKey := range data.GetRowsSortedKeys() {
 			row := data.GetRow(rowKey)
 
-			for _, i := range row.GetColumnsSortedKeys() {
-				column := row.GetColumn(i)
-				cell := column.GetCell()
+			if row == nil {
+				continue
+			}
 
-				if _, ok := cell.(TableSeparatorInterface); ok {
-					continue
-				}
+			column := row.GetColumn(columnIndex)
 
-				textContent := helper.RemoveDecoration(t.output.GetFormatter(), cell.GetValue())
-				textLenght := utf8.RuneCountInString(textContent)
+			if column == nil {
+				continue
+			}
 
-				if textLenght > 0 {
-					contentColumns := helper.StrSplit(textContent, int(math.Ceil(float64(textLenght)/float64(cell.GetColspan()))))
+			cell := column.GetCell()
 
-					for position, content := range contentColumns {
-						row.SetColumn(i+position, MakeColumnFromString(content))
-					}
-				}
+			if column == nil {
+				continue
+			}
+
+			if _, ok := cell.(TableSeparatorInterface); ok {
+				continue
+			}
+
+			if cell.GetColspan() > 1 {
+				continue
 			}
 
 			lengths = append(lengths, t.getCellWidth(row, columnIndex))
@@ -789,11 +793,30 @@ func (t *TableRender) getCellWidth(rows TableRowInterface, columnIndex int) int 
 	column := rows.GetColumn(columnIndex)
 
 	cellWidth := 0
-	if column != nil {
-		cell := column.GetCell()
-		cellWidth = helper.StrlenWithoutDecoration(t.output.GetFormatter(), cell.GetValue())
+
+	if column == nil {
+		return t.getCellWidthOverride(columnIndex, cellWidth)
 	}
 
+	cell := column.GetCell()
+
+	cellRawValue := helper.RemoveDecoration(t.output.GetFormatter(), cell.GetValue())
+	cellWidth = utf8.RuneCountInString(cellRawValue)
+
+	if -1 == strings.Index(cell.GetValue(), "\n") {
+		return t.getCellWidthOverride(columnIndex, cellWidth)
+	}
+
+	for _, lines := range strings.Split(cellRawValue, "\n") {
+		if utf8.RuneCountInString(lines) > cellWidth {
+			cellWidth = utf8.RuneCountInString(lines)
+		}
+	}
+
+	return t.getCellWidthOverride(columnIndex, cellWidth)
+}
+
+func (t *TableRender) getCellWidthOverride(columnIndex int, cellWidth int) int {
 	minWidth := t.GetColumnMinWidth(columnIndex)
 
 	if minWidth > 0 && cellWidth < minWidth {
