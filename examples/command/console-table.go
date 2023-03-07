@@ -12,7 +12,7 @@ func main() {
 	tab := table.
 		NewTable().
 		SetHeaderTitle("Books").
-		SetFooterTitle("Page 1/2").
+		//SetFooterTitle("Page 1/2").
 		SetColumnPadding(3, table.PadToRight).
 		AddHeader(
 			&table.TableRow{
@@ -112,6 +112,7 @@ func main() {
 
 	//render.SetStyle("compact")
 	//render.SetStyle("borderless")
+	render.SetStyle("box")
 
 	render.Render()
 }

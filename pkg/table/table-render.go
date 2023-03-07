@@ -192,28 +192,57 @@ func (t *TableRender) Render() {
 }
 
 func (t *TableRender) renderRowTitleSeparator(title string) {
-	separator := t.getRowSeparator()
+	if len(title) == 0 {
+		t.renderRowSeparator()
+		return
+	}
 
-	if len(separator) == 0 {
+	count := t.numberOfColumns
+
+	if count == 0 {
 		return
 	}
 
 	paddedTitle := fmt.Sprintf(" %s ", title)
 
-	if len(paddedTitle) >= len(separator) {
+	if len(t.style.GetHorizontalBorderChar()) == 0 && len(t.style.GetCrossingChar()) == 0 {
 		t.output.Writeln(paddedTitle)
 		return
 	}
 
-	separatorCrop := len(separator) - len(paddedTitle)
+	separator := t.getRowSeparator()
 
-	separatorCropLeft := separatorCrop / 2
-	separatorCropRight := separatorCrop - separatorCropLeft
+	paddedTitleLength := utf8.RuneCountInString(paddedTitle)
+	separatorLength := utf8.RuneCountInString(separator)
+	separatorLengthCrop := separatorLength - paddedTitleLength
 
-	separatorLeft := separator[0:separatorCropLeft]
-	separatorRight := separator[len(separator)-separatorCropRight:]
+	separatorCropLeft := separatorLengthCrop / 2
+	//separatorCropRight := separatorLengthCrop - separatorCropLeft
 
-	t.output.Writeln(fmt.Sprintf("%s<b>%s</b>%s", separatorLeft, paddedTitle, separatorRight))
+	titleSeparator := ""
+	index := 0
+	for _, char := range separator {
+		if index == separatorCropLeft {
+			titleSeparator += paddedTitle
+			break
+		}
+
+		titleSeparator += string(char)
+		index++
+	}
+
+	index = 0
+	for _, char := range separator {
+		if index < separatorCropLeft+paddedTitleLength {
+			index++
+			continue
+		}
+
+		titleSeparator += string(char)
+		index++
+	}
+
+	t.output.Writeln(titleSeparator)
 }
 
 func (t *TableRender) renderRowSeparator() {

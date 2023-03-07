@@ -26,10 +26,22 @@ func initStyles() {
 		SetCrossingChar(" ").
 		SetCellHeaderFormat("%s")
 
+	box := NewTableStyle().
+		SetHorizontalBorderChar("─").
+		SetVerticalBorderChar("│").
+		SetCrossingChar("┼")
+
+	boxDouble := NewTableStyle().
+		SetHorizontalBorderChar("═").
+		SetVerticalBorderChar("║").
+		SetCrossingChar("┼")
+
 	Styles["default"] = NewTableStyle()
 	Styles["borderless"] = borderless
 	Styles["compact"] = compact
 	Styles["style-guide"] = styleGuide
+	Styles["box"] = box
+	Styles["box-double"] = boxDouble
 }
 
 func SetStyleDefinition(name string, style TableStyleInterface) {
