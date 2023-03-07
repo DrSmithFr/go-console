@@ -5,6 +5,7 @@ import (
 	"github.com/DrSmithFr/go-console/pkg/helper"
 	"github.com/DrSmithFr/go-console/pkg/output"
 	"math"
+	"sort"
 	"strings"
 	"unicode/utf8"
 )
@@ -402,16 +403,27 @@ func (t *TableRender) buildTableRows(data *TableData) *TableData {
 			maxWidth := t.GetColumnMaxWidth(columnIndex)
 			if maxWidth > 0 {
 				if cell.GetColspan() > 1 {
+					maxWidth += t.getColumnSeparatorWidth()
 					for i := 0; i < cell.GetColspan(); i++ {
 						maxWidth += t.GetColumnMaxWidth(columnIndex+i) + t.getColumnSeparatorWidth()
 					}
 				}
 
 				cellValue := cell.GetValue()
-				cellWidth := utf8.RuneCountInString(cellValue)
+				cellRawValue := helper.RemoveDecoration(t.output.GetFormatter(), cellValue)
 
-				if cellWidth > maxWidth {
-					newValue := helper.InsertNth(cell.GetValue(), maxWidth, '\n')
+				cellRawWidth := utf8.RuneCountInString(cellRawValue)
+				if cellRawWidth > maxWidth {
+
+					var newValue string
+					if cellValue == cellRawValue {
+						newValue = helper.InsertNth(cellRawValue, maxWidth, '\n')
+					} else {
+						newRawValue := helper.InsertNth(cellRawValue, maxWidth, '\n')
+						tags := t.output.GetFormatter().FindTagsInString(cellValue)
+						newValue = helper.InsertTagsIgnoringNewLines(cellRawValue, newRawValue, tags)
+					}
+
 					cell.SetValue(newValue)
 				}
 			}
@@ -454,8 +466,17 @@ func (t *TableRender) buildTableRows(data *TableData) *TableData {
 	for _, rowKey := range rowKeys {
 		row := data.GetRow(rowKey)
 		tableRows.AddRow(t.fillCells(row))
+
 		if _, ok := unmergedRows[rowKey]; ok {
-			for _, column := range unmergedRows[rowKey] {
+
+			unmergedColumnsKeys := []int{}
+			for unmergedColumnKey, _ := range unmergedRows[rowKey] {
+				unmergedColumnsKeys = append(unmergedColumnsKeys, unmergedColumnKey)
+			}
+			sort.Ints(unmergedColumnsKeys)
+
+			for _, unmergedColumnKey := range unmergedColumnsKeys {
+				column := unmergedRows[rowKey][unmergedColumnKey]
 				newRow := NewTableRow()
 				for columnIndex, cell := range column {
 					newRow.SetColumn(columnIndex, NewTableColumn().SetCell(cell))

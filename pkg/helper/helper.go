@@ -35,6 +35,63 @@ func RemoveDecoration(outputFormatter formatter.OutputFormatterInterface, messag
 	return noDecoration
 }
 
+func InsertTagsIgnoringNewLines(oldMessage string, newMessage string, tags []formatter.TagPos) string {
+	tagMap := make(map[int]formatter.TagPos)
+
+	for _, tag := range tags {
+		tagMap[tag.Start] = tag
+	}
+
+	finalMessage := ""
+
+	offsetTag := 0
+	offsetOld := 0
+
+	activeTags := []formatter.TagPos{}
+
+	for i, char := range newMessage {
+		if char == '\n' {
+			if len(activeTags) > 0 {
+				for tagIndex := len(activeTags) - 1; tagIndex >= 0; tagIndex-- {
+					finalMessage += fmt.Sprintf("</%s>", activeTags[tagIndex].Tag)
+				}
+			}
+
+			finalMessage += string(char)
+
+			if len(activeTags) > 0 {
+				for _, tag := range activeTags {
+					finalMessage += fmt.Sprintf("<%s>", tag.Tag)
+				}
+			}
+
+			if oldMessage[i+offsetOld] != '\n' {
+				offsetTag--
+				offsetOld--
+			}
+		} else {
+			if tag, ok := tagMap[i+offsetTag]; ok {
+				finalMessage += tag.Text
+				offsetTag += len(tag.Text)
+
+				if tag.Opening {
+					activeTags = append(activeTags, tag)
+				} else {
+					activeTags = activeTags[:len(activeTags)-1]
+				}
+			}
+
+			finalMessage += string(char)
+		}
+	}
+
+	if tag, ok := tagMap[len(newMessage)+offsetTag]; ok {
+		finalMessage += tag.Text
+	}
+
+	return finalMessage
+}
+
 // unshift a string from array
 func ArrayUnshift(s []string, elements ...string) []string {
 	return append(elements, s...)
