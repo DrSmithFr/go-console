@@ -133,6 +133,24 @@ func (t *TableRender) SetColumnsMaxWidths(widths map[int]int) *TableRender {
 	return t
 }
 
+func (t *TableRender) SetColumnWidth(column int, width int) *TableRender {
+	t.columnsMinWidths[column] = width
+	t.columnsMaxWidths[column] = width
+	return t
+}
+
+func (t *TableRender) SetColumnsWidths(widths map[int]int) *TableRender {
+	t.columnsMinWidths = map[int]int{}
+	t.columnsMaxWidths = map[int]int{}
+
+	for column, width := range widths {
+		t.SetColumnMinWidth(column, width)
+		t.SetColumnMaxWidth(column, width)
+	}
+
+	return t
+}
+
 // Internal width management
 
 func (t *TableRender) setEffectiveColumnWidth(column int, width int) *TableRender {
@@ -768,19 +786,27 @@ func (t *TableRender) getColumnSeparatorWidth() int {
 }
 
 func (t *TableRender) getCellWidth(rows TableRowInterface, columnIndex int) int {
-	cellWidth := 0
-
 	column := rows.GetColumn(columnIndex)
+
+	cellWidth := 0
 	if column != nil {
 		cell := column.GetCell()
 		cellWidth = helper.StrlenWithoutDecoration(t.output.GetFormatter(), cell.GetValue())
 	}
 
-	if cellWidth > t.GetColumnMinWidth(columnIndex) {
-		return cellWidth
+	minWidth := t.GetColumnMinWidth(columnIndex)
+
+	if minWidth > 0 && cellWidth < minWidth {
+		return minWidth
 	}
 
-	return t.GetColumnMinWidth(columnIndex)
+	maxWidth := t.GetColumnMaxWidth(columnIndex)
+
+	if maxWidth > 0 && cellWidth > maxWidth {
+		return maxWidth
+	}
+
+	return cellWidth
 }
 
 func (t *TableRender) cleanup() {
