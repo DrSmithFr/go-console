@@ -29,12 +29,14 @@ func initStyles() {
 	box := NewTableStyle().
 		SetHorizontalBorderChar("─").
 		SetVerticalBorderChar("│").
-		SetCrossingChar("┼")
+		SetCrossingChars("┼", "┌", "┬", "┐", "┤", "┘", "┴", "└", "├", "├", "┼", "┤")
 
 	boxDouble := NewTableStyle().
-		SetHorizontalBorderChar("═").
-		SetVerticalBorderChar("║").
-		SetCrossingChar("┼")
+		SetHorizontalOutsideBorderChar("═").
+		SetHorizontalInsideBorderChar("─").
+		SetVerticalOutsideBorderChar("║").
+		SetVerticalInsideBorderChar("│").
+		SetCrossingChars("┼", "╔", "╤", "╗", "╢", "╝", "╧", "╚", "╟", "╠", "╪", "╣")
 
 	Styles["default"] = NewTableStyle()
 	Styles["borderless"] = borderless

@@ -16,9 +16,30 @@ const (
 
 type TableStyleInterface interface {
 	GetPaddingChar() string
-	GetHorizontalBorderChar() string
-	GetVerticalBorderChar() string
+
+	GetHorizontalOutsideBorderChar() string
+	GetHorizontalInsideBorderChar() string
+
+	GetVerticalOutsideBorderChar() string
+	GetVerticalInsideBorderChar() string
+
 	GetCrossingChar() string
+
+	GetCrossingTopRightChar() string
+	GetCrossingTopMidChar() string
+	GetCrossingTopLeftChar() string
+
+	GetCrossingBottomRightChar() string
+	GetCrossingBottomMidChar() string
+	GetCrossingBottomLeftChar() string
+
+	GetCrossingMidRightChar() string
+	GetCrossingMidLeftChar() string
+
+	GetCrossingTopLeftBottomChar() string
+	GetCrossingTopMidBottomChar() string
+	GetCrossingTopRightBottomChar() string
+
 	GetCellHeaderFormat() string
 	GetCellRowFormat() string
 	GetCellRowContentFormat() string
@@ -28,24 +49,67 @@ type TableStyleInterface interface {
 }
 
 type TableStyle struct {
-	paddingChar          string
-	horizontalBorderChar string
-	verticalBorderChar   string
-	crossingChar         string
+	paddingChar string
+
+	horizontalOutsideBorderChar string
+	horizontalInsideBorderChar  string
+
+	verticalOutsideBorderChar string
+	verticalInsideBorderChar  string
+
+	crossingChar string
+
+	crossingTopRightChar string
+	crossingTopMidChar   string
+	crossingTopLeftChar  string
+
+	crossingBottomRightChar string
+	crossingBottomMidChar   string
+	crossingBottomLeftChar  string
+
+	crossingMidRightChar string
+	crossingMidLeftChar  string
+
+	crossingTopLeftBottomChar  string
+	crossingTopMidBottomChar   string
+	crossingTopRightBottomChar string
+
 	cellHeaderFormat     string
 	cellRowFormat        string
 	cellRowContentFormat string
 	borderFormat         string
-	padType              PaddingType
+
+	padType PaddingType
 }
 
 func NewTableStyle() *TableStyle {
 	s := new(TableStyle)
 
 	s.paddingChar = " "
-	s.horizontalBorderChar = "-"
-	s.verticalBorderChar = "|"
+
+	s.horizontalOutsideBorderChar = "-"
+	s.horizontalInsideBorderChar = "-"
+
+	s.verticalOutsideBorderChar = "|"
+	s.verticalInsideBorderChar = "|"
+
 	s.crossingChar = "+"
+
+	s.crossingTopRightChar = "+"
+	s.crossingTopMidChar = "+"
+	s.crossingTopLeftChar = "+"
+
+	s.crossingMidRightChar = "+"
+	s.crossingMidLeftChar = "+"
+
+	s.crossingBottomRightChar = "+"
+	s.crossingBottomMidChar = "+"
+	s.crossingBottomLeftChar = "+"
+
+	s.crossingTopLeftBottomChar = "+"
+	s.crossingTopMidBottomChar = "+"
+	s.crossingTopRightBottomChar = "+"
+
 	s.cellHeaderFormat = "<info>%s</info>"
 	s.cellRowFormat = "%s"
 	s.cellRowContentFormat = " %s "
@@ -81,39 +145,91 @@ func (t TableStyle) Pad(content string, length int, pad string, direction Paddin
 
 var _ TableStyleInterface = (*TableStyle)(nil)
 
-func (t TableStyle) GetPaddingChar() string {
+func (t *TableStyle) GetPaddingChar() string {
 	return t.paddingChar
 }
 
-func (t TableStyle) GetHorizontalBorderChar() string {
-	return t.horizontalBorderChar
+func (t *TableStyle) GetHorizontalOutsideBorderChar() string {
+	return t.horizontalOutsideBorderChar
 }
 
-func (t TableStyle) GetVerticalBorderChar() string {
-	return t.verticalBorderChar
+func (t *TableStyle) GetHorizontalInsideBorderChar() string {
+	return t.horizontalInsideBorderChar
 }
 
-func (t TableStyle) GetCrossingChar() string {
+func (t *TableStyle) GetVerticalOutsideBorderChar() string {
+	return t.verticalOutsideBorderChar
+}
+
+func (t *TableStyle) GetVerticalInsideBorderChar() string {
+	return t.verticalInsideBorderChar
+}
+
+func (t *TableStyle) GetCrossingChar() string {
 	return t.crossingChar
 }
 
-func (t TableStyle) GetCellHeaderFormat() string {
+func (t *TableStyle) GetCrossingTopRightChar() string {
+	return t.crossingTopRightChar
+}
+
+func (t *TableStyle) GetCrossingTopMidChar() string {
+	return t.crossingTopMidChar
+}
+
+func (t *TableStyle) GetCrossingTopLeftChar() string {
+	return t.crossingTopLeftChar
+}
+
+func (t *TableStyle) GetCrossingBottomRightChar() string {
+	return t.crossingBottomRightChar
+}
+
+func (t *TableStyle) GetCrossingBottomMidChar() string {
+	return t.crossingBottomMidChar
+}
+
+func (t *TableStyle) GetCrossingBottomLeftChar() string {
+	return t.crossingBottomLeftChar
+}
+
+func (t *TableStyle) GetCrossingMidRightChar() string {
+	return t.crossingMidRightChar
+}
+
+func (t *TableStyle) GetCrossingMidLeftChar() string {
+	return t.crossingMidLeftChar
+}
+
+func (t *TableStyle) GetCrossingTopLeftBottomChar() string {
+	return t.crossingTopLeftBottomChar
+}
+
+func (t *TableStyle) GetCrossingTopMidBottomChar() string {
+	return t.crossingTopMidBottomChar
+}
+
+func (t *TableStyle) GetCrossingTopRightBottomChar() string {
+	return t.crossingTopRightBottomChar
+}
+
+func (t *TableStyle) GetCellHeaderFormat() string {
 	return t.cellHeaderFormat
 }
 
-func (t TableStyle) GetCellRowFormat() string {
+func (t *TableStyle) GetCellRowFormat() string {
 	return t.cellRowFormat
 }
 
-func (t TableStyle) GetCellRowContentFormat() string {
+func (t *TableStyle) GetCellRowContentFormat() string {
 	return t.cellRowContentFormat
 }
 
-func (t TableStyle) GetBorderFormat() string {
+func (t *TableStyle) GetBorderFormat() string {
 	return t.borderFormat
 }
 
-func (t TableStyle) GetPadType() PaddingType {
+func (t *TableStyle) GetPadType() PaddingType {
 	return t.padType
 }
 
@@ -124,18 +240,90 @@ func (t *TableStyle) SetPaddingChar(paddingChar string) *TableStyle {
 	return t
 }
 
-func (t *TableStyle) SetHorizontalBorderChar(horizontalBorderChar string) *TableStyle {
-	t.horizontalBorderChar = horizontalBorderChar
+func (t *TableStyle) SetHorizontalBorderChar(borderChar string) *TableStyle {
+	t.horizontalOutsideBorderChar = borderChar
+	t.horizontalInsideBorderChar = borderChar
 	return t
 }
 
-func (t *TableStyle) SetVerticalBorderChar(verticalBorderChar string) *TableStyle {
-	t.verticalBorderChar = verticalBorderChar
+func (t *TableStyle) SetHorizontalOutsideBorderChar(borderChar string) *TableStyle {
+	t.horizontalOutsideBorderChar = borderChar
+	return t
+}
+
+func (t *TableStyle) SetHorizontalInsideBorderChar(borderChar string) *TableStyle {
+	t.horizontalInsideBorderChar = borderChar
+	return t
+}
+
+func (t *TableStyle) SetVerticalBorderChar(borderChar string) *TableStyle {
+	t.verticalOutsideBorderChar = borderChar
+	t.verticalInsideBorderChar = borderChar
+	return t
+}
+
+func (t *TableStyle) SetVerticalOutsideBorderChar(borderChar string) *TableStyle {
+	t.verticalOutsideBorderChar = borderChar
+	return t
+}
+
+func (t *TableStyle) SetVerticalInsideBorderChar(borderChar string) *TableStyle {
+	t.verticalInsideBorderChar = borderChar
 	return t
 }
 
 func (t *TableStyle) SetCrossingChar(crossingChar string) *TableStyle {
 	t.crossingChar = crossingChar
+
+	t.crossingBottomLeftChar = crossingChar
+	t.crossingBottomMidChar = crossingChar
+	t.crossingBottomRightChar = crossingChar
+
+	t.crossingMidLeftChar = crossingChar
+	t.crossingMidRightChar = crossingChar
+
+	t.crossingTopLeftChar = crossingChar
+	t.crossingTopMidChar = crossingChar
+	t.crossingTopRightChar = crossingChar
+
+	t.crossingTopLeftBottomChar = crossingChar
+	t.crossingTopMidBottomChar = crossingChar
+	t.crossingTopRightBottomChar = crossingChar
+	return t
+}
+
+func (t *TableStyle) SetCrossingChars(
+	cross string,
+	topLeft string,
+	topMid string,
+	topRight string,
+	midRight string,
+	bottomRight string,
+	bottomMid string,
+	bottomLeft string,
+	midLeft string,
+	topLeftBottom string,
+	topMidBottom string,
+	topRightBottom string,
+
+) *TableStyle {
+	t.crossingChar = cross
+
+	t.crossingBottomLeftChar = bottomLeft
+	t.crossingBottomMidChar = bottomMid
+	t.crossingBottomRightChar = bottomRight
+
+	t.crossingMidLeftChar = midLeft
+	t.crossingMidRightChar = midRight
+
+	t.crossingTopLeftChar = topLeft
+	t.crossingTopMidChar = topMid
+	t.crossingTopRightChar = topRight
+
+	t.crossingTopLeftBottomChar = topLeftBottom
+	t.crossingTopMidBottomChar = topMidBottom
+	t.crossingTopRightBottomChar = topRightBottom
+
 	return t
 }
 

@@ -106,13 +106,14 @@ func main() {
 	//	2: 30,
 	//})
 
-	render.SetColumnMaxWidth(0, 10)
-	render.SetColumnMaxWidth(1, 10)
+	render.SetColumnMaxWidth(0, 5)
+	render.SetColumnMaxWidth(1, 15)
 	render.SetColumnMaxWidth(2, 10)
 
 	//render.SetStyle("compact")
 	//render.SetStyle("borderless")
-	render.SetStyle("box")
+	//render.SetStyle("box")
+	//render.SetStyle("box-double")
 
 	render.Render()
 }

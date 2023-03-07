@@ -10,6 +10,22 @@ import (
 	"unicode/utf8"
 )
 
+type rowType int
+
+const (
+	rowSimple rowType = 0
+	rowTop    rowType = 2
+	rowDouble rowType = 1
+	rowBottom rowType = 3
+)
+
+type columnType int
+
+const (
+	columnInside  columnType = 0
+	columnOutside columnType = 1
+)
+
 type TableRenderInterface interface {
 	GetColumnStyle(column int) TableStyleInterface
 }
@@ -164,17 +180,17 @@ func (t *TableRender) Render() {
 	headersData := t.buildTableRows(headers)
 
 	t.calculateColumnsWidth(mergedData)
-	t.renderRowTitleSeparator(t.content.GetHeaderTitle())
+	t.renderRowTitleSeparator(t.content.GetHeaderTitle(), rowTop)
 
 	if len(headersData.GetRows()) > 0 {
 		for _, index := range headersData.GetRowsSortedKeys() {
 			header := headersData.GetRow(index)
 			t.renderRow(header, t.style.GetCellHeaderFormat())
 
-			if len(rowsData.GetRows()) == 0 {
-				t.renderRowTitleSeparator(t.content.GetFooterTitle())
+			if len(rowsData.GetRows()) != 0 {
+				t.renderRowSeparator(rowDouble)
 			} else {
-				t.renderRowSeparator()
+				t.renderRowTitleSeparator(t.content.GetFooterTitle(), rowBottom)
 			}
 		}
 	}
@@ -185,15 +201,15 @@ func (t *TableRender) Render() {
 	}
 
 	if len(rowsData.GetRows()) > 0 {
-		t.renderRowTitleSeparator(t.content.GetFooterTitle())
+		t.renderRowTitleSeparator(t.content.GetFooterTitle(), rowBottom)
 	}
 
 	t.cleanup()
 }
 
-func (t *TableRender) renderRowTitleSeparator(title string) {
+func (t *TableRender) renderRowTitleSeparator(title string, direction rowType) {
 	if len(title) == 0 {
-		t.renderRowSeparator()
+		t.renderRowSeparator(direction)
 		return
 	}
 
@@ -205,12 +221,12 @@ func (t *TableRender) renderRowTitleSeparator(title string) {
 
 	paddedTitle := fmt.Sprintf(" %s ", title)
 
-	if len(t.style.GetHorizontalBorderChar()) == 0 && len(t.style.GetCrossingChar()) == 0 {
+	if utf8.RuneCountInString(t.style.GetHorizontalOutsideBorderChar()) == 0 && utf8.RuneCountInString(t.style.GetCrossingChar()) == 0 {
 		t.output.Writeln(paddedTitle)
 		return
 	}
 
-	separator := t.getRowSeparator()
+	separator := t.getRowSeparator(direction)
 
 	paddedTitleLength := utf8.RuneCountInString(paddedTitle)
 	separatorLength := utf8.RuneCountInString(separator)
@@ -245,8 +261,8 @@ func (t *TableRender) renderRowTitleSeparator(title string) {
 	t.output.Writeln(titleSeparator)
 }
 
-func (t *TableRender) renderRowSeparator() {
-	separator := t.getRowSeparator()
+func (t *TableRender) renderRowSeparator(direction rowType) {
+	separator := t.getRowSeparator(direction)
 
 	if len(separator) == 0 {
 		return
@@ -262,20 +278,60 @@ func (t *TableRender) renderRowSeparator() {
  *
  *     +-----+-----------+-------+
  */
-func (t *TableRender) getRowSeparator() string {
+func (t *TableRender) getRowSeparator(direction rowType) string {
+
+	var horizontalBorderChar string
+	if direction == rowTop || direction == rowBottom || direction == rowDouble {
+		horizontalBorderChar = t.style.GetHorizontalOutsideBorderChar()
+	} else if direction == rowSimple {
+		horizontalBorderChar = t.style.GetHorizontalInsideBorderChar()
+	}
+
 	count := t.numberOfColumns
 
 	if count == 0 {
 		return ""
 	}
 
-	if len(t.style.GetHorizontalBorderChar()) == 0 && len(t.style.GetCrossingChar()) == 0 {
+	if utf8.RuneCountInString(horizontalBorderChar) == 0 && utf8.RuneCountInString(t.style.GetCrossingChar()) == 0 {
 		return ""
 	}
 
-	markup := t.style.GetCrossingChar()
+	var markup string
+	if direction == rowTop {
+		markup = t.style.GetCrossingTopLeftChar()
+	} else if direction == rowBottom {
+		markup = t.style.GetCrossingBottomLeftChar()
+	} else if direction == rowSimple {
+		markup = t.style.GetCrossingMidLeftChar()
+	} else if direction == rowDouble {
+		markup = t.style.GetCrossingTopLeftBottomChar()
+	}
+
 	for column := 0; column < count; column++ {
-		markup += strings.Repeat(t.style.GetHorizontalBorderChar(), t.getEffectiveColumnWidth(column)) + t.style.GetCrossingChar()
+		markup += strings.Repeat(horizontalBorderChar, t.getEffectiveColumnWidth(column))
+
+		if column == count-1 {
+			if direction == rowTop {
+				markup += t.style.GetCrossingTopRightChar()
+			} else if direction == rowBottom {
+				markup += t.style.GetCrossingBottomRightChar()
+			} else if direction == rowSimple {
+				markup += t.style.GetCrossingMidRightChar()
+			} else if direction == rowDouble {
+				markup += t.style.GetCrossingTopRightBottomChar()
+			}
+		} else {
+			if direction == rowTop {
+				markup += t.style.GetCrossingTopMidChar()
+			} else if direction == rowBottom {
+				markup += t.style.GetCrossingBottomMidChar()
+			} else if direction == rowSimple {
+				markup += t.style.GetCrossingChar()
+			} else if direction == rowDouble {
+				markup += t.style.GetCrossingTopMidBottomChar()
+			}
+		}
 	}
 
 	return fmt.Sprintf(t.style.GetBorderFormat(), markup)
@@ -284,8 +340,12 @@ func (t *TableRender) getRowSeparator() string {
 /**
  * Renders vertical column separator.
  */
-func (t *TableRender) renderColumnSeparator() string {
-	return fmt.Sprintf(t.style.GetBorderFormat(), t.style.GetVerticalBorderChar())
+func (t *TableRender) renderColumnSeparator(direction columnType) string {
+	if direction == columnOutside {
+		return fmt.Sprintf(t.style.GetBorderFormat(), t.style.GetVerticalOutsideBorderChar())
+	}
+
+	return fmt.Sprintf(t.style.GetBorderFormat(), t.style.GetVerticalInsideBorderChar())
 }
 
 /**
@@ -300,7 +360,7 @@ func (t *TableRender) renderRow(row TableRowInterface, cellFormat string) {
 		return
 	}
 
-	rowContent := t.renderColumnSeparator()
+	rowContent := t.renderColumnSeparator(columnOutside)
 
 	for index := 0; index < t.numberOfColumns; {
 		//for _, index := range row.GetColumnsSortedKeys() {
@@ -308,7 +368,13 @@ func (t *TableRender) renderRow(row TableRowInterface, cellFormat string) {
 
 		if column == nil {
 			rowContent += t.renderCell(row, index, cellFormat)
-			rowContent += t.renderColumnSeparator()
+
+			if index == t.numberOfColumns-1 {
+				rowContent += t.renderColumnSeparator(columnOutside)
+			} else {
+				rowContent += t.renderColumnSeparator(columnInside)
+			}
+
 			index++
 			continue
 		}
@@ -316,12 +382,17 @@ func (t *TableRender) renderRow(row TableRowInterface, cellFormat string) {
 		cell := column.GetCell()
 
 		if _, ok := cell.(TableSeparatorInterface); ok {
-			rowContent = t.getRowSeparator()
+			rowContent = t.getRowSeparator(rowSimple)
 			break
 		}
 
 		rowContent += t.renderCell(row, index, cellFormat)
-		rowContent += t.renderColumnSeparator()
+
+		if index+(cell.GetColspan()-1) == t.numberOfColumns-1 {
+			rowContent += t.renderColumnSeparator(columnOutside)
+		} else {
+			rowContent += t.renderColumnSeparator(columnInside)
+		}
 
 		index += cell.GetColspan()
 	}
@@ -360,7 +431,7 @@ func (t *TableRender) renderCell(row TableRowInterface, columnIndex int, cellFor
 	style := t.GetColumnStyle(columnIndex)
 
 	if _, ok := cell.(TableSeparatorInterface); ok {
-		return fmt.Sprintf(style.GetBorderFormat(), strings.Repeat(style.GetHorizontalBorderChar(), width))
+		return fmt.Sprintf(style.GetBorderFormat(), strings.Repeat(style.GetHorizontalInsideBorderChar(), width))
 	}
 
 	width += helper.Strlen(cell.GetValue()) - helper.StrlenWithoutDecoration(t.output.GetFormatter(), cell.GetValue())
@@ -693,7 +764,7 @@ func (t *TableRender) calculateColumnsWidth(data *TableData) {
 }
 
 func (t *TableRender) getColumnSeparatorWidth() int {
-	return helper.Strlen(fmt.Sprintf(t.style.GetBorderFormat(), t.style.GetVerticalBorderChar()))
+	return helper.Strlen(fmt.Sprintf(t.style.GetBorderFormat(), t.style.GetVerticalInsideBorderChar()))
 }
 
 func (t *TableRender) getCellWidth(rows TableRowInterface, columnIndex int) int {
