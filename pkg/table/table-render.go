@@ -615,7 +615,10 @@ func (t *TableRender) buildTableRows(data *TableData) *TableData {
 				newCell := NewTableCell(line)
 
 				if _, ok := cell.(TableSeparatorInterface); !ok {
-					newCell.SetColspan(cell.GetColspan())
+					newCell.
+						SetColspan(cell.GetColspan()).
+						SetColspan(cell.GetColspan()).
+						SetPadType(cell.GetPadType())
 				}
 
 				if 0 == lineKey {

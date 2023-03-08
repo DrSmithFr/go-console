@@ -54,6 +54,7 @@ func main() {
 						SetCell(
 							table.
 								NewTableCell("This value spans 2 columns.").
+								SetPadType(table.PadToCenter).
 								SetColspan(2),
 						),
 				).
@@ -107,6 +108,7 @@ func main() {
 						Cell: &table.TableCell{
 							Value:   "<question>This value spans use <b>3 lines</b> to get fully displayed and now to long to feet inside the table.</question>",
 							Colspan: 3,
+							PadType: table.PadToCenter,
 						},
 					},
 				},
@@ -145,14 +147,14 @@ func main() {
 	//render.SetStyleFromName("box")
 	render.SetStyleFromName("box-double")
 
-	//customStyle := table.NewTableStyle().
-	//	SetHorizontalOutsideBorderChar("═").
-	//	SetHorizontalInsideBorderChar("─").
-	//	SetVerticalOutsideBorderChar("║").
-	//	SetVerticalInsideBorderChar("│").
-	//	SetCrossingChars("┼", "╔", "╤", "╗", "╢", "╝", "╧", "╚", "╟", "╠", "╪", "╣")
-	//
-	//render.SetStyle(customStyle)
+	customStyle := table.NewTableStyle().
+		SetHorizontalOutsideBorderChar("═").
+		SetHorizontalInsideBorderChar("─").
+		SetVerticalOutsideBorderChar("║").
+		SetVerticalInsideBorderChar("│").
+		SetCrossingChars("┼", "╔", "╤", "╗", "╢", "╝", "╧", "╚", "╟", "╠", "╪", "╣")
+
+	render.SetStyle(customStyle)
 
 	render.Render()
 }
