@@ -100,6 +100,10 @@ func (t *TableRender) SetColumnStyle(column int, name string) *TableRender {
 // External width management
 
 func (t *TableRender) SetColumnMinWidth(column int, width int) *TableRender {
+	if width > t.GetColumnMaxWidth(column) {
+		panic(fmt.Sprintf("The minimum width of a column (%d) cannot be greater than the maximum width (%d).", width, t.GetColumnMaxWidth(column)))
+	}
+
 	t.columnsMinWidths[column] = width
 	return t
 }
@@ -119,6 +123,10 @@ func (t *TableRender) SetColumnsMinWidths(widths map[int]int) *TableRender {
 }
 
 func (t *TableRender) SetColumnMaxWidth(column int, width int) *TableRender {
+	if width < t.GetColumnMinWidth(column) {
+		panic(fmt.Sprintf("The maximum width of a column (%d) cannot be smaller than the minimum width (%d).", width, t.GetColumnMinWidth(column)))
+	}
+
 	t.columnsMaxWidths[column] = width
 	return t
 }
@@ -131,7 +139,7 @@ func (t *TableRender) SetColumnsMaxWidths(widths map[int]int) *TableRender {
 	t.columnsMaxWidths = map[int]int{}
 
 	for column, width := range widths {
-		t.SetColumnMinWidth(column, width)
+		t.SetColumnMaxWidth(column, width)
 	}
 
 	return t
@@ -542,10 +550,10 @@ func (t *TableRender) buildTableRows(data *TableData) *TableData {
 			maxWidth := t.GetColumnMaxWidth(columnIndex)
 			if maxWidth > 0 {
 				if cell.GetColspan() > 1 {
-					maxWidth += t.getColumnSeparatorWidth()
 					for i := 0; i < cell.GetColspan(); i++ {
 						maxWidth += t.GetColumnMaxWidth(columnIndex+i) + t.getColumnSeparatorWidth()
 					}
+					maxWidth += t.getColumnSeparatorWidth()
 				}
 
 				cellValue := cell.GetValue()
@@ -799,10 +807,13 @@ func (t *TableRender) calculateColumnsWidth(data *TableData) {
 				continue
 			}
 
-			lengths = append(lengths, t.getCellWidth(row, columnIndex))
+			cellWidth := t.getCellWidth(row, columnIndex)
+			lengths = append(lengths, cellWidth)
 		}
 
-		t.setEffectiveColumnWidth(columnIndex, helper.MaxInt(lengths)+utf8.RuneCountInString(t.style.GetCellRowContentFormat())-2)
+		columnWith := helper.MaxInt(lengths) + utf8.RuneCountInString(t.style.GetCellRowContentFormat()) - 2
+
+		t.setEffectiveColumnWidth(columnIndex, columnWith)
 	}
 }
 
@@ -838,16 +849,16 @@ func (t *TableRender) getCellWidth(rows TableRowInterface, columnIndex int) int 
 }
 
 func (t *TableRender) getCellWidthOverride(columnIndex int, cellWidth int) int {
-	minWidth := t.GetColumnMinWidth(columnIndex)
-
-	if minWidth > 0 && cellWidth < minWidth {
-		return minWidth
-	}
-
 	maxWidth := t.GetColumnMaxWidth(columnIndex)
 
 	if maxWidth > 0 && cellWidth > maxWidth {
 		return maxWidth
+	}
+
+	minWidth := t.GetColumnMinWidth(columnIndex)
+
+	if minWidth > 0 && cellWidth < minWidth {
+		return minWidth
 	}
 
 	return cellWidth

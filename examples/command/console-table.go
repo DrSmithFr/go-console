@@ -33,7 +33,6 @@ func main() {
 			[][]string{
 				{"==="},
 				{"ISBN", "Title", "Author"},
-				{"ISBN", "Title", "Author"},
 			},
 		)
 
@@ -127,11 +126,11 @@ func main() {
 		NewRender(out).
 		SetContent(tab)
 
-	render.SetColumnsMinWidths(map[int]int{
-		0: 10,
-		1: 0,
-		2: 30,
-	})
+	//render.SetColumnsMinWidths(map[int]int{
+	//	0: 10,
+	//	1: 0,
+	//	2: 30,
+	//})
 
 	render.SetColumnMaxWidth(0, 5)
 	//render.SetColumnMaxWidth(1, 15)
@@ -146,14 +145,14 @@ func main() {
 	//render.SetStyleFromName("box")
 	render.SetStyleFromName("box-double")
 
-	customStyle := table.NewTableStyle().
-		SetHorizontalOutsideBorderChar("═").
-		SetHorizontalInsideBorderChar("─").
-		SetVerticalOutsideBorderChar("║").
-		SetVerticalInsideBorderChar("│").
-		SetCrossingChars("┼", "╔", "╤", "╗", "╢", "╝", "╧", "╚", "╟", "╠", "╪", "╣")
-
-	render.SetStyle(customStyle)
+	//customStyle := table.NewTableStyle().
+	//	SetHorizontalOutsideBorderChar("═").
+	//	SetHorizontalInsideBorderChar("─").
+	//	SetVerticalOutsideBorderChar("║").
+	//	SetVerticalInsideBorderChar("│").
+	//	SetCrossingChars("┼", "╔", "╤", "╗", "╢", "╝", "╧", "╚", "╟", "╠", "╪", "╣")
+	//
+	//render.SetStyle(customStyle)
 
 	render.Render()
 }
