@@ -24,6 +24,12 @@ func MakeColumnFromString(cell string) *TableColumn {
 		}
 	}
 
+	if cell == "===" {
+		return &TableColumn{
+			Cell: NewTableSeparatorDouble(),
+		}
+	}
+
 	return &TableColumn{
 		Cell: NewTableCell(cell),
 	}

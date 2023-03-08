@@ -31,7 +31,9 @@ func main() {
 		).
 		AddHeadersFromString(
 			[][]string{
-				{"ISBN-LONG-TITLE", "Title", "Author"},
+				{"==="},
+				{"ISBN", "Title", "Author"},
+				{"ISBN", "Title", "Author"},
 			},
 		)
 
@@ -131,7 +133,7 @@ func main() {
 		2: 30,
 	})
 
-	//render.SetColumnMaxWidth(0, 5)
+	render.SetColumnMaxWidth(0, 5)
 	//render.SetColumnMaxWidth(1, 15)
 	//render.SetColumnMaxWidth(2, 10)
 

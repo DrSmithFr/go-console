@@ -200,19 +200,21 @@ func (t *TableRender) Render() {
 
 	t.renderRowTitleSeparator(t.content.GetHeaderTitle(), rowTop)
 
+	// rendering headers
 	if len(headersData.GetRows()) > 0 {
 		for _, index := range headersData.GetRowsSortedKeys() {
 			header := headersData.GetRow(index)
 			t.renderRow(header, t.style.GetCellHeaderFormat())
+		}
 
-			if len(rowsData.GetRows()) != 0 {
-				t.renderRowSeparator(rowDouble)
-			} else {
-				t.renderRowTitleSeparator(t.content.GetFooterTitle(), rowBottom)
-			}
+		if len(rowsData.GetRows()) != 0 {
+			t.renderRowSeparator(rowDouble)
+		} else {
+			t.renderRowTitleSeparator(t.content.GetFooterTitle(), rowBottom)
 		}
 	}
 
+	// rendering rows
 	for _, index := range rowsData.GetRowsSortedKeys() {
 		row := rowsData.GetRow(index)
 		t.renderRow(row, t.style.GetCellRowFormat())
@@ -409,8 +411,12 @@ func (t *TableRender) renderRow(row TableRowInterface, cellFormat string) {
 
 		cell := column.GetCell()
 
-		if _, ok := cell.(TableSeparatorInterface); ok {
-			rowContent = t.getRowSeparator(rowSimple)
+		if separator, ok := cell.(TableSeparatorInterface); ok {
+			if separator.IsDouble() {
+				rowContent = t.getRowSeparator(rowDouble)
+			} else {
+				rowContent = t.getRowSeparator(rowSimple)
+			}
 			break
 		}
 
