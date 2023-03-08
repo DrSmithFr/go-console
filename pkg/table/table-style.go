@@ -257,7 +257,7 @@ func (t *TableStyle) SetPaddingChar(paddingChar string) *TableStyle {
 	return t
 }
 
-func (t *TableStyle) SetHorizontalBorderChar(borderChar string) *TableStyle {
+func (t *TableStyle) SetHorizontalBorderChars(borderChar string) *TableStyle {
 	t.horizontalOutsideBorderChar = borderChar
 	t.horizontalInsideBorderChar = borderChar
 	return t
@@ -273,7 +273,7 @@ func (t *TableStyle) SetHorizontalInsideBorderChar(borderChar string) *TableStyl
 	return t
 }
 
-func (t *TableStyle) SetVerticalBorderChar(borderChar string) *TableStyle {
+func (t *TableStyle) SetVerticalBorderChars(borderChar string) *TableStyle {
 	t.verticalOutsideBorderChar = borderChar
 	t.verticalInsideBorderChar = borderChar
 	return t

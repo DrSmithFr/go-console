@@ -141,10 +141,19 @@ func main() {
 	//render.SetColumnWidth(1, 15)
 	//render.SetColumnWidth(2, 10)
 
-	//render.SetStyle("compact")
-	//render.SetStyle("borderless")
-	//render.SetStyle("box")
-	render.SetStyle("box-double")
+	//render.SetStyleFromName("compact")
+	//render.SetStyleFromName("borderless")
+	//render.SetStyleFromName("box")
+	render.SetStyleFromName("box-double")
+
+	customStyle := table.NewTableStyle().
+		SetHorizontalOutsideBorderChar("═").
+		SetHorizontalInsideBorderChar("─").
+		SetVerticalOutsideBorderChar("║").
+		SetVerticalInsideBorderChar("│").
+		SetCrossingChars("┼", "╔", "╤", "╗", "╢", "╝", "╧", "╚", "╟", "╠", "╪", "╣")
+
+	render.SetStyle(customStyle)
 
 	render.Render()
 }

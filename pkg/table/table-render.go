@@ -63,7 +63,7 @@ func NewRender(output output.OutputInterface) *TableRender {
 
 	t.effectiveColumnWidths = map[int]int{}
 
-	t.SetStyle("default")
+	t.SetStyleFromName("default")
 
 	return t
 }
@@ -82,7 +82,12 @@ func (t *TableRender) GetColumnStyle(column int) TableStyleInterface {
 
 // Implement Table fluent setters
 
-func (t *TableRender) SetStyle(name string) *TableRender {
+func (t *TableRender) SetStyle(style TableStyleInterface) *TableRender {
+	t.style = style
+	return t
+}
+
+func (t *TableRender) SetStyleFromName(name string) *TableRender {
 	t.style = GetStyleDefinition(name)
 	return t
 }

@@ -10,25 +10,25 @@ func initStyles() {
 	Styles = make(map[string]TableStyleInterface)
 
 	borderless := NewTableStyle().
-		SetHorizontalBorderChar("=").
-		SetVerticalBorderChar(" ").
+		SetHorizontalBorderChars("=").
+		SetVerticalBorderChars(" ").
 		SetCrossingChar(" ")
 
 	compact := NewTableStyle().
-		SetHorizontalBorderChar("").
-		SetVerticalBorderChar(" ").
+		SetHorizontalBorderChars("").
+		SetVerticalBorderChars(" ").
 		SetCrossingChar("").
 		SetCellRowContentFormat("%s")
 
 	styleGuide := NewTableStyle().
-		SetHorizontalBorderChar("-").
-		SetVerticalBorderChar(" ").
+		SetHorizontalBorderChars("-").
+		SetVerticalBorderChars(" ").
 		SetCrossingChar(" ").
 		SetCellHeaderFormat("%s")
 
 	box := NewTableStyle().
-		SetHorizontalBorderChar("─").
-		SetVerticalBorderChar("│").
+		SetHorizontalBorderChars("─").
+		SetVerticalBorderChars("│").
 		SetCrossingChars("┼", "┌", "┬", "┐", "┤", "┘", "┴", "└", "├", "├", "┼", "┤")
 
 	boxDouble := NewTableStyle().
