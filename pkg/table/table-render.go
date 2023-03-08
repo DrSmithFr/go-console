@@ -470,19 +470,11 @@ func (t *TableRender) renderCell(row TableRowInterface, columnIndex int, cellFor
 		}
 	}
 
-	// str_pad won't work properly with multi-byte strings, we need to fix the padding
-	//if utf8.ValidString(cell.GetValue()) {
-	//	width += len(cell.GetValue()) - helper.Strlen(cell.GetValue())
-	//}
-
 	style := t.GetColumnStyle(columnIndex)
 
 	if _, ok := cell.(TableSeparatorInterface); ok {
 		return fmt.Sprintf(style.GetBorderFormat(), strings.Repeat(style.GetHorizontalInsideBorderChar(), width))
 	}
-
-	width += helper.Strlen(cell.GetValue()) - helper.StrlenWithoutDecoration(t.output.GetFormatter(), cell.GetValue())
-	content := fmt.Sprintf(style.GetCellRowContentFormat(), cell.GetValue())
 
 	cellPad := cell.GetPadType()
 
@@ -494,7 +486,32 @@ func (t *TableRender) renderCell(row TableRowInterface, columnIndex int, cellFor
 		cellPad = style.GetPadType()
 	}
 
+	width += helper.Strlen(cell.GetValue()) - helper.StrlenWithoutDecoration(t.output.GetFormatter(), cell.GetValue())
+	content := fmt.Sprintf(style.GetCellRowContentFormat(), cell.GetValue())
+
+	hasResetOpeningTag := false
+	if strings.Index(content, "<fg=default;bg=default>") != -1 {
+		content = strings.Replace(content, "<fg=default;bg=default>", "", -1)
+		width -= len("<fg=default;bg=default>")
+		hasResetOpeningTag = true
+	}
+
+	hasResetClosingTag := false
+	if strings.Index(content, "</>") != -1 {
+		content = strings.Replace(content, "</>", "", -1)
+		width -= len("</>")
+		hasResetClosingTag = true
+	}
+
 	result := fmt.Sprintf(cellFormat, style.Pad(content, width, style.GetPaddingChar(), cellPad))
+
+	if hasResetOpeningTag {
+		result = "<fg=default;bg=default>" + result
+	}
+
+	if hasResetClosingTag {
+		result = result + "</>"
+	}
 
 	return result
 }
@@ -563,9 +580,6 @@ func (t *TableRender) buildTableRows(data *TableData) *TableData {
 
 					maxWidth -= utf8.RuneCountInString(t.style.GetCellRowContentFormat()) - 2
 				}
-
-				// ║ XXXXX │ XXXXXXXXXXXXXXXXXXXXXXXX │ #################>║
-				// ║ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX │  J. R. R. Tolkien ║
 
 				cellValue := cell.GetValue()
 				cellRawValue := helper.RemoveDecoration(t.output.GetFormatter(), cellValue)

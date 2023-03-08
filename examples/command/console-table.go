@@ -32,7 +32,7 @@ func main() {
 		AddHeadersFromString(
 			[][]string{
 				{"==="},
-				{"ISBN", "Title", "Author"},
+				{"ISBN-LONG-TITLE", "Title", "Author"},
 			},
 		)
 
