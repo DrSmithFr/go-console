@@ -105,7 +105,7 @@ func main() {
 				Columns: map[int]table.TableColumnInterface{
 					0: &table.TableColumn{
 						Cell: &table.TableCell{
-							Value:   "<question>This value spans use <b>3 lines</b> to get fully displayed.</question>",
+							Value:   "<question>This value spans use <b>3 lines</b> to get fully displayed and now to long to feet inside the table.</question>",
 							Colspan: 3,
 						},
 					},

@@ -549,12 +549,23 @@ func (t *TableRender) buildTableRows(data *TableData) *TableData {
 			// Managing column max width
 			maxWidth := t.GetColumnMaxWidth(columnIndex)
 			if maxWidth > 0 {
+
 				if cell.GetColspan() > 1 {
-					for i := 0; i < cell.GetColspan(); i++ {
-						maxWidth += t.GetColumnMaxWidth(columnIndex+i) + t.getColumnSeparatorWidth()
+					maxWidth = t.getEffectiveColumnWidth(columnIndex)
+
+					for i := 1; i < cell.GetColspan(); i++ {
+						maxWidth += t.getEffectiveColumnWidth(columnIndex + i)
+
+						if columnIndex+i < t.numberOfColumns {
+							maxWidth += t.getColumnSeparatorWidth()
+						}
 					}
-					maxWidth += t.getColumnSeparatorWidth()
+
+					maxWidth -= utf8.RuneCountInString(t.style.GetCellRowContentFormat()) - 2
 				}
+
+				// ║ XXXXX │ XXXXXXXXXXXXXXXXXXXXXXXX │ #################>║
+				// ║ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX │  J. R. R. Tolkien ║
 
 				cellValue := cell.GetValue()
 				cellRawValue := helper.RemoveDecoration(t.output.GetFormatter(), cellValue)
