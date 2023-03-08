@@ -79,3 +79,4 @@ func main() {
 - [How to use input options and arguments](docs/console-input.md)
 - [How to style the console output](docs/console-output.md)
 - [How to use verbosity levels](docs/console-verbosity.md)
+- [Display tables in the console](docs/console-table.md)
