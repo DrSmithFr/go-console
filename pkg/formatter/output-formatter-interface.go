@@ -22,4 +22,7 @@ type OutputFormatterInterface interface {
 
 	// Formats a message according to the given styles.
 	Format(message string) string
+
+	// Return a list of tags found in the given text.
+	FindTagsInString(text string) []TagPos
 }

@@ -100,7 +100,7 @@ func (o *OutputFormatter) Format(message string) string {
 	offset := 0
 	output := ""
 
-	tags := o.findTagsInString(message)
+	tags := o.FindTagsInString(message)
 
 	for _, tag := range tags {
 		if 0 != tag.Start && '\\' == message[tag.Start-1] {
@@ -151,7 +151,7 @@ func (o *OutputFormatter) Format(message string) string {
 }
 
 // struct to describe a color tag
-type tagPos struct {
+type TagPos struct {
 	Text    string
 	Tag     string
 	Style   string
@@ -161,7 +161,7 @@ type tagPos struct {
 }
 
 // Make a tagMap from a message
-func (o *OutputFormatter) findTagsInString(text string) []tagPos {
+func (o *OutputFormatter) FindTagsInString(text string) []TagPos {
 	tagNameRegex := "[a-z][a-z0-9,_=;-]*"
 	tagRegex := fmt.Sprintf("<((%s)|/(%s)?)>", tagNameRegex, tagNameRegex)
 	regex := regexp.MustCompile(tagRegex)
@@ -169,7 +169,7 @@ func (o *OutputFormatter) findTagsInString(text string) []tagPos {
 	tags := regex.FindAllString(text, -1)
 	indexes := regex.FindAllStringIndex(text, -1)
 
-	var positions []tagPos
+	var positions []TagPos
 
 	for i := 0; i < len(tags); i++ {
 		// TODO find a clever way to remove <>
@@ -185,7 +185,7 @@ func (o *OutputFormatter) findTagsInString(text string) []tagPos {
 
 		positions = append(
 			positions,
-			tagPos{
+			TagPos{
 				Text:    tags[i],
 				Tag:     tagName,
 				Style:   style,
