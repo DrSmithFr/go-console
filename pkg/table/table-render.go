@@ -678,8 +678,8 @@ func (t *TableRender) fillNextRows(data TableData, line int) TableData {
 			continue
 		}
 
-		if cell.GetRowspan() > 1 {
-			nbLines := cell.GetRowspan() - 1
+		if cell.getRowspan() > 1 {
+			nbLines := cell.getRowspan() - 1
 			lines := []string{cell.GetValue()}
 			if -1 != strings.Index(cell.GetValue(), "\n") {
 				lines = strings.Split(strings.ReplaceAll("\n", "<fg=default;bg=default>\n</>", cell.GetValue()), "\n")
@@ -691,7 +691,7 @@ func (t *TableRender) fillNextRows(data TableData, line int) TableData {
 					lines = lines[1:]
 				}
 
-				// create a two dimensional array (Rowspan x Colspan)
+				// create a two dimensional array (rowspan x Colspan)
 				filler := RowMapFill(line+1, nbLines, NewTableRow())
 				unmergedRows = RowMapReplaceRecursive(filler, unmergedRows)
 

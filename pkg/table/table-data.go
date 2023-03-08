@@ -156,7 +156,7 @@ func (t *TableData) AddRow(row TableRowInterface) *TableData {
 			if _, ok := cell.(TableSeparatorInterface); ok {
 				rowspanOffset++
 			} else {
-				rowspanOffset += column.GetCell().GetRowspan() - 1
+				rowspanOffset += column.GetCell().getRowspan() - 1
 			}
 		}
 	}

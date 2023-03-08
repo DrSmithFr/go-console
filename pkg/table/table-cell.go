@@ -4,23 +4,24 @@ type TableCellInterface interface {
 	GetValue() string
 	SetValue(value string) *TableCell
 
-	GetRowspan() int
 	GetColspan() int
 	GetPadType() PaddingType
+
+	getRowspan() int
 }
 
 type TableCell struct {
 	Value   string
-	Rowspan int
 	Colspan int
 	PadType PaddingType
+	rowspan int
 }
 
 func NewTableCell(value string) *TableCell {
 	t := new(TableCell)
 
 	t.Value = value
-	t.Rowspan = 1
+	t.rowspan = 1
 	t.Colspan = 1
 	t.PadType = PadDefault
 
@@ -35,12 +36,12 @@ func (t *TableCell) GetValue() string {
 	return t.Value
 }
 
-func (t *TableCell) GetRowspan() int {
-	if t.Rowspan == 0 {
+func (t *TableCell) getRowspan() int {
+	if t.rowspan == 0 {
 		return 1
 	}
 
-	return t.Rowspan
+	return t.rowspan
 }
 
 func (t *TableCell) GetColspan() int {
@@ -62,8 +63,8 @@ func (t *TableCell) SetValue(value string) *TableCell {
 	return t
 }
 
-func (t *TableCell) SetRowspan(rowspan int) *TableCell {
-	t.Rowspan = rowspan
+func (t *TableCell) setRowspan(rowspan int) *TableCell {
+	t.rowspan = rowspan
 	return t
 }
 
