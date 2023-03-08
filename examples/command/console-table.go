@@ -126,13 +126,13 @@ func main() {
 		NewRender(out).
 		SetContent(tab)
 
-	//render.SetColumnsMinWidths(map[int]int{
-	//	0: 10,
-	//	1: 0,
-	//	2: 30,
-	//})
+	render.SetColumnsMinWidths(map[int]int{
+		0: 10,
+		1: 0,
+		2: 30,
+	})
 
-	render.SetColumnMaxWidth(0, 5)
+	//render.SetColumnMaxWidth(0, 5)
 	//render.SetColumnMaxWidth(1, 15)
 	//render.SetColumnMaxWidth(2, 10)
 

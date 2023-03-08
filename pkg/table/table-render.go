@@ -100,7 +100,9 @@ func (t *TableRender) SetColumnStyle(column int, name string) *TableRender {
 // External width management
 
 func (t *TableRender) SetColumnMinWidth(column int, width int) *TableRender {
-	if width > t.GetColumnMaxWidth(column) {
+	maxWidth := t.GetColumnMaxWidth(column)
+
+	if maxWidth > 0 && width > t.GetColumnMaxWidth(column) {
 		panic(fmt.Sprintf("The minimum width of a column (%d) cannot be greater than the maximum width (%d).", width, t.GetColumnMaxWidth(column)))
 	}
 
