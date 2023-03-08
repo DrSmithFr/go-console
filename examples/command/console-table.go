@@ -37,6 +37,7 @@ func main() {
 		AddRowsFromString(
 			[][]string{
 				{"99921-58-10-7", "The Divine Comedy", "Dante \nAlighieri"},
+				{"---"}, // shortcut for TableSeparator
 				{"9971-5-0210-0", "A Tale of Two Cities", "Charles Dickens"},
 			},
 		).
@@ -110,9 +111,9 @@ func main() {
 	//render.SetColumnMaxWidth(1, 15)
 	//render.SetColumnMaxWidth(2, 10)
 
-	render.SetColumnWidth(0, 10)
+	//render.SetColumnWidth(0, 10)
 	//render.SetColumnWidth(1, 15)
-	render.SetColumnWidth(2, 10)
+	//render.SetColumnWidth(2, 10)
 
 	//render.SetStyle("compact")
 	//render.SetStyle("borderless")

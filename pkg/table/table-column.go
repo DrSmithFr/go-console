@@ -17,8 +17,16 @@ func NewTableColumn() *TableColumn {
 	}
 }
 
-func MakeColumnFromString(cells string) *TableColumn {
-	return NewTableColumn().setColumnFromString(cells)
+func MakeColumnFromString(cell string) *TableColumn {
+	if cell == "---" {
+		return &TableColumn{
+			Cell: NewTableSeparator(),
+		}
+	}
+
+	return &TableColumn{
+		Cell: NewTableCell(cell),
+	}
 }
 
 // Implements TableColumnInterface.
