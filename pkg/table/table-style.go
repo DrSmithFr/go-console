@@ -40,6 +40,9 @@ type TableStyleInterface interface {
 	GetCrossingTopMidBottomChar() string
 	GetCrossingTopRightBottomChar() string
 
+	GetHeaderTitleFormat() string
+	GetFooterTitleFormat() string
+
 	GetCellHeaderFormat() string
 	GetCellRowFormat() string
 	GetCellRowContentFormat() string
@@ -73,6 +76,9 @@ type TableStyle struct {
 	crossingTopLeftBottomChar  string
 	crossingTopMidBottomChar   string
 	crossingTopRightBottomChar string
+
+	headerTitleFormat string
+	footerTitleFormat string
 
 	cellHeaderFormat     string
 	cellRowFormat        string
@@ -109,6 +115,9 @@ func NewTableStyle() *TableStyle {
 	s.crossingTopLeftBottomChar = "+"
 	s.crossingTopMidBottomChar = "+"
 	s.crossingTopRightBottomChar = "+"
+
+	s.headerTitleFormat = "<fg=black;bg=white;options=bold> %s </>"
+	s.footerTitleFormat = "<fg=black;bg=white;options=bold> %s </>"
 
 	s.cellHeaderFormat = "<info>%s</info>"
 	s.cellRowFormat = "%s"
@@ -211,6 +220,14 @@ func (t *TableStyle) GetCrossingTopMidBottomChar() string {
 
 func (t *TableStyle) GetCrossingTopRightBottomChar() string {
 	return t.crossingTopRightBottomChar
+}
+
+func (t TableStyle) GetHeaderTitleFormat() string {
+	return t.headerTitleFormat
+}
+
+func (t TableStyle) GetFooterTitleFormat() string {
+	return t.footerTitleFormat
 }
 
 func (t *TableStyle) GetCellHeaderFormat() string {

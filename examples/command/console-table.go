@@ -9,10 +9,12 @@ func main() {
 	io := style.NewConsoleCommand().Build()
 	out := io.GetOutput()
 
+	io.Title("Generating a table")
+
 	tab := table.
 		NewTable().
 		SetHeaderTitle("Books").
-		//SetFooterTitle("Page 1/2").
+		SetFooterTitle("Page 1/2").
 		SetColumnPadding(3, table.PadToRight).
 		AddHeader(
 			&table.TableRow{
@@ -29,7 +31,7 @@ func main() {
 		).
 		AddHeadersFromString(
 			[][]string{
-				{"ISBN", "Title", "Author"},
+				{"ISBN-LONG-TITLE", "Title", "Author"},
 			},
 		)
 
@@ -40,6 +42,28 @@ func main() {
 				{"---"}, // shortcut for TableSeparator
 				{"9971-5-0210-0", "A Tale of Two Cities", "Charles Dickens"},
 			},
+		).
+		AddTableSeparator().
+		AddRow(
+			table.
+				NewTableRow().
+				AddColumn(
+					table.
+						NewTableColumn().
+						SetCell(
+							table.
+								NewTableCell("This value spans 2 columns.").
+								SetColspan(2),
+						),
+				).
+				AddColumn(
+					table.
+						NewTableColumn().
+						SetCell(
+							table.
+								NewTableCell("stand alone value"),
+						),
+				),
 		).
 		AddTableSeparator().
 		AddRowsFromString(

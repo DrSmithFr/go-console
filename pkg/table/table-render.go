@@ -253,11 +253,21 @@ func (t *TableRender) renderRowTitleSeparator(title string, direction rowType) {
 	separatorCropLeft := separatorLengthCrop / 2
 	//separatorCropRight := separatorLengthCrop - separatorCropLeft
 
+	var stylisedTitle string
+
+	if direction == rowTop {
+		stylisedTitle = fmt.Sprintf(t.style.GetHeaderTitleFormat(), title)
+	} else if direction == rowBottom {
+		stylisedTitle = fmt.Sprintf(t.style.GetFooterTitleFormat(), title)
+	} else {
+		stylisedTitle = paddedTitle
+	}
+
 	titleSeparator := ""
 	index := 0
 	for _, char := range separator {
 		if index == separatorCropLeft {
-			titleSeparator += paddedTitle
+			titleSeparator += stylisedTitle
 			break
 		}
 
