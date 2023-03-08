@@ -134,7 +134,7 @@ func (a *InputOption) SetDefault(defaultValue string) *InputOption {
 	}
 
 	if a.IsArray() {
-		panic(errors.New("cannot use SetDefault() for InputOption::VALUE_IS_ARRAY mode, use SetDefaults() instead"))
+		panic(errors.New("cannot use SetDefaultAnswer() for InputOption::VALUE_IS_ARRAY mode, use SetDefaults() instead"))
 	}
 
 	a.defaultValue = defaultValue
@@ -148,7 +148,7 @@ func (a *InputOption) SetDefaults(values []string) *InputOption {
 	}
 
 	if !a.IsArray() {
-		panic(errors.New("cannot use SetDefaults() except for InputOption::IS_ARRAY mode, use SetDefault() instead"))
+		panic(errors.New("cannot use SetDefaults() except for InputOption::IS_ARRAY mode, use SetDefaultAnswer() instead"))
 	}
 
 	a.defaultValues = values
@@ -159,7 +159,7 @@ func (a *InputOption) SetDefaults(values []string) *InputOption {
 // Returns the default value.
 func (a *InputOption) GetDefault() string {
 	if a.IsArray() {
-		panic(errors.New("cannot use GetDefault() for InputOption::IS_ARRAY mode, use GetDefaults() instead"))
+		panic(errors.New("cannot use GetDefaultAnswer() for InputOption::IS_ARRAY mode, use GetDefaults() instead"))
 	}
 
 	return a.defaultValue
@@ -168,7 +168,7 @@ func (a *InputOption) GetDefault() string {
 // Returns the defaults value.
 func (a *InputOption) GetDefaults() []string {
 	if !a.IsArray() {
-		panic(errors.New("cannot use GetDefaults() except for InputOption::IS_ARRAY, use GetDefault() instead"))
+		panic(errors.New("cannot use GetDefaults() except for InputOption::IS_ARRAY, use GetDefaultAnswer() instead"))
 	}
 
 	return a.defaultValues
