@@ -566,7 +566,7 @@ func (t *TableRender) buildTableRows(data *TableData) *TableData {
 			cell := column.GetCell()
 
 			// Managing column max width
-			maxWidth := t.GetColumnMaxWidth(columnIndex)
+			maxWidth := t.getEffectiveColumnWidth(columnIndex) - utf8.RuneCountInString(t.style.GetCellRowContentFormat()) + 2
 			if maxWidth > 0 {
 
 				if cell.GetColspan() > 1 {
