@@ -9,24 +9,54 @@
 
 > The Console component eases the creation of beautiful and testable command line interfaces.
 
-GoConsole component allows you to create command-line commands. Your console commands can be used for any recurring task, such as cronjobs, imports, or other batch jobs.
-Command arguments and options follow the [docopt standard](http://docopt.org/). This library provide several helper for styling of the command's output.
+GoConsole component allows you to create command-line commands. Your console commands can be used for any recurring
+task, such as cronjobs, imports, or other batch jobs.
+Command arguments and options follow the [docopt standard](http://docopt.org/). This library provide several helper for
+styling of the command's output.
 
-GoConsole is a lightweight equivalent in Go to the [Console Component 3.4](https://github.com/symfony/console/tree/3.4) of Symfony PHP framework.
+GoConsole is a lightweight equivalent in Go to the [Console Component 3.4](https://github.com/symfony/console/tree/3.4)
+of Symfony PHP framework.
 
 ## Tables of Contents
 
-- [How to use input options and arguments](#how-to-use-input-options-and-arguments)
-- [How to style the console output](#how-to-style-the-console-output)
-- [How to use verbosity levels](#how-to-use-verbosity-levels)
-- [How to ask for user input](#how-to-ask-for-user-input)
-- [How to display tables in the console](#how-to-display-tables-in-the-console)
-
+---
+* [How to use input options and arguments](#how-to-use-input-options-and-arguments)
+  * [Console Input (Arguments & Options)](#console-input)
+    * [Using Command Arguments](#using-command-arguments)
+    * [Using Command Options](#using-command-options)
+---
+ * [How to style the console output](#how-to-style-the-console-output)
+  * [Helper Methods](#helper-methods)
+    * [Titling Methods](#titling-methods)
+    * [Content Methods](#content-methods)
+    * [Admonition Methods](#admonition-methods)
+    * [Result Methods](#result-methods)
+---
+ * [How to Color the Console Output](#how-to-color-the-console-output)
+    * [Predefined style tag](#predefined-style-tags)
+    * [Generic style tags](#generic-style-tags)
+    * [Custom color tag](#custom-color-tags)
+ ---
+* [How to use verbosity levels](#how-to-use-verbosity-levels)
+---
+* [How to ask for user input](#how-to-ask-for-user-input)
+  * [Asking the User for Information](#asking-the-user-for-information)
+  * [Hiding the User's Response](#hiding-the-users-response)
+  * [Asking the User for Confirmation](#asking-the-user-for-confirmation)
+  * [Asking the User for a Choice](#asking-the-user-for-a-choice)
+  * [Multiple Choices](#multiple-choices)
+  * [Normalizing the Answer](#normalizing-the-answer)
+  * [Validating the Answer](#validating-the-answer)
+---
+* [How to display tables in the console](#how-to-display-tables-in-the-console)
+  * [Table Styling](#table-styling)
+  * [Table Styling](#table-styling)
+  * [Padding management](#padding-management)
 ---
 
 # How to use input options and arguments
 
-## Console Input (Arguments & Options)
+## Console Input
 
 The most interesting part of the commands are the arguments and options that you can make available. These arguments and
 options allow you to pass dynamic information from the terminal to the command.
@@ -147,13 +177,13 @@ You can combine `IS_ARRAY` with `REQUIRED` and `OPTIONAL` like this:
 
 ```go
 io := style.
-    NewConsoleCommand().
-    AddInputArgument(
-        argument.
-			New("names", argument.IS_ARRAY | argument.REQUIRED),
-    ).
-    ParseInput().
-    ValidateInput()
+NewConsoleCommand().
+AddInputArgument(
+argument.
+New("names", argument.IS_ARRAY | argument.REQUIRED),
+).
+ParseInput().
+ValidateInput()
 ```
 
 ### Using Command Options
@@ -232,22 +262,25 @@ You can also declare a one-letter shortcut that you can call with a single dash,
 
 ```go
 io := style.
-    NewConsoleCommand().
-    AddInputOption(
-        option.
-            New("iterations", option.REQUIRED).
-            SetShortcut("i"),
-    ).
-    ParseInput().
-    ValidateInput()
+NewConsoleCommand().
+AddInputOption(
+option.
+New("iterations", option.REQUIRED).
+SetShortcut("i"),
+).
+ParseInput().
+ValidateInput()
 ```
 
 Note that to comply with the [docopt standard](http://docopt.org/), long options can specify their values after a white
 space or an = sign (e.g. `--iterations 5` or `--iterations=5`), but short options can only use white spaces or no
 separation at all (e.g. `-i 5` or `-i5`).
 
-> While it is possible to separate an option from its value with a white space, using this form leads to an ambiguity should the option appear before the command name.
-> For example, `php bin/console --iterations 5 app:greet Fabien` is ambiguous; Go-console would interpret 5 as the command name. To avoid this situation, always place options after the command name, or avoid using a space to separate the option name from its value.
+> While it is possible to separate an option from its value with a white space, using this form leads to an ambiguity
+> should the option appear before the command name.
+> For example, `php bin/console --iterations 5 app:greet Fabien` is ambiguous; Go-console would interpret 5 as the
+> command name. To avoid this situation, always place options after the command name, or avoid using a space to separate
+> the option name from its value.
 
 ---
 
@@ -269,12 +302,12 @@ You can combine `IS_ARRAY` with `REQUIRED` and `OPTIONAL` like this:
 
 ```go
 io := style.
-    NewConsoleCommand().
-    AddInputOption(
-        option.New("iterations", option.IS_ARRAY | option.REQUIRED),
-    ).
-    ParseInput().
-    ValidateInput()
+NewConsoleCommand().
+AddInputOption(
+option.New("iterations", option.IS_ARRAY | option.REQUIRED),
+).
+ParseInput().
+ValidateInput()
 ```
 
 ---
@@ -287,8 +320,6 @@ io := style.
 
 One of the most boring tasks when creating console commands is to deal with the styling of the command's output, this
 library provide several helper for that.
-
-## Basic Usage
 
 ```go
 package main
@@ -359,9 +390,9 @@ io.Text("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.TextArray([]string{
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -375,9 +406,9 @@ It displays an unordered list of elements passed as an array:
 
 ```go
 io.Listing([]string{
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -412,9 +443,9 @@ io.Note("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.NoteArray([]string{
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -433,9 +464,9 @@ io.Caution("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.CautionArray([]string{
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -457,9 +488,9 @@ io.Success("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.SuccessArray([]string{
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -479,9 +510,9 @@ io.Warning("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.WarningArray([]string{
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -501,9 +532,9 @@ io.Error("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
 io.ErrorArray([]string{
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
-    "Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
+"Lorem Ipsum Dolor Sit Amet",
 })
 ```
 
@@ -514,6 +545,8 @@ io.ErrorArray([]string{
 ## How to Color the Console Output
 
 Whenever you output text, you can use OutputInterface to surround the text with tags to color its output. For example:
+
+### Predefined style tags
 
 ```go
 package main
@@ -552,6 +585,8 @@ func main() {
 
 ---
 
+### Generic style tags
+
 You can also set these colors and options directly inside the tag name:
 
 ```go
@@ -581,9 +616,12 @@ func main() {
     <img src="docs/assets/custom-style-tags.png">
 </p>
 
-> If you need to render a tag literally, escape it with a backslash: \<info> or use the escape() method to escape all the tags included in the given string.
+> If you need to render a tag literally, escape it with a backslash: \<info> or use the escape() method to escape all
+> the tags included in the given string.
 
 ---
+
+### Custom color tags
 
 It is possible to define your own styles using the OutputFormatterStyle
 
@@ -616,7 +654,10 @@ func main() {
 </p>
 
 > Available foreground and background colors are: black, red, green, yellow, blue, magenta, cyan and white.
-> And available options are: bold, underscore, blink, reverse (enables the "reverse video" mode where the background and foreground colors are swapped) and conceal (sets the foreground color to transparent, making the typed text invisible - although it can be selected and copied; this option is commonly used when asking the user to type sensitive information).
+> And available options are: bold, underscore, blink, reverse (enables the "reverse video" mode where the background and
+> foreground colors are swapped) and conceal (sets the foreground color to transparent, making the typed text invisible -
+> although it can be selected and copied; this option is commonly used when asking the user to type sensitive
+> information).
 
 ---
 
@@ -664,7 +705,8 @@ func main() {
     <img src="docs/assets/direct-use-formatter-style.png">
 </p>
 
-> The OutputFormatterStyle is the simplest way to color output. It is not mean to be use directly, but to defined custom tags used by OutputFormatterInterface.
+> The OutputFormatterStyle is the simplest way to color output. It is not mean to be use directly, but to defined custom
+> tags used by OutputFormatterInterface.
 
 ---
 
@@ -731,7 +773,8 @@ It can be used to ask for confirmation, to ask for a value, or to ask for a choi
 
 ## Helper Usage
 
-The Question Helper needs an io.Reader instance as the first argument and OutputInterface instance as the second argument.
+The Question Helper needs an io.Reader instance as the first argument and OutputInterface instance as the second
+argument.
 
 ```go
 package main
@@ -750,7 +793,8 @@ func main() {
 
 ## Asking the User for Information
 
-The Question Helper has a single method ask() that takes a Question instance as its first argument and returns the user's answer as a string.
+The Question Helper has a single method ask() that takes a Question instance as its first argument and returns the
+user's answer as a string.
 
 ```go
 package main
@@ -853,8 +897,10 @@ func main() {
 }
 ```
 
-In this case, the user will be asked "Continue with this action?". If the user answers with y it returns "yes" (`answers.YES`) or "no" (`answers.NO`) if they answer with n.
-The default value to return if the user doesn't enter any valid input can be modify using the `SetDefaultAnswer()` (By default it is set to `answers.NONE` forcing the user to answer).
+In this case, the user will be asked "Continue with this action?". If the user answers with y it returns "
+yes" (`answers.YES`) or "no" (`answers.NO`) if they answer with n.
+The default value to return if the user doesn't enter any valid input can be modify using the `SetDefaultAnswer()` (By
+default it is set to `answers.NONE` forcing the user to answer).
 
 <p align="center">
     <img src="docs/assets/question/asking-user-confirmation.png">
@@ -862,16 +908,19 @@ The default value to return if the user doesn't enter any valid input can be mod
 
 > **Note**
 >
-> >You can customize the regex used to check if the answer means "yes" using the `SetYesRegex()` method. (By default it is set to `^(y|yes|true|1)$`)
+> > You can customize the regex used to check if the answer means "yes" using the `SetYesRegex()` method. (By default it
+> > is set to `^(y|yes|true|1)$`)
 >
-> >You can customize the regex used to check if the answer means "no" using the `SetNoRegex()` method. (By default it is set to `^(n|no|false|0)$`)
+> > You can customize the regex used to check if the answer means "no" using the `SetNoRegex()` method. (By default it
+> > is set to `^(n|no|false|0)$`)
 >
 > > You can define your own error message using `SetErrorMessage()`
 > > by default it is set to `"Value '%s' is invalid"`
 
 ## Asking the User for a Choice
 
-If you have a predefined set of answers the user can choose from, you could use a ChoiceQuestion which makes sure that the user can only enter a valid string from a predefined list:
+If you have a predefined set of answers the user can choose from, you could use a ChoiceQuestion which makes sure that
+the user can only enter a valid string from a predefined list:
 
 ```go
 package main
@@ -888,7 +937,7 @@ func main() {
 	qh := question.NewHelper(os.Stdin, io.GetOutput())
 
 	colors := []string{"red", "green", "blue", "yellow", "black", "white"}
-	
+
 	// Choice question with only one answer allowed
 	answer := qh.Ask(
 		question.
@@ -904,7 +953,8 @@ func main() {
     <img src="docs/assets/question/asking-user-choice.png">
 </p>
 
-If the user enters an invalid or empty string, an error message is shown and the user is asked to provide the answer another time,
+If the user enters an invalid or empty string, an error message is shown and the user is asked to provide the answer
+another time,
 until they enter a valid string or reach the maximum number of attempts.
 
 <p align="center">
@@ -914,7 +964,7 @@ until they enter a valid string or reach the maximum number of attempts.
 > **Note**
 > > The default value for the maximum number of attempts is 0. which means an infinite number of attempts.
 >
-> >You can define your own error message using `SetErrorMessage()`
+> > You can define your own error message using `SetErrorMessage()`
 > by default it is set to `"Value '%s' is invalid"`
 
 ## Multiple Choices
@@ -962,8 +1012,10 @@ func main() {
 ## Normalizing the Answer
 
 Before validating the answer, you can "normalize" it to fix minor errors or tweak it as needed.
-For instance, in the next example you ask for the user firstname. In case the user did capitalize the first error by mistake,
-you can modify the answer provided before validating it. To do so, configure a normalizer using the `SetNormalizer()` method:
+For instance, in the next example you ask for the user firstname. In case the user did capitalize the first error by
+mistake,
+you can modify the answer provided before validating it. To do so, configure a normalizer using the `SetNormalizer()`
+method:
 
 ```go
 package main
@@ -999,45 +1051,47 @@ func main() {
 > **Note**
 >
 > > Adding a custom normalizer on QuestionConfirmation and QuestionChoices will override the default one.
-> > If you want to keep the default behaviour and add your own logic before or after, see the next section about ChainNormalizer.
+> > If you want to keep the default behaviour and add your own logic before or after, see the next section about
+> > ChainNormalizer.
 >
 > > The normalizer is called first and the returned value is used as the input of the validator.
 > > If the answer is invalid, don't throw exceptions in the normalizer and let the validator handle those errors.
 
 ### The ChainNormalizer
 
-The `MakeChainNormalizer` allows you to merge multiple normalizers. Each normalizer will be called in the order they are defined.
+The `MakeChainNormalizer` allows you to merge multiple normalizers. Each normalizer will be called in the order they are
+defined.
 
 ```go
 package main
 
 import (
-    "github.com/DrSmithFr/go-console/pkg/question"
-    "github.com/DrSmithFr/go-console/pkg/question/normalizer"
-    "github.com/DrSmithFr/go-console/pkg/style"
-    "os"
-    "strings"
+	"github.com/DrSmithFr/go-console/pkg/question"
+	"github.com/DrSmithFr/go-console/pkg/question/normalizer"
+	"github.com/DrSmithFr/go-console/pkg/style"
+	"os"
+	"strings"
 )
 
 func main() {
-    io := style.NewConsoleCommand().Build()
-    qh := question.NewHelper(os.Stdin, io.GetOutput())
-  
-    // Simple question with normalizer
-    firstname := qh.Ask(
-        question.
-            NewQuestion("What is your name?").
-            SetNormalizer(
-                normalizer.MakeChainedNormalizer(
-                    strings.ToLower,
-                    normalizer.Ucfirst,
-                    func(answer string) string {
-                      return answer + "!"
-                    },
-                ),
-            ),
-    )
-    io.Text("Hello " + firstname)
+	io := style.NewConsoleCommand().Build()
+	qh := question.NewHelper(os.Stdin, io.GetOutput())
+
+	// Simple question with normalizer
+	firstname := qh.Ask(
+		question.
+			NewQuestion("What is your name?").
+			SetNormalizer(
+				normalizer.MakeChainedNormalizer(
+					strings.ToLower,
+					normalizer.Ucfirst,
+					func(answer string) string {
+						return answer + "!"
+					},
+				),
+			),
+	)
+	io.Text("Hello " + firstname)
 }
 ```
 
@@ -1057,29 +1111,29 @@ however, you will need to pass the question as a parameter of `normalizer.Defaul
 package main
 
 import (
-    "github.com/DrSmithFr/go-console/pkg/question"
-    "github.com/DrSmithFr/go-console/pkg/question/normalizer"
-    "strings"
+	"github.com/DrSmithFr/go-console/pkg/question"
+	"github.com/DrSmithFr/go-console/pkg/question/normalizer"
+	"strings"
 )
 
 func main() {
-    // chain normalizer example using including the default normalizer
-    q := question.
-        NewChoices("What is your favorite color?", []string{"red", "blue", "yellow"}).
-        SetMultiselect(true).
-        SetMaxAttempts(3)
+	// chain normalizer example using including the default normalizer
+	q := question.
+		NewChoices("What is your favorite color?", []string{"red", "blue", "yellow"}).
+		SetMultiselect(true).
+		SetMaxAttempts(3)
 
-    customNormalizer := normalizer.
-        MakeChainedNormalizer(
-            strings.ToLower,
-            q.GetDefaultNormalizer(),
-            normalizer.Ucfirst,
-            func(answer string) string {
-              return answer + "!"
-            },
-        )
-  
-    q.SetNormalizer(customNormalizer)
+	customNormalizer := normalizer.
+		MakeChainedNormalizer(
+			strings.ToLower,
+			q.GetDefaultNormalizer(),
+			normalizer.Ucfirst,
+			func(answer string) string {
+				return answer + "!"
+			},
+		)
+
+	q.SetNormalizer(customNormalizer)
 }
 ```
 
@@ -1091,31 +1145,31 @@ You can even validate the answer. you can configure a validator using the `SetVa
 package main
 
 import (
-    "errors"
+	"errors"
 	"github.com/DrSmithFr/go-console/pkg/question"
 	"github.com/DrSmithFr/go-console/pkg/style"
 	"os"
-    "regexp"
+	"regexp"
 )
 
 func main() {
 	io := style.NewConsoleCommand().Build()
 	qh := question.NewHelper(os.Stdin, io.GetOutput())
 
-    // Simple question with custom validator
-    nickname := qh.Ask(
-        question.
-          NewQuestion("What is your nickname?").
-          SetValidator(func(answer string) error {
-            regex := regexp.MustCompile("^(\\w|_|-)*$")
-            if match := regex.MatchString(answer); !match {
-              return errors.New("nickname must be alphanumeric")
-            }
+	// Simple question with custom validator
+	nickname := qh.Ask(
+		question.
+			NewQuestion("What is your nickname?").
+			SetValidator(func(answer string) error {
+				regex := regexp.MustCompile("^(\\w|_|-)*$")
+				if match := regex.MatchString(answer); !match {
+					return errors.New("nickname must be alphanumeric")
+				}
 
-            return nil
-          }),
-    )
-  io.Text("Hi " + nickname)
+				return nil
+			}),
+	)
+	io.Text("Hi " + nickname)
 }
 ```
 
@@ -1129,8 +1183,8 @@ The error message is displayed in the console, so it is a good practice to put s
 > **Note**
 >
 > > Adding a custom validator on QuestionConfirmation and QuestionChoices will override the default one.
-> > If you want to keep the default behaviour and add your own logic before or after, see the next section about ChainedValidator.
-
+> > If you want to keep the default behaviour and add your own logic before or after, see the next section about
+> > ChainedValidator.
 
 ### The ChainedValidator
 
@@ -1141,10 +1195,10 @@ Each validator will be called in the order they are defined.
 package main
 
 import (
-    "errors"
+	"errors"
 	"github.com/DrSmithFr/go-console/pkg/question"
 	"github.com/DrSmithFr/go-console/pkg/style"
-    "github.com/DrSmithFr/go-console/pkg/question/validator"
+	"github.com/DrSmithFr/go-console/pkg/question/validator"
 	"os"
 )
 
@@ -1152,31 +1206,31 @@ func main() {
 	io := style.NewConsoleCommand().Build()
 	qh := question.NewHelper(os.Stdin, io.GetOutput())
 
-    // chain validator example
-    answer := qh.Ask(
-        question.
-            NewQuestion("What is your favorite color?").
-            SetValidator(
-                validator.
-                    MakeChainedValidator(
-                        func(answer string) error {
-                          if answer == "red" {
-                            return errors.New("red is mine")
-                          }
-  
-                          return nil
-                        },
-                        func(answer string) error {
-                          if answer == "blue" {
-                            return errors.New("blue is disgusting")
-                          }
-  
-                          return nil
-                        },
-                    ),
-            ),
-    )
-    io.Text(answer)
+	// chain validator example
+	answer := qh.Ask(
+		question.
+			NewQuestion("What is your favorite color?").
+			SetValidator(
+				validator.
+					MakeChainedValidator(
+						func(answer string) error {
+							if answer == "red" {
+								return errors.New("red is mine")
+							}
+
+							return nil
+						},
+						func(answer string) error {
+							if answer == "blue" {
+								return errors.New("blue is disgusting")
+							}
+
+							return nil
+						},
+					),
+			),
+	)
+	io.Text(answer)
 }
 ```
 
@@ -1242,16 +1296,16 @@ func main() {
 You can add a table separator anywhere in the output by passing an instance of TableSeparator as a row:
 
 ```go
-	tab.
-		AddRowsFromString(
-			[][]string{
-				{"99921-58-10-7", "The Divine Comedy", "Dante Alighieri"},
-				{"9971-5-0210-0", "A Tale of Two Cities", "Charles Dickens"},
-				{"---"}, // or "===" 
-				{"960-425-059-0", "The Lord of the Rings", "J. R. R. Tolkien"},
-				{"80-902734-1-6", "And Then There Were None", "Agatha Christie"},
-			},
-		)
+  tab.
+AddRowsFromString(
+[][]string{
+{"99921-58-10-7", "The Divine Comedy", "Dante Alighieri"},
+{"9971-5-0210-0", "A Tale of Two Cities", "Charles Dickens"},
+{"---"}, // or "===" 
+{"960-425-059-0", "The Lord of the Rings", "J. R. R. Tolkien"},
+{"80-902734-1-6", "And Then There Were None", "Agatha Christie"},
+},
+)
 ```
 
 <p align="center">
@@ -1261,9 +1315,9 @@ You can add a table separator anywhere in the output by passing an instance of T
 You can optionally display titles at the top and the bottom of the table:
 
 ```go
-	tab.
-        SetHeaderTitle("Books").
-        SetFooterTitle("Page 1/2")
+  tab.
+SetHeaderTitle("Books").
+SetFooterTitle("Page 1/2")
 ```
 
 <p align="center">
@@ -1275,13 +1329,13 @@ Use the SetColumnWidths() method to set the column widths explicitly:
 
 ```go
     // this is equivalent to the calling SetColumnsMinWidths() and SetColumnsMaxWidths() with the same values
-    render.
-        SetColumnsWidths(map[int]int{
-            0: 10,
-            1: 0,
-            2: 30,
-        })
-    render.Render()
+render.
+SetColumnsWidths(map[int]int{
+0: 10,
+1: 0,
+2: 30,
+})
+render.Render()
 ```
 
 In this example, the first column width will be 10,
@@ -1292,9 +1346,9 @@ Its first argument is the column index (starting from 0) and the second argument
 
 ```go
     render.SetColumnWidth(0, 10)
-    render.SetColumnWidth(2, 10)
+render.SetColumnWidth(2, 10)
 
-    render.Render()
+render.Render()
 ```
 
 The output of this command will be:
@@ -1307,23 +1361,23 @@ Note that you can also set the max and min width of a column individually:
 
 ```go
     render.SetColumnMaxWidth(0, 10)
-    render.SetColumnMinWidth(1, 15)
+render.SetColumnMinWidth(1, 15)
 
-    render.
-        SetColumnsMinWidths(map[int]int{
-            0: 10,
-            1: 0,
-            2: 30,
-        })
+render.
+SetColumnsMinWidths(map[int]int{
+0: 10,
+1: 0,
+2: 30,
+})
 
-    render.
-        SetColumnsMaxWidths(map[int]int{
-            0: 10,
-            1: 0,
-            2: 30,
-        })
+render.
+SetColumnsMaxWidths(map[int]int{
+0: 10,
+1: 0,
+2: 30,
+})
 
-    render.Render()
+render.Render()
 ```
 
 ## Table Styling
@@ -1332,11 +1386,11 @@ The table style can be changed to any built-in styles via SetStyleFromName()
 
 ```go
     // same as calling nothing
-    render.SetStyleFromName("default")
+render.SetStyleFromName("default")
 
-    // changes the default style to compact
-    render.SetStyleFromName("compact")
-    render.Render()
+// changes the default style to compact
+render.SetStyleFromName("compact")
+render.Render()
 ```
 
 This code results in:
@@ -1349,8 +1403,8 @@ You can also set the style to `borderless`:
 
 ```go
     // changes the default style to compact
-    render.SetStyleFromName("borderless")
-    render.Render()
+render.SetStyleFromName("borderless")
+render.Render()
 ```
 
 <p align="center">
@@ -1361,8 +1415,8 @@ You can also set the style to `box`:
 
 ```go
     // changes the default style to compact
-    render.SetStyleFromName("box")
-    render.Render()
+render.SetStyleFromName("box")
+render.Render()
 ```
 
 <p align="center">
@@ -1373,8 +1427,8 @@ You can also set the style to `box-double`:
 
 ```go
     // changes the default style to compact
-    render.SetStyleFromName("box-double")
-    render.Render()
+render.SetStyleFromName("box-double")
+render.Render()
 ```
 
 <p align="center">
@@ -1385,19 +1439,19 @@ You can also set the style to `box-double`:
 >
 > > Using shortcut "---" and "===" to insert a tableSeparator with style `box-double`
 > > will result in simple or double line separator.
-> >On every other style, it will result in a simple line separator.
+> > On every other style, it will result in a simple line separator.
 
 If the built-in styles do not fit your need, define your own:
 
 ```go
     customStyle := table.NewTableStyle().
-        SetHorizontalOutsideBorderChar("═").
-        SetHorizontalInsideBorderChar("─").
-        SetVerticalOutsideBorderChar("║").
-        SetVerticalInsideBorderChar("│").
-        SetCrossingChars("┼", "╔", "╤", "╗", "╢", "╝", "╧", "╚", "╟", "╠", "╪", "╣")
+SetHorizontalOutsideBorderChar("═").
+SetHorizontalInsideBorderChar("─").
+SetVerticalOutsideBorderChar("║").
+SetVerticalInsideBorderChar("│").
+SetCrossingChars("┼", "╔", "╤", "╗", "╢", "╝", "╧", "╚", "╟", "╠", "╪", "╣")
 
-    render.SetStyle(customStyle)
+render.SetStyle(customStyle)
 ```
 
 ## Spanning Multiple Columns
@@ -1473,7 +1527,7 @@ This results in:
 You can set the padding type for each cell or column individually:
 
 - `PadToLeft` (default)
--  `PadToCenter`
+- `PadToCenter`
 - `PadToRight`
 
 > **Note:**
@@ -1554,3 +1608,9 @@ func main() {
 <p align="center">
     <img src="docs/assets/table/table-padding.png">
 </p>
+
+---
+
+[Return to Table of content](#tables-of-contents)
+
+---
