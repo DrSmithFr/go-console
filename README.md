@@ -18,8 +18,6 @@ GoConsole is a lightweight equivalent in Go to the [Console Component 3.4](https
 of Symfony PHP framework.
 
 ## Tables of Contents
-
----
 * [How to use input options and arguments](#how-to-use-input-options-and-arguments)
   * [Console Input (Arguments & Options)](#console-input)
     * [Using Command Arguments](#using-command-arguments)
@@ -36,7 +34,7 @@ of Symfony PHP framework.
     * [Predefined style tag](#predefined-style-tags)
     * [Generic style tags](#generic-style-tags)
     * [Custom color tag](#custom-color-tags)
- ---
+---
 * [How to use verbosity levels](#how-to-use-verbosity-levels)
 ---
 * [How to ask for user input](#how-to-ask-for-user-input)
