@@ -20,8 +20,8 @@ of Symfony PHP framework.
 ## Tables of Contents
 * [How to use input options and arguments](#how-to-use-input-options-and-arguments)
   * [Console Input (Arguments & Options)](#console-input)
-    * [Using Command Arguments](#using-command-arguments)
-    * [Using Command Options](#using-command-options)
+  * [Using Command Arguments](#using-command-arguments)
+  * [Using Command Options](#using-command-options)
 ---
  * [How to style the console output](#how-to-style-the-console-output)
   * [Helper Methods](#helper-methods)
@@ -69,40 +69,40 @@ required:
 package main
 
 import (
-	"fmt"
-	"github.com/DrSmithFr/go-console/pkg/input/argument"
-	"github.com/DrSmithFr/go-console/pkg/style"
+  "fmt"
+  "github.com/DrSmithFr/go-console/pkg/input/argument"
+  "github.com/DrSmithFr/go-console/pkg/style"
 )
 
 func main() {
-	io := style.
-		NewConsoleCommand().
-		AddInputArgument(
-			argument.
-				New("name", argument.REQUIRED).
-				SetDescription("Who do you want to greet?"),
-		).
-		AddInputArgument(
-			argument.
-				New("last_name", argument.OPTIONAL).
-				SetDescription("Your last name?"),
-		).
-		Build()
+  io := style.
+    NewConsoleCommand().
+    AddInputArgument(
+      argument.
+        New("name", argument.REQUIRED).
+        SetDescription("Who do you want to greet?"),
+    ).
+    AddInputArgument(
+      argument.
+        New("last_name", argument.OPTIONAL).
+        SetDescription("Your last name?"),
+    ).
+    Build()
 
-	//
-	// You now have access to a last_name argument in your command:
-	//
+  //
+  // You now have access to a last_name argument in your command:
+  //
 
-	text := fmt.Sprintf("Hi %s", io.GetInput().GetArgument("name"))
+  text := fmt.Sprintf("Hi %s", io.GetInput().GetArgument("name"))
 
-	lastName := io.GetInput().GetArgument("last_name")
+  lastName := io.GetInput().GetArgument("last_name")
 
-	if lastName != "" {
-		text = fmt.Sprintf("%s %s", text, lastName)
-	}
+  if lastName != "" {
+    text = fmt.Sprintf("%s %s", text, lastName)
+  }
 
-	io.GetOutput().Write(text)
-	io.GetOutput().Writeln("!")
+  io.GetOutput().Write(text)
+  io.GetOutput().Writeln("!")
 }
 ```
 
@@ -125,30 +125,30 @@ argument can be a list:
 package main
 
 import (
-	"fmt"
-	"github.com/DrSmithFr/go-console/pkg/input/argument"
-	"github.com/DrSmithFr/go-console/pkg/style"
+  "fmt"
+  "github.com/DrSmithFr/go-console/pkg/input/argument"
+  "github.com/DrSmithFr/go-console/pkg/style"
 )
 
 func main() {
-	io := style.
-		NewConsoleCommand().
-		AddInputArgument(
-			argument.
-				New("names", argument.IS_ARRAY).
-				SetDescription("Who do you want to greet?"),
-		).
-		Build()
+  io := style.
+    NewConsoleCommand().
+    AddInputArgument(
+      argument.
+        New("names", argument.IS_ARRAY).
+        SetDescription("Who do you want to greet?"),
+    ).
+    Build()
 
-	//
-	// You can access the names argument as an array:
-	//
+  //
+  // You can access the names argument as an array:
+  //
 
-	names := io.GetInput().GetArgumentArray("names")
+  names := io.GetInput().GetArgumentArray("names")
 
-	for _, name := range names {
-		io.Text(fmt.Sprintf("Hi %s!", name))
-	}
+  for _, name := range names {
+    io.Text(fmt.Sprintf("Hi %s!", name))
+  }
 }
 ```
 
@@ -197,40 +197,40 @@ printed:
 package main
 
 import (
-	"fmt"
-	"github.com/DrSmithFr/go-console/pkg/input/argument"
-	"github.com/DrSmithFr/go-console/pkg/input/option"
-	"github.com/DrSmithFr/go-console/pkg/style"
-	"strconv"
+  "fmt"
+  "github.com/DrSmithFr/go-console/pkg/input/argument"
+  "github.com/DrSmithFr/go-console/pkg/input/option"
+  "github.com/DrSmithFr/go-console/pkg/style"
+  "strconv"
 )
 
 func main() {
-	io := style.
-		NewConsoleCommand().
-		AddInputArgument(
-			argument.
-				New("name", argument.REQUIRED).
-				SetDescription("Who do you want to greet?"),
-		).
-		AddInputOption(
-			option.
-				New("iterations", option.REQUIRED).
-				SetDescription("How many times should the message be printed?").
-				SetDefault("1"),
-		).
-		Build()
+  io := style.
+    NewConsoleCommand().
+    AddInputArgument(
+      argument.
+        New("name", argument.REQUIRED).
+        SetDescription("Who do you want to greet?"),
+    ).
+    AddInputOption(
+      option.
+        New("iterations", option.REQUIRED).
+        SetDescription("How many times should the message be printed?").
+        SetDefault("1"),
+    ).
+    Build()
 
-	//
-	// Next, use this in the command to print the message multiple times:
-	//
+  //
+  // Next, use this in the command to print the message multiple times:
+  //
 
-	iterations, _ := strconv.Atoi(io.GetInput().GetOption("iterations"))
+  iterations, _ := strconv.Atoi(io.GetInput().GetOption("iterations"))
 
-	for i := 0; i < iterations; i++ {
-		io.Text(
-			fmt.Sprintf("Hi %s!", io.GetInput().GetArgument("name")),
-		)
-	}
+  for i := 0; i < iterations; i++ {
+    io.Text(
+      fmt.Sprintf("Hi %s!", io.GetInput().GetArgument("name")),
+    )
+  }
 }
 ```
 
@@ -323,25 +323,25 @@ library provide several helper for that.
 package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/input"
-	"github.com/DrSmithFr/go-console/pkg/output"
-	"github.com/DrSmithFr/go-console/pkg/style"
+  "github.com/DrSmithFr/go-console/pkg/input"
+  "github.com/DrSmithFr/go-console/pkg/output"
+  "github.com/DrSmithFr/go-console/pkg/style"
 )
 
 func main() {
-	// create default console styler
-	io := style.NewConsoleCommand()
+  // create default console styler
+  io := style.NewConsoleCommand()
 
-	// or create styler with custom OutputInterface
-	in := input.NewArgvInput(nil)
-	out := output.NewConsoleOutput(true, nil)
-	io := style.NewCommandStyler(in, out)
+  // or create styler with custom OutputInterface
+  in := input.NewArgvInput(nil)
+  out := output.NewConsoleOutput(true, nil)
+  io := style.NewCommandStyler(in, out)
 
-	// add title
-	io.Title("Lorem Ipsum Dolor Sit Amet")
+  // add title
+  io.Title("Lorem Ipsum Dolor Sit Amet")
 
-	// you still access the OutputInterface
-	io.GetOutput().Write("<info>some info</>")
+  // you still access the OutputInterface
+  io.GetOutput().Write("<info>some info</>")
 }
 ```
 
@@ -552,26 +552,26 @@ package main
 import "github.com/DrSmithFr/go-console/pkg/output"
 
 func main() {
-	// creating new output
-	out := output.NewConsoleOutput(true, nil)
+  // creating new output
+  out := output.NewConsoleOutput(true, nil)
 
-	// white text on a red background
-	out.Writeln("<error>An error</error>")
+  // white text on a red background
+  out.Writeln("<error>An error</error>")
 
-	// green text
-	out.Writeln("<info>An information</info>")
+  // green text
+  out.Writeln("<info>An information</info>")
 
-	// yellow text
-	out.Writeln("<comment>An comment</comment>")
+  // yellow text
+  out.Writeln("<comment>An comment</comment>")
 
-	// black text on a cyan background
-	out.Writeln("<question>A question</question>")
+  // black text on a cyan background
+  out.Writeln("<question>A question</question>")
 
-	// underscore text
-	out.Writeln("<u>Some underscore text</u>")
+  // underscore text
+  out.Writeln("<u>Some underscore text</u>")
 
-	// bold text
-	out.Writeln("<b>Some bold text</b>")
+  // bold text
+  out.Writeln("<b>Some bold text</b>")
 }
 ```
 
@@ -593,20 +593,20 @@ package main
 import "github.com/DrSmithFr/go-console/pkg/output"
 
 func main() {
-	// green text
-	out := output.NewConsoleOutput(true, nil)
+  // green text
+  out := output.NewConsoleOutput(true, nil)
 
-	// black text on a cyan background
-	out.Writeln("<fg=green>foo</>")
+  // black text on a cyan background
+  out.Writeln("<fg=green>foo</>")
 
-	// green text
-	out.Writeln("<fg=black;bg=cyan>foo</>")
+  // green text
+  out.Writeln("<fg=black;bg=cyan>foo</>")
 
-	// bold text on a yellow background
-	out.Writeln("<bg=yellow;options=bold>foo</>")
+  // bold text on a yellow background
+  out.Writeln("<bg=yellow;options=bold>foo</>")
 
-	// bold text with underscore
-	out.Writeln("<options=bold,underscore>foo</>")
+  // bold text with underscore
+  out.Writeln("<options=bold,underscore>foo</>")
 }
 ```
 
@@ -627,23 +627,23 @@ It is possible to define your own styles using the OutputFormatterStyle
 package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/color"
-	"github.com/DrSmithFr/go-console/pkg/formatter"
-	"github.com/DrSmithFr/go-console/pkg/output"
+  "github.com/DrSmithFr/go-console/pkg/color"
+  "github.com/DrSmithFr/go-console/pkg/formatter"
+  "github.com/DrSmithFr/go-console/pkg/output"
 )
 
 func main() {
-	// creating new output
-	out := output.NewConsoleOutput(true, nil)
+  // creating new output
+  out := output.NewConsoleOutput(true, nil)
 
-	// create new style
-	s := formatter.NewOutputFormatterStyle(color.RED, color.YELLOW, []string{color.BOLD, color.BLINK})
+  // create new style
+  s := formatter.NewOutputFormatterStyle(color.RED, color.YELLOW, []string{color.BOLD, color.BLINK})
 
-	// add style to formatter
-	out.GetFormatter().SetStyle("fire", *s)
+  // add style to formatter
+  out.GetFormatter().SetStyle("fire", *s)
 
-	// use the new style
-	out.Writeln("<fire>foo</>")
+  // use the new style
+  out.Writeln("<fire>foo</>")
 }
 ```
 
@@ -666,36 +666,36 @@ comments, etc.).
 package main
 
 import (
-	"fmt"
-	"github.com/DrSmithFr/go-console/pkg/color"
-	"github.com/DrSmithFr/go-console/pkg/formatter"
+  "fmt"
+  "github.com/DrSmithFr/go-console/pkg/color"
+  "github.com/DrSmithFr/go-console/pkg/formatter"
 )
 
 func main() {
-	// create a default style
-	s1 := formatter.NewOutputFormatterStyle(color.NULL, color.NULL, nil)
-	fmt.Printf(s1.Apply("some text without coloration\n"))
+  // create a default style
+  s1 := formatter.NewOutputFormatterStyle(color.NULL, color.NULL, nil)
+  fmt.Printf(s1.Apply("some text without coloration\n"))
 
-	s1.SetBackground(color.RED)
-	fmt.Printf(s1.Apply("some text with red background\n"))
+  s1.SetBackground(color.RED)
+  fmt.Printf(s1.Apply("some text with red background\n"))
 
-	s1.SetForeground(color.GREEN)
-	fmt.Printf(s1.Apply("some text with red background and green text\n"))
+  s1.SetForeground(color.GREEN)
+  fmt.Printf(s1.Apply("some text with red background and green text\n"))
 
-	s1.SetOption(color.BOLD)
-	fmt.Printf(s1.Apply("some bold text with red background and green text \n"))
+  s1.SetOption(color.BOLD)
+  fmt.Printf(s1.Apply("some bold text with red background and green text \n"))
 
-	// override all options in one time
-	s1.SetOptions([]string{color.UNDERSCORE})
-	fmt.Printf(s1.Apply("some underscore text with red background and green text \n"))
+  // override all options in one time
+  s1.SetOptions([]string{color.UNDERSCORE})
+  fmt.Printf(s1.Apply("some underscore text with red background and green text \n"))
 
-	// quick declaration
-	s2 := formatter.NewOutputFormatterStyle(color.BLUE, color.YELLOW, nil)
-	fmt.Printf(s2.Apply("some text with yellow background and blue text\n"))
+  // quick declaration
+  s2 := formatter.NewOutputFormatterStyle(color.BLUE, color.YELLOW, nil)
+  fmt.Printf(s2.Apply("some text with yellow background and blue text\n"))
 
-	// quick declaration with options
-	s3 := formatter.NewOutputFormatterStyle(color.DEFAULT, color.DEFAULT, []string{color.UNDERSCORE, color.BOLD})
-	fmt.Printf(s3.Apply("some bold and underscore text\n"))
+  // quick declaration with options
+  s3 := formatter.NewOutputFormatterStyle(color.DEFAULT, color.DEFAULT, []string{color.UNDERSCORE, color.BOLD})
+  fmt.Printf(s3.Apply("some bold and underscore text\n"))
 }
 ```
 
@@ -724,35 +724,35 @@ but you can control their verbosity with the `--quiet|-q`, `--verbose|-v`, `--ve
 package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/input"
-	"github.com/DrSmithFr/go-console/pkg/output"
-	"github.com/DrSmithFr/go-console/pkg/style"
-	"github.com/DrSmithFr/go-console/pkg/verbosity"
+  "github.com/DrSmithFr/go-console/pkg/input"
+  "github.com/DrSmithFr/go-console/pkg/output"
+  "github.com/DrSmithFr/go-console/pkg/style"
+  "github.com/DrSmithFr/go-console/pkg/verbosity"
 )
 
 func main() {
-	io := style.NewConsoleCommand()
+  io := style.NewConsoleCommand()
 
-	if io.GetVerbosity() == verbosity.Verbose {
-		io.Text("Lorem Ipsum Dolor Sit Amet")
-	}
+  if io.GetVerbosity() == verbosity.Verbose {
+    io.Text("Lorem Ipsum Dolor Sit Amet")
+  }
 
-	// available methods: .IsQuiet(), .IsVerbose(), .IsVeryVerbose(), .IsDebug()
-	if io.IsVeryVerbose() {
-		io.Text("Lorem Ipsum Dolor Sit Amet")
-	}
+  // available methods: .IsQuiet(), .IsVerbose(), .IsVeryVerbose(), .IsDebug()
+  if io.IsVeryVerbose() {
+    io.Text("Lorem Ipsum Dolor Sit Amet")
+  }
 
-	// or using directly the output instance
-	out := io.GetOutput()
+  // or using directly the output instance
+  out := io.GetOutput()
 
-	if out.GetVerbosity() == verbosity.Verbose {
-		out.Writeln("Lorem Ipsum Dolor Sit Amet")
-	}
+  if out.GetVerbosity() == verbosity.Verbose {
+    out.Writeln("Lorem Ipsum Dolor Sit Amet")
+  }
 
-	// available methods: .IsQuiet(), .IsVerbose(), .IsVeryVerbose(), .IsDebug()
-	if out.IsVeryVerbose() {
-		out.Writeln("Lorem Ipsum Dolor Sit Amet")
-	}
+  // available methods: .IsQuiet(), .IsVerbose(), .IsVeryVerbose(), .IsDebug()
+  if out.IsVeryVerbose() {
+    out.Writeln("Lorem Ipsum Dolor Sit Amet")
+  }
 }
 ```
 
@@ -778,14 +778,14 @@ argument.
 package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/question"
-	"github.com/DrSmithFr/go-console/pkg/style"
-	"os"
+  "github.com/DrSmithFr/go-console/pkg/question"
+  "github.com/DrSmithFr/go-console/pkg/style"
+  "os"
 )
 
 func main() {
-	io := style.NewConsoleCommand().Build()
-	qh := question.NewHelper(os.Stdin, io.GetOutput())
+  io := style.NewConsoleCommand().Build()
+  qh := question.NewHelper(os.Stdin, io.GetOutput())
 }
 ```
 
@@ -798,23 +798,23 @@ user's answer as a string.
 package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/question"
-	"github.com/DrSmithFr/go-console/pkg/question/answers"
-	"github.com/DrSmithFr/go-console/pkg/style"
-	"os"
+  "github.com/DrSmithFr/go-console/pkg/question"
+  "github.com/DrSmithFr/go-console/pkg/question/answers"
+  "github.com/DrSmithFr/go-console/pkg/style"
+  "os"
 )
 
 func main() {
-	io := style.NewConsoleCommand().Build()
-	qh := question.NewHelper(os.Stdin, io.GetOutput())
+  io := style.NewConsoleCommand().Build()
+  qh := question.NewHelper(os.Stdin, io.GetOutput())
 
-	// Simple question with default answer
-	name := qh.Ask(
-		question.
-			NewQuestion("What is your name?").
-			SetDefaultAnswer("John Doe"),
-	)
-	io.Text("Hello " + name)
+  // Simple question with default answer
+  name := qh.Ask(
+    question.
+      NewQuestion("What is your name?").
+      SetDefaultAnswer("John Doe"),
+  )
+  io.Text("Hello " + name)
 }
 ```
 
@@ -839,22 +839,22 @@ You can also ask a question and hide the response. This is particularly convenie
 package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/question"
-	"github.com/DrSmithFr/go-console/pkg/style"
-	"os"
+  "github.com/DrSmithFr/go-console/pkg/question"
+  "github.com/DrSmithFr/go-console/pkg/style"
+  "os"
 )
 
 func main() {
-	io := style.NewConsoleCommand().Build()
-	qh := question.NewHelper(os.Stdin, io.GetOutput())
+  io := style.NewConsoleCommand().Build()
+  qh := question.NewHelper(os.Stdin, io.GetOutput())
 
-	// Simple question with hidden answer
-	pass := qh.Ask(
-		question.
-			NewQuestion("What is your password?").
-			SetHidden(true),
-	)
-	io.Text("Password: " + pass)
+  // Simple question with hidden answer
+  pass := qh.Ask(
+    question.
+      NewQuestion("What is your password?").
+      SetHidden(true),
+  )
+  io.Text("Password: " + pass)
 }
 ```
 
@@ -870,28 +870,28 @@ Suppose you want to confirm an action before actually executing it. Add the foll
 package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/question"
-	"github.com/DrSmithFr/go-console/pkg/question/answers"
-	"github.com/DrSmithFr/go-console/pkg/style"
-	"os"
+  "github.com/DrSmithFr/go-console/pkg/question"
+  "github.com/DrSmithFr/go-console/pkg/question/answers"
+  "github.com/DrSmithFr/go-console/pkg/style"
+  "os"
 )
 
 func main() {
-	io := style.NewConsoleCommand().Build()
-	qh := question.NewHelper(os.Stdin, io.GetOutput())
+  io := style.NewConsoleCommand().Build()
+  qh := question.NewHelper(os.Stdin, io.GetOutput())
 
-	// Simple confirmation question
-	answer := qh.Ask(
-		question.
-			NewComfirmation("Continue with this action?").
-			SetDefaultAnswer(answers.YES).
-			SetMaxAttempts(2),
-	)
-	if answer == answers.YES {
-		io.Text("Great!")
-	} else {
-		io.Text("... ok :(")
-	}
+  // Simple confirmation question
+  answer := qh.Ask(
+    question.
+      NewComfirmation("Continue with this action?").
+      SetDefaultAnswer(answers.YES).
+      SetMaxAttempts(2),
+  )
+  if answer == answers.YES {
+    io.Text("Great!")
+  } else {
+    io.Text("... ok :(")
+  }
 }
 ```
 
@@ -924,26 +924,26 @@ the user can only enter a valid string from a predefined list:
 package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/question"
-	"github.com/DrSmithFr/go-console/pkg/question/answers"
-	"github.com/DrSmithFr/go-console/pkg/style"
-	"os"
+  "github.com/DrSmithFr/go-console/pkg/question"
+  "github.com/DrSmithFr/go-console/pkg/question/answers"
+  "github.com/DrSmithFr/go-console/pkg/style"
+  "os"
 )
 
 func main() {
-	io := style.NewConsoleCommand().Build()
-	qh := question.NewHelper(os.Stdin, io.GetOutput())
+  io := style.NewConsoleCommand().Build()
+  qh := question.NewHelper(os.Stdin, io.GetOutput())
 
-	colors := []string{"red", "green", "blue", "yellow", "black", "white"}
+  colors := []string{"red", "green", "blue", "yellow", "black", "white"}
 
-	// Choice question with only one answer allowed
-	answer := qh.Ask(
-		question.
-			NewChoices("What is your overall favorite color?", colors).
-			SetMaxAttempts(3),
-	)
+  // Choice question with only one answer allowed
+  answer := qh.Ask(
+    question.
+      NewChoices("What is your overall favorite color?", colors).
+      SetMaxAttempts(3),
+  )
 
-	io.Text("Your overall favorite color is " + answer)
+  io.Text("Your overall favorite color is " + answer)
 }
 ```
 
@@ -974,32 +974,32 @@ This is disabled by default, to enable this use `SetMultiselect(true)`:
 package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/question"
-	"github.com/DrSmithFr/go-console/pkg/style"
-	"os"
-	"strings"
+  "github.com/DrSmithFr/go-console/pkg/question"
+  "github.com/DrSmithFr/go-console/pkg/style"
+  "os"
+  "strings"
 )
 
 func main() {
-	io := style.NewConsoleCommand().Build()
-	qh := question.NewHelper(os.Stdin, io.GetOutput())
+  io := style.NewConsoleCommand().Build()
+  qh := question.NewHelper(os.Stdin, io.GetOutput())
 
-	colorList := []string{"red", "green", "blue", "yellow", "black", "white"}
+  colorList := []string{"red", "green", "blue", "yellow", "black", "white"}
 
-	// Choice question with multiple answers allowed
-	answer := qh.Ask(
-		question.
-			NewChoices("What is your favorite color?", colorList).
-			SetMultiselect(true).
-			SetMaxAttempts(3),
-	)
+  // Choice question with multiple answers allowed
+  answer := qh.Ask(
+    question.
+      NewChoices("What is your favorite color?", colorList).
+      SetMultiselect(true).
+      SetMaxAttempts(3),
+  )
 
-	// Retrieve all selected colors by splitting the answer on commas
-	colors := strings.Split(answer, ",")
+  // Retrieve all selected colors by splitting the answer on commas
+  colors := strings.Split(answer, ",")
 
-	for _, color := range colors {
-		io.Text("One of your favorite color is " + color)
-	}
+  for _, color := range colors {
+    io.Text("One of your favorite color is " + color)
+  }
 }
 ```
 
@@ -1019,26 +1019,26 @@ method:
 package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/question"
-	"github.com/DrSmithFr/go-console/pkg/style"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
-	"os"
+  "github.com/DrSmithFr/go-console/pkg/question"
+  "github.com/DrSmithFr/go-console/pkg/style"
+  "golang.org/x/text/cases"
+  "golang.org/x/text/language"
+  "os"
 )
 
 func main() {
-	io := style.NewConsoleCommand().Build()
-	qh := question.NewHelper(os.Stdin, io.GetOutput())
+  io := style.NewConsoleCommand().Build()
+  qh := question.NewHelper(os.Stdin, io.GetOutput())
 
-	// Simple question with normalizer
-	firstname := qh.Ask(
-		question.
-			NewQuestion("What is your name?").
-			SetNormalizer(func(answer string) string {
-				return cases.Title(language.English, cases.Compact).String(answer)
-			}),
-	)
-	io.Text("Hello " + firstname)
+  // Simple question with normalizer
+  firstname := qh.Ask(
+    question.
+      NewQuestion("What is your name?").
+      SetNormalizer(func(answer string) string {
+        return cases.Title(language.English, cases.Compact).String(answer)
+      }),
+  )
+  io.Text("Hello " + firstname)
 }
 ```
 
@@ -1064,32 +1064,32 @@ defined.
 package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/question"
-	"github.com/DrSmithFr/go-console/pkg/question/normalizer"
-	"github.com/DrSmithFr/go-console/pkg/style"
-	"os"
-	"strings"
+  "github.com/DrSmithFr/go-console/pkg/question"
+  "github.com/DrSmithFr/go-console/pkg/question/normalizer"
+  "github.com/DrSmithFr/go-console/pkg/style"
+  "os"
+  "strings"
 )
 
 func main() {
-	io := style.NewConsoleCommand().Build()
-	qh := question.NewHelper(os.Stdin, io.GetOutput())
+  io := style.NewConsoleCommand().Build()
+  qh := question.NewHelper(os.Stdin, io.GetOutput())
 
-	// Simple question with normalizer
-	firstname := qh.Ask(
-		question.
-			NewQuestion("What is your name?").
-			SetNormalizer(
-				normalizer.MakeChainedNormalizer(
-					strings.ToLower,
-					normalizer.Ucfirst,
-					func(answer string) string {
-						return answer + "!"
-					},
-				),
-			),
-	)
-	io.Text("Hello " + firstname)
+  // Simple question with normalizer
+  firstname := qh.Ask(
+    question.
+      NewQuestion("What is your name?").
+      SetNormalizer(
+        normalizer.MakeChainedNormalizer(
+          strings.ToLower,
+          normalizer.Ucfirst,
+          func(answer string) string {
+            return answer + "!"
+          },
+        ),
+      ),
+  )
+  io.Text("Hello " + firstname)
 }
 ```
 
@@ -1109,29 +1109,29 @@ however, you will need to pass the question as a parameter of `normalizer.Defaul
 package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/question"
-	"github.com/DrSmithFr/go-console/pkg/question/normalizer"
-	"strings"
+  "github.com/DrSmithFr/go-console/pkg/question"
+  "github.com/DrSmithFr/go-console/pkg/question/normalizer"
+  "strings"
 )
 
 func main() {
-	// chain normalizer example using including the default normalizer
-	q := question.
-		NewChoices("What is your favorite color?", []string{"red", "blue", "yellow"}).
-		SetMultiselect(true).
-		SetMaxAttempts(3)
+  // chain normalizer example using including the default normalizer
+  q := question.
+    NewChoices("What is your favorite color?", []string{"red", "blue", "yellow"}).
+    SetMultiselect(true).
+    SetMaxAttempts(3)
 
-	customNormalizer := normalizer.
-		MakeChainedNormalizer(
-			strings.ToLower,
-			q.GetDefaultNormalizer(),
-			normalizer.Ucfirst,
-			func(answer string) string {
-				return answer + "!"
-			},
-		)
+  customNormalizer := normalizer.
+    MakeChainedNormalizer(
+      strings.ToLower,
+      q.GetDefaultNormalizer(),
+      normalizer.Ucfirst,
+      func(answer string) string {
+        return answer + "!"
+      },
+    )
 
-	q.SetNormalizer(customNormalizer)
+  q.SetNormalizer(customNormalizer)
 }
 ```
 
@@ -1143,31 +1143,31 @@ You can even validate the answer. you can configure a validator using the `SetVa
 package main
 
 import (
-	"errors"
-	"github.com/DrSmithFr/go-console/pkg/question"
-	"github.com/DrSmithFr/go-console/pkg/style"
-	"os"
-	"regexp"
+  "errors"
+  "github.com/DrSmithFr/go-console/pkg/question"
+  "github.com/DrSmithFr/go-console/pkg/style"
+  "os"
+  "regexp"
 )
 
 func main() {
-	io := style.NewConsoleCommand().Build()
-	qh := question.NewHelper(os.Stdin, io.GetOutput())
+  io := style.NewConsoleCommand().Build()
+  qh := question.NewHelper(os.Stdin, io.GetOutput())
 
-	// Simple question with custom validator
-	nickname := qh.Ask(
-		question.
-			NewQuestion("What is your nickname?").
-			SetValidator(func(answer string) error {
-				regex := regexp.MustCompile("^(\\w|_|-)*$")
-				if match := regex.MatchString(answer); !match {
-					return errors.New("nickname must be alphanumeric")
-				}
+  // Simple question with custom validator
+  nickname := qh.Ask(
+    question.
+      NewQuestion("What is your nickname?").
+      SetValidator(func(answer string) error {
+        regex := regexp.MustCompile("^(\\w|_|-)*$")
+        if match := regex.MatchString(answer); !match {
+          return errors.New("nickname must be alphanumeric")
+        }
 
-				return nil
-			}),
-	)
-	io.Text("Hi " + nickname)
+        return nil
+      }),
+  )
+  io.Text("Hi " + nickname)
 }
 ```
 
@@ -1193,42 +1193,42 @@ Each validator will be called in the order they are defined.
 package main
 
 import (
-	"errors"
-	"github.com/DrSmithFr/go-console/pkg/question"
-	"github.com/DrSmithFr/go-console/pkg/style"
-	"github.com/DrSmithFr/go-console/pkg/question/validator"
-	"os"
+  "errors"
+  "github.com/DrSmithFr/go-console/pkg/question"
+  "github.com/DrSmithFr/go-console/pkg/style"
+  "github.com/DrSmithFr/go-console/pkg/question/validator"
+  "os"
 )
 
 func main() {
-	io := style.NewConsoleCommand().Build()
-	qh := question.NewHelper(os.Stdin, io.GetOutput())
+  io := style.NewConsoleCommand().Build()
+  qh := question.NewHelper(os.Stdin, io.GetOutput())
 
-	// chain validator example
-	answer := qh.Ask(
-		question.
-			NewQuestion("What is your favorite color?").
-			SetValidator(
-				validator.
-					MakeChainedValidator(
-						func(answer string) error {
-							if answer == "red" {
-								return errors.New("red is mine")
-							}
+  // chain validator example
+  answer := qh.Ask(
+    question.
+      NewQuestion("What is your favorite color?").
+      SetValidator(
+        validator.
+          MakeChainedValidator(
+            func(answer string) error {
+              if answer == "red" {
+                return errors.New("red is mine")
+              }
 
-							return nil
-						},
-						func(answer string) error {
-							if answer == "blue" {
-								return errors.New("blue is disgusting")
-							}
+              return nil
+            },
+            func(answer string) error {
+              if answer == "blue" {
+                return errors.New("blue is disgusting")
+              }
 
-							return nil
-						},
-					),
-			),
-	)
-	io.Text(answer)
+              return nil
+            },
+          ),
+      ),
+  )
+  io.Text(answer)
 }
 ```
 
@@ -1258,36 +1258,36 @@ To display a table, use Table, set the headers, set the rows and then render the
 package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/style"
-	"github.com/DrSmithFr/go-console/pkg/table"
+  "github.com/DrSmithFr/go-console/pkg/style"
+  "github.com/DrSmithFr/go-console/pkg/table"
 )
 
 func main() {
-	io := style.NewConsoleCommand().Build()
+  io := style.NewConsoleCommand().Build()
 
-	tab := table.
-		NewTable().
-		AddHeadersFromString(
-			[][]string{
-				{"ISBN-LONG-TITLE", "Title", "Author"},
-			},
-		)
+  tab := table.
+    NewTable().
+    AddHeadersFromString(
+      [][]string{
+        {"ISBN-LONG-TITLE", "Title", "Author"},
+      },
+    )
 
-	tab.
-		AddRowsFromString(
-			[][]string{
-				{"99921-58-10-7", "The Divine Comedy", "Dante Alighieri"},
-				{"9971-5-0210-0", "A Tale of Two Cities", "Charles Dickens"},
-				{"960-425-059-0", "The Lord of the Rings", "J. R. R. Tolkien"},
-				{"80-902734-1-6", "And Then There Were None", "Agatha Christie"},
-			},
-		)
+  tab.
+    AddRowsFromString(
+      [][]string{
+        {"99921-58-10-7", "The Divine Comedy", "Dante Alighieri"},
+        {"9971-5-0210-0", "A Tale of Two Cities", "Charles Dickens"},
+        {"960-425-059-0", "The Lord of the Rings", "J. R. R. Tolkien"},
+        {"80-902734-1-6", "And Then There Were None", "Agatha Christie"},
+      },
+    )
 
-	render := table.
-		NewRender(io.GetOutput()).
-		SetContent(tab)
+  render := table.
+    NewRender(io.GetOutput()).
+    SetContent(tab)
 
-	render.Render()
+  render.Render()
 }
 ```
 
@@ -1460,53 +1460,53 @@ To make a table cell that spans multiple columns you can use a TableCell:
     package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/style"
-	"github.com/DrSmithFr/go-console/pkg/table"
+  "github.com/DrSmithFr/go-console/pkg/style"
+  "github.com/DrSmithFr/go-console/pkg/table"
 )
 
 func main() {
-	io := style.NewConsoleCommand().Build()
+  io := style.NewConsoleCommand().Build()
 
-	tab := table.
-		NewTable().
-		AddHeadersFromString(
-			[][]string{
-				{"ISBN-LONG-TITLE", "Title", "Author"},
-			},
-		)
+  tab := table.
+    NewTable().
+    AddHeadersFromString(
+      [][]string{
+        {"ISBN-LONG-TITLE", "Title", "Author"},
+      },
+    )
 
-	tab.
-		AddRowsFromString(
-			[][]string{
-				{"99921-58-10-7", "The Divine Comedy", "Dante Alighieri"},
-				{"9971-5-0210-0", "A Tale of Two Cities", "Charles Dickens"},
-				{"---"},
-				{"960-425-059-0", "The Lord of the Rings", "J. R. R. Tolkien"},
-				{"80-902734-1-6", "And Then There Were None", "Agatha Christie"},
-				{"==="},
-			},
-		).
-		AddRow(
-			&table.TableRow{
-				Columns: map[int]table.TableColumnInterface{
-					0: &table.TableColumn{
-						Cell: &table.TableCell{
-							Value:   "<info>This value spans use <b>3 columns</b> to get fully displayed and now to long to feet inside the table.</info>",
-							Colspan: 3,
-							PadType: table.PadToCenter,
-						},
-					},
-				},
-			},
-		)
+  tab.
+    AddRowsFromString(
+      [][]string{
+        {"99921-58-10-7", "The Divine Comedy", "Dante Alighieri"},
+        {"9971-5-0210-0", "A Tale of Two Cities", "Charles Dickens"},
+        {"---"},
+        {"960-425-059-0", "The Lord of the Rings", "J. R. R. Tolkien"},
+        {"80-902734-1-6", "And Then There Were None", "Agatha Christie"},
+        {"==="},
+      },
+    ).
+    AddRow(
+      &table.TableRow{
+        Columns: map[int]table.TableColumnInterface{
+          0: &table.TableColumn{
+            Cell: &table.TableCell{
+              Value:   "<info>This value spans use <b>3 columns</b> to get fully displayed and now to long to feet inside the table.</info>",
+              Colspan: 3,
+              PadType: table.PadToCenter,
+            },
+          },
+        },
+      },
+    )
 
-	render := table.
-		NewRender(io.GetOutput()).
-		SetContent(tab)
+  render := table.
+    NewRender(io.GetOutput()).
+    SetContent(tab)
 
-	render.SetStyleFromName("box-double")
+  render.SetStyleFromName("box-double")
 
-	render.Render()
+  render.Render()
 }
 ```
 
@@ -1538,68 +1538,68 @@ You can set the padding type for each cell or column individually:
     package main
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/style"
-	"github.com/DrSmithFr/go-console/pkg/table"
+  "github.com/DrSmithFr/go-console/pkg/style"
+  "github.com/DrSmithFr/go-console/pkg/table"
 )
 
 func main() {
-	io := style.NewConsoleCommand().Build()
+  io := style.NewConsoleCommand().Build()
 
-	tab := table.
-		NewTable().
-		SetColumnPadding(3, table.PadToRight).
-		AddHeader(
-			&table.TableRow{
-				Columns: map[int]table.TableColumnInterface{
-					0: &table.TableColumn{
-						Cell: &table.TableCell{
-							Value:   "Centred Header Cell",
-							Colspan: 3,
-							PadType: table.PadToCenter,
-						},
-					},
-				},
-			},
-		).
-		AddRow(
-			table.
-				NewTableRow().
-				AddColumn(
-					table.
-						NewTableColumn().
-						SetCell(
-							table.
-								NewTableCell("This value spans 2 columns.").
-								SetPadType(table.PadToCenter).
-								SetColspan(2),
-						),
-				).
-				AddColumn(
-					table.
-						NewTableColumn().
-						SetCell(
-							table.
-								NewTableCell("stand alone value"),
-						),
-				),
-		).
-		AddTableSeparator().
-		AddRowsFromString(
-			[][]string{
-				{"960-425-059-0", "The Lord of the Rings", "J. R. R. Tolkien"},
-				{"80-902734-1-6", "And Then There Were None", "Agatha Christie"},
-			},
-		)
+  tab := table.
+    NewTable().
+    SetColumnPadding(3, table.PadToRight).
+    AddHeader(
+      &table.TableRow{
+        Columns: map[int]table.TableColumnInterface{
+          0: &table.TableColumn{
+            Cell: &table.TableCell{
+              Value:   "Centred Header Cell",
+              Colspan: 3,
+              PadType: table.PadToCenter,
+            },
+          },
+        },
+      },
+    ).
+    AddRow(
+      table.
+        NewTableRow().
+        AddColumn(
+          table.
+            NewTableColumn().
+            SetCell(
+              table.
+                NewTableCell("This value spans 2 columns.").
+                SetPadType(table.PadToCenter).
+                SetColspan(2),
+            ),
+        ).
+        AddColumn(
+          table.
+            NewTableColumn().
+            SetCell(
+              table.
+                NewTableCell("stand alone value"),
+            ),
+        ),
+    ).
+    AddTableSeparator().
+    AddRowsFromString(
+      [][]string{
+        {"960-425-059-0", "The Lord of the Rings", "J. R. R. Tolkien"},
+        {"80-902734-1-6", "And Then There Were None", "Agatha Christie"},
+      },
+    )
 
-	render := table.
-		NewRender(io.GetOutput()).
-		SetContent(tab)
+  render := table.
+    NewRender(io.GetOutput()).
+    SetContent(tab)
 
-	render.SetColumnMinWidth(2, 13)
+  render.SetColumnMinWidth(2, 13)
 
-	render.SetStyleFromName("box-double")
+  render.SetStyleFromName("box-double")
 
-	render.Render()
+  render.Render()
 }
 ```
 
