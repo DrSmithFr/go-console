@@ -6,6 +6,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Released]
 
+## [1.1.0] - 2023-03-09
+
+### Changed
+
+- Added Table rendering
+- Added minimalistic documentation
+
+### known limitations
+
+- rowspan not supported yet 
+
+## [1.1.0] - 2023-03-03
+
+### Changed
+
+- Added Question Helper for direct user input
+- Added minimalistic documentation
+
+### known limitations
+
+- Question Helper does not support windows yet (due to hidden input)
+
 ## [1.0.0] - 2019-04-20
 
 ### Changed
