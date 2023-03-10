@@ -19,8 +19,8 @@ func NewCli() *Cli {
 	in := input.NewArgvInput(nil)
 
 	// manage verbosity
-	io := CustomCli(in, out)
-	io.
+	cmd := CustomCli(in, out)
+	cmd.
 		AddInputOption(
 			option.New("quiet", option.None).
 				SetShortcut("q"),
@@ -38,7 +38,7 @@ func NewCli() *Cli {
 				SetShortcut("vvv"),
 		)
 
-	return io
+	return cmd
 }
 
 // custom constructor
@@ -94,6 +94,11 @@ type Opt struct {
 
 	DefaultValue  string
 	DefaultValues []string
+}
+
+// Implements io.Writer
+func (g *Cli) Write(p []byte) (n int, err error) {
+	return g.out.Write(p)
 }
 
 // (helper) add option to input definition
@@ -283,7 +288,7 @@ func (g *Cli) handleParsingException() {
 		formatter.Escape(synopsis),
 	)
 
-	g.out.Writeln(usage)
+	g.out.Println(usage)
 
 	os.Exit(2)
 }
@@ -304,9 +309,9 @@ func (g *Cli) HandleRuntimeException() {
 
 	g.PrintError(msg)
 
-	g.out.Write("<comment>Exception trace:</comment>")
+	g.out.Print("<comment>Exception trace:</comment>")
 	for _, trace := range strings.Split(traces, "\n") {
-		g.out.Writeln(
+		g.out.Println(
 			fmt.Sprintf(
 				" %s",
 				formatter.Escape(trace),

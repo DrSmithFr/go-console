@@ -93,7 +93,7 @@ func (g *abstractStyler) PrintListing(messages []string) {
 // Formats informational text.
 func (g *abstractStyler) PrintText(message string) {
 	g.autoPrependText()
-	g.write(fmt.Sprintf(" %s", message), false)
+	g.write(fmt.Sprintf("%s", message), false)
 	g.PrintNewLine(1)
 }
 
@@ -102,7 +102,7 @@ func (g *abstractStyler) PrintTexts(messages []string) {
 	g.autoPrependText()
 
 	for _, msg := range messages {
-		g.write(fmt.Sprintf(" %s", msg), true)
+		g.write(fmt.Sprintf("%s", msg), true)
 	}
 
 	g.PrintNewLine(1)
@@ -173,11 +173,11 @@ func (g *abstractStyler) PrintCautions(messages []string) {
 
 func (g *abstractStyler) write(message string, newLine bool) {
 	if newLine {
-		g.out.Writeln(message)
-		g.bufferedOutput.Writeln(message)
+		g.out.Println(message)
+		g.bufferedOutput.Println(message)
 	} else {
-		g.out.Write(message)
-		g.bufferedOutput.Write(message)
+		g.out.Print(message)
+		g.bufferedOutput.Print(message)
 	}
 }
 

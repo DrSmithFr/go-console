@@ -152,7 +152,7 @@ import (
 )
 
 func main() {
-  io := go_console.
+  cmd := go_console.
     NewCli().
     AddInputArgument(
       argument.
@@ -165,10 +165,10 @@ func main() {
   // You can access the names argument as an array:
   //
 
-  names := io.Input().ArgumentList("names")
+  names := cmd.Input().ArgumentList("names")
 
   for _, name := range names {
-    io.PrintText(fmt.Sprintf("Hi %s!", name))
+    cmd.PrintText(fmt.Sprintf("Hi %s!", name))
   }
 }
 ```
@@ -195,7 +195,7 @@ There are three argument variants you can use:
 You can combine `List` with `Required` and `Optional` like this:
 
 ```go
-io := go_console.
+cmd := go_console.
   NewCli().
   AddInputArgument(
     argument.
@@ -225,7 +225,7 @@ import (
 )
 
 func main() {
-  io := go_console.
+  cmd := go_console.
     NewCli().
     AddInputArgument(
       argument.
@@ -244,11 +244,11 @@ func main() {
   // Next, use this in the command to print the message multiple times:
   //
 
-  iterations, _ := strconv.Atoi(io.Input().Option("iterations"))
+  iterations, _ := strconv.Atoi(cmd.Input().Option("iterations"))
 
   for i := 0; i < iterations; i++ {
-    io.PrintText(
-      fmt.Sprintf("Hi %s!", io.Input().Argument("name")),
+    cmd.PrintText(
+      fmt.Sprintf("Hi %s!", cmd.Input().Argument("name")),
     )
   }
 }
@@ -279,7 +279,7 @@ $ php bin/console app:greet --yell --iterations=5 John
 You can also declare a one-letter shortcut that you can call with a single dash, like `-i`:
 
 ```go
-io := go_console.
+cmd := go_console.
   NewCli().
   AddInputOption(
     option.
@@ -318,7 +318,7 @@ There are four option variants you can use:
 You can combine `IS_ARRAY` with `REQUIRED` and `OPTIONAL` like this:
 
 ```go
-io := go_console.
+cmd := go_console.
   NewCli().
   AddInputOption(
     option.New("iterations", option.List | option.Required),
@@ -348,7 +348,7 @@ import (
 
 func main() {
   // create default console styler
-  io := go_console.NewCli()
+  cmd := go_console.NewCli()
 
   // or create styler with custom OutputInterface
   in := input.NewArgvInput(nil)
@@ -358,10 +358,36 @@ func main() {
   io = go_console.CustomCli(in, out)
 
   // add title
-  io.PrintTitle("Lorem Ipsum Dolor Sit Amet")
+  cmd.PrintTitle("Lorem Ipsum Dolor Sit Amet")
 
   // you still access the OutputInterface
-  io.Output().Write("<info>some info</>")
+  cmd.Output().Write("<info>some info</>")
+}
+```
+
+> **Note:**
+> 
+> > OutputInterface and go_console.Cli implements io.Writer interface, so fmt.Fprint() can be used
+
+```go
+package main
+
+import (
+	"fmt"
+  "github.com/DrSmithFr/go-console"
+)
+
+func main() {
+	cmd := go_console.NewCli().Build()
+	out := cmd.Output()
+
+  // Using OutputInterface or go_console.Cli helper to display styled text
+	out.Println("<info>This message has displayed by <b>Output.Println()</b>")
+	cmd.PrintText("<info>This message has displayed by <b>go_console.PrintText()</b>")
+	
+	// Or using fmt.Fprint() with OutputInterface or go_console.Cli as io.Writer
+	fmt.Fprintln(out, "<info>This message</info> using <b>Fprintln with Output</b>")
+	fmt.Fprintln(cmd, "<info>This message</info> using <b>Fprintln with go_console</b>")
 }
 ```
 
@@ -375,7 +401,7 @@ It displays the given string as the command title. This method is meant to be us
 nothing prevents you to use it repeatedly:
 
 ```go
-io.PrintTitle("Lorem Ipsum Dolor Sit Amet")
+cmd.PrintTitle("Lorem Ipsum Dolor Sit Amet")
 ```
 
 <p align="center">
@@ -388,7 +414,7 @@ It displays the given string as the title of some command section. This is only 
 better separate their contents:
 
 ```go
-io.PrintSection("Lorem Ipsum Dolor Sit Amet")
+cmd.PrintSection("Lorem Ipsum Dolor Sit Amet")
 ```
 
 <p align="center">
@@ -404,10 +430,10 @@ instructions for the user running the command:
 
 ```go
 // use simple strings for short messages
-io.PrintText("Lorem Ipsum Dolor Sit Amet, [...]")
+cmd.PrintText("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
-io.PrintTexts([]string{
+cmd.PrintTexts([]string{
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
@@ -423,7 +449,7 @@ io.PrintTexts([]string{
 It displays an unordered list of elements passed as an array:
 
 ```go
-io.PrintListing([]string{
+cmd.PrintListing([]string{
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
@@ -442,10 +468,10 @@ spacing:
 
 ```go
 // outputs a single blank line
-io.PrintNewLine(1)
+cmd.PrintNewLine(1)
 
 // outputs three consecutive blank lines
-io.PrintNewLine(3)
+cmd.PrintNewLine(3)
 ```
 
 ### Admonition Methods
@@ -457,10 +483,10 @@ cluttering command's output:
 
 ```go
 // use simple strings for short messages
-io.PrintNote("Lorem Ipsum Dolor Sit Amet, [...]")
+cmd.PrintNote("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
-io.PrintNotes([]string{
+cmd.PrintNotes([]string{
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
@@ -478,10 +504,10 @@ error message, so you should avoid using this helper unless strictly necessary:
 
 ```go
 // use simple strings for short messages
-io.PrintCaution("Lorem Ipsum Dolor Sit Amet, [...]")
+cmd.PrintCaution("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
-io.PrintCautions([]string{
+cmd.PrintCautions([]string{
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
@@ -502,10 +528,10 @@ repeatedly during the execution of the command:
 
 ```go
 // use simple strings for short messages
-io.PrintSuccess("Lorem Ipsum Dolor Sit Amet, [...]")
+cmd.PrintSuccess("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
-io.PrintSuccesses([]string{
+cmd.PrintSuccesses([]string{
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
@@ -524,10 +550,10 @@ use it repeatedly during the execution of the command:
 
 ```go
 // use simple strings for short messages
-io.PrintWarning("Lorem Ipsum Dolor Sit Amet, [...]")
+cmd.PrintWarning("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
-io.PrintWarnings([]string{
+cmd.PrintWarnings([]string{
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
@@ -546,10 +572,10 @@ repeatedly during the execution of the command:
 
 ```go
 // use simple strings for short messages
-io.PrintError("Lorem Ipsum Dolor Sit Amet, [...]")
+cmd.PrintError("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
-io.PrintErrors([]string{
+cmd.PrintErrors([]string{
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
@@ -749,19 +775,19 @@ import (
 )
 
 func main() {
-  io := go_console.NewCli()
+  cmd := go_console.NewCli()
 
-  if io.Verbosity() == verbosity.Verbose {
-    io.PrintText("Lorem Ipsum Dolor Sit Amet")
+  if cmd.Verbosity() == verbosity.Verbose {
+    cmd.PrintText("Lorem Ipsum Dolor Sit Amet")
   }
 
   // available methods: .IsQuiet(), .IsVerbose(), .IsVeryVerbose(), .IsDebug()
-  if io.IsVeryVerbose() {
-    io.PrintText("Lorem Ipsum Dolor Sit Amet")
+  if cmd.IsVeryVerbose() {
+    cmd.PrintText("Lorem Ipsum Dolor Sit Amet")
   }
 
   // or using directly the output instance
-  out := io.Output()
+  out := cmd.Output()
 
   if out.Verbosity() == verbosity.Verbose {
     out.Writeln("Lorem Ipsum Dolor Sit Amet")
@@ -802,8 +828,8 @@ import (
 )
 
 func main() {
-  io := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, io.Output())
+  cmd := go_console.NewCli().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output())
 }
 ```
 
@@ -822,8 +848,8 @@ import (
 )
 
 func main() {
-  io := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, io.Output())
+  cmd := go_console.NewCli().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output())
 
   // Simple question with default answer
   name := qh.Ask(
@@ -832,7 +858,7 @@ func main() {
       SetDefaultAnswer("John Doe"),
   )
   
-  io.PrintText("Hello " + name)
+  cmd.PrintText("Hello " + name)
 }
 ```
 
@@ -863,8 +889,8 @@ import (
 )
 
 func main() {
-  io := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, io.Output())
+  cmd := go_console.NewCli().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output())
 
   // Simple question with hidden answer
   pass := qh.Ask(
@@ -873,7 +899,7 @@ func main() {
       SetHidden(true),
   )
   
-  io.PrintText("Password: " + pass)
+  cmd.PrintText("Password: " + pass)
 }
 ```
 
@@ -896,8 +922,8 @@ import (
 )
 
 func main() {
-  io := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, io.Output())
+  cmd := go_console.NewCli().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output())
 
   // Simple confirmation question
   answer := qh.Ask(
@@ -907,9 +933,9 @@ func main() {
       SetMaxAttempts(2),
   )
   if answer == answers.Yes {
-    io.PrintText("Great!")
+    cmd.PrintText("Great!")
   } else {
-    io.PrintText("... ok :(")
+    cmd.PrintText("... ok :(")
   }
 }
 ```
@@ -949,8 +975,8 @@ import (
 )
 
 func main() {
-  io := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, io.Output())
+  cmd := go_console.NewCli().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output())
 
   colors := []string{"red", "green", "blue", "yellow", "black", "white"}
 
@@ -961,7 +987,7 @@ func main() {
       SetMaxAttempts(3),
   )
 
-  io.PrintText("Your overall favorite color is " + answer)
+  cmd.PrintText("Your overall favorite color is " + answer)
 }
 ```
 
@@ -999,8 +1025,8 @@ import (
 )
 
 func main() {
-  io := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, io.Output())
+  cmd := go_console.NewCli().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output())
 
   colorList := []string{"red", "green", "blue", "yellow", "black", "white"}
 
@@ -1016,7 +1042,7 @@ func main() {
   colors := strings.Split(answer, ",")
 
   for _, color := range colors {
-    io.PrintText("One of your favorite color is " + color)
+    cmd.PrintText("One of your favorite color is " + color)
   }
 }
 ```
@@ -1045,8 +1071,8 @@ import (
 )
 
 func main() {
-  io := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, io.Output())
+  cmd := go_console.NewCli().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output())
 
   // Simple question with normalizer
   firstname := qh.Ask(
@@ -1056,7 +1082,7 @@ func main() {
         return cases.Title(language.English, cases.Compact).String(answer)
       }),
   )
-  io.PrintText("Hello " + firstname)
+  cmd.PrintText("Hello " + firstname)
 }
 ```
 
@@ -1090,8 +1116,8 @@ import (
 )
 
 func main() {
-  io := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, io.Output())
+  cmd := go_console.NewCli().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output())
 
   // Simple question with normalizer
   firstname := qh.Ask(
@@ -1107,7 +1133,7 @@ func main() {
         ),
       ),
   )
-  io.PrintText("Hello " + firstname)
+  cmd.PrintText("Hello " + firstname)
 }
 ```
 
@@ -1169,8 +1195,8 @@ import (
 )
 
 func main() {
-  io := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, io.Output())
+  cmd := go_console.NewCli().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output())
 
   // Simple question with custom validator
   nickname := qh.Ask(
@@ -1185,7 +1211,7 @@ func main() {
         return nil
       }),
   )
-  io.PrintText("Hi " + nickname)
+  cmd.PrintText("Hi " + nickname)
 }
 ```
 
@@ -1219,8 +1245,8 @@ import (
 )
 
 func main() {
-  io := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, io.Output())
+  cmd := go_console.NewCli().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output())
 
   // chain validator example
   answer := qh.Ask(
@@ -1246,7 +1272,7 @@ func main() {
           ),
       ),
   )
-  io.PrintText(answer)
+  cmd.PrintText(answer)
 }
 ```
 
@@ -1281,7 +1307,7 @@ import (
 )
 
 func main() {
-  io := go_console.NewCli().Build()
+  cmd := go_console.NewCli().Build()
 
   tab := table.
     NewTable().
@@ -1302,7 +1328,7 @@ func main() {
     )
 
   render := table.
-    NewRender(io.Output()).
+    NewRender(cmd.Output()).
     SetContent(tab)
 
   render.Render()
@@ -1484,7 +1510,7 @@ import (
 )
 
 func main() {
-  io := go_console.NewCli().Build()
+  cmd := go_console.NewCli().Build()
 
   tab := table.
     NewTable().
@@ -1520,7 +1546,7 @@ func main() {
     )
 
   render := table.
-    NewRender(io.Output()).
+    NewRender(cmd.Output()).
     SetContent(tab)
 
   render.SetStyleFromName("box-double")
@@ -1562,7 +1588,7 @@ import (
 )
 
 func main() {
-  io := go_console.NewCli().Build()
+  cmd := go_console.NewCli().Build()
 
   tab := table.
     NewTable().
@@ -1611,7 +1637,7 @@ func main() {
     )
 
   render := table.
-    NewRender(io.Output()).
+    NewRender(cmd.Output()).
     SetContent(tab)
 
   render.SetColumnMinWidth(2, 13)

@@ -9,20 +9,20 @@ func main() {
 	out := output.NewCliOutput(true, nil)
 
 	// white text on a red background
-	out.Writeln("<error>An error</error>")
+	out.Println("<error>An error</error>")
 
 	// green text
-	out.Writeln("<info>An information</info>")
+	out.Println("<info>An information</info>")
 
 	// yellow text
-	out.Writeln("<comment>An comment</comment>")
+	out.Println("<comment>An comment</comment>")
 
 	// black text on a cyan background
-	out.Writeln("<question>A question</question>")
+	out.Println("<question>A question</question>")
 
 	// underscore text
-	out.Writeln("<u>Some underscore text</u>")
+	out.Println("<u>Some underscore text</u>")
 
 	// bold text
-	out.Writeln("<b>Some bold text</b>")
+	out.Println("<b>Some bold text</b>")
 }

@@ -6,10 +6,10 @@ import (
 )
 
 func main() {
-	io := go_console.NewCli().Build()
-	out := io.Output()
+	cmd := go_console.NewCli().Build()
+	out := cmd.Output()
 
-	io.PrintTitle("Generating a table")
+	cmd.PrintTitle("Generating a table")
 
 	tab := table.NewTable().
 		SetHeaderTitle("Books").

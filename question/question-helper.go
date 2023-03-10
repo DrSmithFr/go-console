@@ -43,7 +43,7 @@ func (h *Helper) Ask(question QuestionBasicInterface) string {
 				return answer
 			}
 
-			h.out.Writeln(fmt.Sprintf("<error>%s</error>", err.Error()))
+			h.out.Println(fmt.Sprintf("<error>%s</error>", err.Error()))
 		}
 	} else {
 		for attempts := 0; attempts < question.GetMaxAttempts(); attempts++ {
@@ -53,7 +53,7 @@ func (h *Helper) Ask(question QuestionBasicInterface) string {
 				return answer
 			}
 
-			h.out.Writeln(fmt.Sprintf("<error>%s</error>", err.Error()))
+			h.out.Println(fmt.Sprintf("<error>%s</error>", err.Error()))
 		}
 	}
 
@@ -68,7 +68,7 @@ func (h *Helper) doAsk(question QuestionBasicInterface) (string, error) {
 	if question.IsHidden() {
 		bytes, _ := term.ReadPassword(syscall.Stdin)
 		rawText = string(bytes)
-		h.out.Writeln("")
+		h.out.Println("")
 	} else {
 		rawText, _ = bufio.
 			NewReader(h.in).
@@ -96,13 +96,13 @@ func (h *Helper) doAsk(question QuestionBasicInterface) (string, error) {
 
 func (h *Helper) writePrompt(question QuestionBasicInterface) {
 	if choices, ok := question.(QuestionChoicesInterface); ok {
-		h.out.Writeln(fmt.Sprintf("<question>%s</question>", choices.GetQuestion()))
+		h.out.Println(fmt.Sprintf("<question>%s</question>", choices.GetQuestion()))
 
 		for _, line := range h.formatChoiceQuestionChoices(choices, "info") {
-			h.out.Writeln(line)
+			h.out.Println(line)
 		}
 
-		h.out.Write(choices.GetPrompt())
+		h.out.Print(choices.GetPrompt())
 		return
 	}
 
@@ -114,11 +114,11 @@ func (h *Helper) writePrompt(question QuestionBasicInterface) {
 			answers.No,
 		)
 
-		h.out.Write(message)
+		h.out.Print(message)
 		return
 	}
 
-	h.out.Write(fmt.Sprintf("<question>%s</question> ", question.GetQuestion()))
+	h.out.Print(fmt.Sprintf("<question>%s</question> ", question.GetQuestion()))
 }
 
 func (h *Helper) formatChoiceQuestionChoices(question QuestionChoicesInterface, tag string) []string {

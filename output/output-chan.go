@@ -1,6 +1,7 @@
 package output
 
 import (
+	"errors"
 	"github.com/DrSmithFr/go-console/formatter"
 	"github.com/DrSmithFr/go-console/verbosity"
 )
@@ -11,7 +12,8 @@ func NewChanOutput(channel chan string, decorated bool, format *formatter.Output
 		channel: channel,
 	}
 
-	out.doWrite = out.Send
+	out.doPrint = out.Send
+	out.doWrite = out.SendBytes
 
 	if nil == format {
 		out.formatter = formatter.NewOutputFormatter()
@@ -30,6 +32,8 @@ type ChanOutput struct {
 	channel chan string
 }
 
+var _ OutputInterface = (*ChanOutput)(nil)
+
 func (o *ChanOutput) Send(message string, level verbosity.Level) {
 	if o.IsQuiet() {
 		return
@@ -38,4 +42,14 @@ func (o *ChanOutput) Send(message string, level verbosity.Level) {
 	if o.IsVerbosityAllowed(level) {
 		o.channel <- message
 	}
+}
+
+func (o *ChanOutput) SendBytes(p []byte) (n int, err error) {
+	if o.IsQuiet() {
+		return 0, errors.New("chat output is quiet")
+	}
+
+	o.channel <- string(p)
+
+	return len(p), nil
 }

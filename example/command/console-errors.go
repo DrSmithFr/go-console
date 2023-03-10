@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	io := go_console.NewCli().
+	cmd := go_console.NewCli().
 		AddInputArgument(
 			argument.New("name", argument.Required),
 		).
@@ -19,7 +19,7 @@ func main() {
 		Build()
 
 	// enable stylish errors
-	defer io.HandleRuntimeException()
+	defer cmd.HandleRuntimeException()
 
 	panic(errors.New("runtime error !"))
 }

@@ -10,7 +10,7 @@ import (
 func NewNullOutput(decorated bool, format *formatter.OutputFormatter) *NullOutput {
 	out := new(NullOutput)
 
-	out.doWrite = out.Void
+	out.doPrint = out.Void
 
 	if nil == format {
 		out.formatter = formatter.NewOutputFormatter()
@@ -25,10 +25,13 @@ func NewNullOutput(decorated bool, format *formatter.OutputFormatter) *NullOutpu
 
 // Null output classes (~abstract)
 type NullOutput struct {
-	doWrite   func(string, verbosity.Level)
+	doPrint   func(string, verbosity.Level)
+	doWrite   func([]byte) (int, error)
 	formatter *formatter.OutputFormatter
 	verbosity verbosity.Level
 }
+
+var _ OutputInterface = (*NullOutput)(nil)
 
 func (o *NullOutput) Format(message string) string {
 	if nil == o.formatter {
@@ -46,22 +49,22 @@ func (o *NullOutput) Void(message string, level verbosity.Level) {
 	// do nothing
 }
 
-func (o *NullOutput) Write(message string) {
-	o.doWrite(o.Format(message), verbosity.Normal)
+func (o *NullOutput) Print(message string) {
+	o.doPrint(o.Format(message), verbosity.Normal)
 }
 
 // Writes a message to the output and adds a newline at the end
-func (o *NullOutput) Writeln(message string) {
-	o.Write(fmt.Sprintf("%s\n", message))
+func (o *NullOutput) Println(message string) {
+	o.Print(fmt.Sprintf("%s\n", message))
 }
 
-func (o *NullOutput) WriteOnVerbose(message string, level verbosity.Level) {
-	o.doWrite(o.Format(message), level)
+func (o *NullOutput) PrintOnVerbose(message string, level verbosity.Level) {
+	o.doPrint(o.Format(message), level)
 }
 
 // Writes a message to the output and adds a newline at the end
-func (o *NullOutput) WritelnOnVerbose(message string, level verbosity.Level) {
-	o.WriteOnVerbose(fmt.Sprintf("%s\n", message), level)
+func (o *NullOutput) PrintlnOnVerbose(message string, level verbosity.Level) {
+	o.PrintOnVerbose(fmt.Sprintf("%s\n", message), level)
 }
 
 // Sets the decorated flag
@@ -118,4 +121,10 @@ func (o *NullOutput) IsDebug() bool {
 
 func (o *NullOutput) IsVerbosityAllowed(level verbosity.Level) bool {
 	return level <= o.Verbosity()
+}
+
+func (o *NullOutput) Write(raw []byte) (n int, err error) {
+	formatted := o.Format(string(raw))
+	message := []byte(formatted)
+	return o.doWrite(message)
 }

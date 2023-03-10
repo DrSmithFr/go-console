@@ -251,7 +251,7 @@ func (t *TableRender) renderRowTitleSeparator(title string, direction rowType) {
 	paddedTitle := fmt.Sprintf(" %s ", title)
 
 	if utf8.RuneCountInString(t.style.GetHorizontalOutsideBorderChar()) == 0 && utf8.RuneCountInString(t.style.GetCrossingChar()) == 0 {
-		t.output.Writeln(paddedTitle)
+		t.output.Println(paddedTitle)
 		return
 	}
 
@@ -297,7 +297,7 @@ func (t *TableRender) renderRowTitleSeparator(title string, direction rowType) {
 		index++
 	}
 
-	t.output.Writeln(titleSeparator)
+	t.output.Println(titleSeparator)
 }
 
 func (t *TableRender) renderRowSeparator(direction rowType) {
@@ -307,7 +307,7 @@ func (t *TableRender) renderRowSeparator(direction rowType) {
 		return
 	}
 
-	t.output.Writeln(separator)
+	t.output.Println(separator)
 }
 
 /**
@@ -440,7 +440,7 @@ func (t *TableRender) renderRow(row TableRowInterface, cellFormat string) {
 		index += cell.GetColspan()
 	}
 
-	t.output.Writeln(rowContent)
+	t.output.Println(rowContent)
 }
 
 /**

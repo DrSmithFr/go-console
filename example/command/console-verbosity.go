@@ -7,37 +7,38 @@ import (
 )
 
 func main() {
-	io := go_console.NewCli().Build()
-	out := io.Output()
+	cmd := go_console.NewCli().Build()
+	out := cmd.Output()
 
 	// this message is always displayed when the command is run without --quiet
-	io.PrintTitle("Example of console verbosity")
+	cmd.PrintTitle("Example of console verbosity")
 
-	if io.IsQuiet() {
+	if cmd.IsQuiet() {
 		// force a message to be displayed in quiet mode
 		fmt.Println("command run in quiet mode")
 	}
 
-	// this message is always displayed when the command is run without --quiet
-	io.PrintText("This message has normal verbosity (using io)")
-	out.Writeln("This message has normal verbosity (using io.Output)")
+	out.Println("<info>This message has displayed by <b>Output.Println()</b>")
+	cmd.PrintText("<info>This message has displayed by <b>go_console.PrintText()</b>")
+	fmt.Fprintln(out, "<info>This message</info> using <b>Fprintln with Output</b>")
+	fmt.Fprintln(cmd, "<info>This message</info> using <b>Fprintln with go_console</b>")
 
 	// this message displayed when the command is run --verbose or -v
-	if io.IsVerbose() {
-		io.PrintText("This message is verbose (using io)")
+	if cmd.IsVerbose() {
+		cmd.PrintText("This message is verbose (using io)")
 	}
-	out.WritelnOnVerbose("This message is verbose (using io.Output)", verbosity.Verbose)
+	out.PrintlnOnVerbose("This message is verbose (using cmd.Output)", verbosity.Verbose)
 
 	// this message displayed when the command is run --very-verbose or -vv
-	if io.IsVeryVerbose() {
-		io.PrintText("This message is IsVeryVerbose (using io)")
+	if cmd.IsVeryVerbose() {
+		cmd.PrintText("This message is IsVeryVerbose (using io)")
 	}
-	out.WritelnOnVerbose("This message is IsVeryVerbose (using io.Output)", verbosity.VeryVerbose)
+	out.PrintlnOnVerbose("This message is IsVeryVerbose (using cmd.Output)", verbosity.VeryVerbose)
 
 	// this message displayed when the command is run --debug or -vvv
-	if io.IsDebug() {
-		io.PrintText("This message is debug (using io)")
+	if cmd.IsDebug() {
+		cmd.PrintText("This message is debug (using io)")
 	}
-	out.WritelnOnVerbose("This message is debug (using io.Output)", verbosity.Debug)
+	out.PrintlnOnVerbose("This message is debug (using cmd.Output)", verbosity.Debug)
 
 }

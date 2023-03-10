@@ -17,5 +17,5 @@ func main() {
 	out.Formatter().SetStyle("fire", *s)
 
 	// use the new style
-	out.Writeln("<fire>foo</>")
+	out.Println("<fire>foo</>")
 }

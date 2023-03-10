@@ -9,14 +9,14 @@ func main() {
 	out := output.NewCliOutput(true, nil)
 
 	// black text on a cyan background
-	out.Writeln("<fg=green>foo</>")
+	out.Println("<fg=green>foo</>")
 
 	// green text
-	out.Writeln("<fg=black;bg=cyan>foo</>")
+	out.Println("<fg=black;bg=cyan>foo</>")
 
 	// bold text on a yellow background
-	out.Writeln("<bg=yellow;options=bold>foo</>")
+	out.Println("<bg=yellow;options=bold>foo</>")
 
 	// bold text with underscore
-	out.Writeln("<options=bold,underscore>foo</>")
+	out.Println("<options=bold,underscore>foo</>")
 }

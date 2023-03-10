@@ -6,11 +6,11 @@ import (
 
 func main() {
 	// creating default console styler
-	io := go_console.NewCli()
+	cmd := go_console.NewCli()
 
 	// according to my terminal size (default: 120)
-	io.SetMaxLineLength(80)
+	cmd.SetMaxLineLength(80)
 
 	// use simple strings for short messages
-	io.PrintSection("Lorem ipsum dolor sit amet")
+	cmd.PrintSection("Lorem ipsum dolor sit amet")
 }

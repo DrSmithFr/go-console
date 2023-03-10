@@ -11,16 +11,16 @@ type OutputInterface interface {
 	Format(message string) string
 
 	// Writes a message to the output.
-	Write(message string)
+	Print(message string)
 
 	// Writes a message to the output and adds a newline at the end.
-	Writeln(message string)
+	Println(message string)
 
 	// Writes a message to the output.
-	WriteOnVerbose(message string, verbosity verbosity.Level)
+	PrintOnVerbose(message string, verbosity verbosity.Level)
 
 	// Writes a message to the output and adds a newline at the end.
-	WritelnOnVerbose(message string, verbosity verbosity.Level)
+	PrintlnOnVerbose(message string, verbosity verbosity.Level)
 
 	// Sets the decorated flag.
 	SetDecorated(decorated bool)
@@ -51,4 +51,7 @@ type OutputInterface interface {
 
 	// Returns whether verbosity is debug (-vvv)
 	IsDebug() bool
+
+	// Implements io.Writer
+	Write(p []byte) (n int, err error)
 }

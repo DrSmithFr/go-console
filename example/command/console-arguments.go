@@ -20,7 +20,7 @@ func main() {
 	// Easy way to create a command with arguments and options
 	//
 
-	io := go_console.Cli{
+	cmd := go_console.Cli{
 		Args: []go_console.Arg{
 			{
 				Name: "name",
@@ -36,9 +36,9 @@ func main() {
 		},
 	}
 
-	io.Build()
+	cmd.Build()
 
-	//io := go_console.NewCli().
+	//cmd := go_console.NewCli().
 	//	AddInputArgument(
 	//		argument.New("name", argument.Required),
 	//	).
@@ -48,41 +48,41 @@ func main() {
 	//	).
 	//	Build()
 
-	name := io.Input().Argument("name")
+	name := cmd.Input().Argument("name")
 
-	if option.Defined == io.Input().Option("foo") {
-		io.PrintSuccess(fmt.Sprintf("Hello %s, foo option is set", name))
+	if option.Defined == cmd.Input().Option("foo") {
+		cmd.PrintSuccess(fmt.Sprintf("Hello %s, foo option is set", name))
 	} else {
-		io.PrintWarning(fmt.Sprintf("Hello %s, foo option not set", name))
+		cmd.PrintWarning(fmt.Sprintf("Hello %s, foo option not set", name))
 	}
 
 	//
 	// Easy way to style your program
 	//
 
-	io.PrintTitle("Starting console")
+	cmd.PrintTitle("Starting console")
 
-	io.PrintNote(
+	cmd.PrintNote(
 		fmt.Sprintf(
 			"name argument value '%s'",
-			io.Input().Argument("name"),
+			cmd.Input().Argument("name"),
 		),
 	)
 
-	io.PrintTexts([]string{
+	cmd.PrintTexts([]string{
 		"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
 		"<comment>Lorem ipsum dolor sit amet</comment>, <info>consectetur adipiscing elit.</info>",
 		"<b>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b>",
 		"<b>Lorem ipsum dolor sit amet, <u>consectetur adipiscing elit</u>.</b>",
 	})
 
-	io.PrintCaution("This is a caution")
+	cmd.PrintCaution("This is a caution")
 
 	//
 	// Easy User Interaction
 	//
 
-	qh := question.NewHelper(os.Stdin, io.Output())
+	qh := question.NewHelper(os.Stdin, cmd.Output())
 
 	// Simple question with default answer
 	firstname := qh.Ask(
@@ -111,7 +111,7 @@ func main() {
 			}),
 	)
 
-	io.PrintTexts([]string{
+	cmd.PrintTexts([]string{
 		" ",
 		" ",
 		" ",
@@ -223,7 +223,7 @@ func main() {
 			},
 		)
 
-	render := table.NewRender(io.Output()).
+	render := table.NewRender(cmd.Output()).
 		SetContent(tab)
 
 	render.SetColumnsMinWidths(map[int]int{
@@ -239,6 +239,6 @@ func main() {
 	// enable stylish errors on need
 	//
 
-	defer io.HandleRuntimeException()
+	defer cmd.HandleRuntimeException()
 	panic("this error will be stylish!")
 }
