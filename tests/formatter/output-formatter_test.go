@@ -2,8 +2,8 @@ package formatter
 
 import (
 	"fmt"
-	"github.com/DrSmithFr/go-console/pkg/color"
-	"github.com/DrSmithFr/go-console/pkg/formatter"
+	"github.com/DrSmithFr/go-console/color"
+	"github.com/DrSmithFr/go-console/formatter"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

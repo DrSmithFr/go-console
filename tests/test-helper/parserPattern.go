@@ -1,9 +1,9 @@
 package test_helper
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/input/argument"
-	"github.com/DrSmithFr/go-console/pkg/input/definition"
-	"github.com/DrSmithFr/go-console/pkg/input/option"
+	"github.com/DrSmithFr/go-console/input/argument"
+	"github.com/DrSmithFr/go-console/input/definition"
+	"github.com/DrSmithFr/go-console/input/option"
 )
 
 func NewParserPattern(argv []string) *ParserPattern {

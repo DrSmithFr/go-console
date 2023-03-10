@@ -1,10 +1,10 @@
 package input
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/input"
-	"github.com/DrSmithFr/go-console/pkg/input/argument"
-	"github.com/DrSmithFr/go-console/pkg/input/definition"
-	"github.com/DrSmithFr/go-console/pkg/input/option"
+	"github.com/DrSmithFr/go-console/input"
+	"github.com/DrSmithFr/go-console/input/argument"
+	"github.com/DrSmithFr/go-console/input/definition"
+	"github.com/DrSmithFr/go-console/input/option"
 	"github.com/DrSmithFr/go-console/tests/test-helper"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -55,8 +55,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "--foo=bar"}).
 			SetMessage("->parse() parses long options with a required value (with a = separator)").
 			AddOption(
-				*option.
-					New("foo", option.Required).
+				*option.New("foo", option.Required).
 					SetShortcut("f"),
 			).
 			SetOptions(map[string]string{"foo": "bar"}),
@@ -65,8 +64,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "--foo", "bar"}).
 			SetMessage("->parse() parses long options with a required value (with a space separator)").
 			AddOption(
-				*option.
-					New("foo", option.Required).
+				*option.New("foo", option.Required).
 					SetShortcut("f"),
 			).
 			SetOptions(map[string]string{"foo": "bar"}),
@@ -75,8 +73,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "--foo="}).
 			SetMessage("->parse() parses long options with optional value which is empty (with a = separator) as empty string").
 			AddOption(
-				*option.
-					New("foo", option.Optional).
+				*option.New("foo", option.Optional).
 					SetShortcut("f"),
 			).
 			SetOptions(map[string]string{"foo": ""}),
@@ -85,8 +82,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "--foo=", "bar"}).
 			SetMessage("->parse() parses long options with optional value without value specified or an empty string (with a = separator) followed by an argument as empty string").
 			AddOption(
-				*option.
-					New("foo", option.Optional).
+				*option.New("foo", option.Optional).
 					SetShortcut("f"),
 			).
 			AddArgument(*argument.New("name", argument.Required)).
@@ -96,8 +92,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "bar", "--foo"}).
 			SetMessage("->parse() parses long options with optional value which is empty (with a = separator) preceded by an argument").
 			AddOption(
-				*option.
-					New("foo", option.Optional).
+				*option.New("foo", option.Optional).
 					SetShortcut("f"),
 			).
 			AddArgument(*argument.New("name", argument.Required)).
@@ -107,8 +102,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "bar", "--foo"}).
 			SetMessage("->parse() parses long options with optional value which is empty (with a = separator) preceded by an argument").
 			AddOption(
-				*option.
-					New("foo", option.Optional).
+				*option.New("foo", option.Optional).
 					SetShortcut("f"),
 			).
 			AddArgument(*argument.New("name", argument.Required)).
@@ -118,8 +112,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "--foo", "", "bar"}).
 			SetMessage("->parse() parses long options with optional value which is empty as empty string even followed by an argument").
 			AddOption(
-				*option.
-					New("foo", option.Optional).
+				*option.New("foo", option.Optional).
 					SetShortcut("f"),
 			).
 			AddArgument(*argument.New("name", argument.Required)).
@@ -129,8 +122,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "--foo"}).
 			SetMessage("->parse() parses long options with optional value specified with no separator and no value as null").
 			AddOption(
-				*option.
-					New("foo", option.Optional).
+				*option.New("foo", option.Optional).
 					SetShortcut("f"),
 			).
 			AddArgument(*argument.New("name", argument.Required)).
@@ -140,8 +132,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "-f"}).
 			SetMessage("->parse() parses short options without a value").
 			AddOption(
-				*option.
-					New("foo", option.None).
+				*option.New("foo", option.None).
 					SetShortcut("f"),
 			).
 			SetOptions(map[string]string{"foo": option.Defined}),
@@ -150,8 +141,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "-fbar"}).
 			SetMessage("->parse() parses short options with a required value (with no separator)").
 			AddOption(
-				*option.
-					New("foo", option.Required).
+				*option.New("foo", option.Required).
 					SetShortcut("f"),
 			).
 			SetOptions(map[string]string{"foo": "bar"}),
@@ -160,8 +150,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "-f", "bar"}).
 			SetMessage("->parse() parses short options with a required value (with a space separator)").
 			AddOption(
-				*option.
-					New("foo", option.Required).
+				*option.New("foo", option.Required).
 					SetShortcut("f"),
 			).
 			SetOptions(map[string]string{"foo": "bar"}),
@@ -170,8 +159,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "-f", ""}).
 			SetMessage("->parse() parses short options with an optional empty value").
 			AddOption(
-				*option.
-					New("foo", option.Optional).
+				*option.New("foo", option.Optional).
 					SetShortcut("f"),
 			).
 			SetOptions(map[string]string{"foo": ""}),
@@ -181,8 +169,7 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			SetMessage("->parse() parses short options with an optional empty value followed by an argument").
 			AddArgument(*argument.New("name", argument.Optional)).
 			AddOption(
-				*option.
-					New("foo", option.Optional).
+				*option.New("foo", option.Optional).
 					SetShortcut("f"),
 			).
 			SetOptions(map[string]string{"foo": ""}),
@@ -191,13 +178,11 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "-f", "", "-b"}).
 			SetMessage("->parse() parses short options with an optional empty value followed by an option").
 			AddOption(
-				*option.
-					New("foo", option.Optional).
+				*option.New("foo", option.Optional).
 					SetShortcut("f"),
 			).
 			AddOption(
-				*option.
-					New("bar", option.None).
+				*option.New("bar", option.None).
 					SetShortcut("b"),
 			).
 			SetOptions(map[string]string{"foo": "", "bar": option.Defined}),
@@ -207,13 +192,11 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			SetMessage("->parse() parses short options with an optional value which is not present").
 			AddArgument(*argument.New("name", argument.Optional)).
 			AddOption(
-				*option.
-					New("foo", option.Optional).
+				*option.New("foo", option.Optional).
 					SetShortcut("f"),
 			).
 			AddOption(
-				*option.
-					New("bar", option.None).
+				*option.New("bar", option.None).
 					SetShortcut("b"),
 			).
 			SetOptions(map[string]string{"foo": "", "bar": option.Defined}),
@@ -222,13 +205,11 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "-fb"}).
 			SetMessage("->parse() parses short options when they are aggregated as a single one").
 			AddOption(
-				*option.
-					New("foo", option.None).
+				*option.New("foo", option.None).
 					SetShortcut("f"),
 			).
 			AddOption(
-				*option.
-					New("bar", option.None).
+				*option.New("bar", option.None).
 					SetShortcut("b"),
 			).
 			SetOptions(map[string]string{"foo": option.Defined, "bar": option.Defined}),
@@ -237,13 +218,11 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "-fb", "bar"}).
 			SetMessage("->parse() parses short options when they are aggregated as a single one and the last one has a required value").
 			AddOption(
-				*option.
-					New("foo", option.None).
+				*option.New("foo", option.None).
 					SetShortcut("f"),
 			).
 			AddOption(
-				*option.
-					New("bar", option.Required).
+				*option.New("bar", option.Required).
 					SetShortcut("b"),
 			).
 			SetOptions(map[string]string{"foo": option.Defined, "bar": "bar"}),
@@ -252,13 +231,11 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "-fb", "bar"}).
 			SetMessage("->parse() parses short options when they are aggregated as a single one and the last one has an optional value").
 			AddOption(
-				*option.
-					New("foo", option.None).
+				*option.New("foo", option.None).
 					SetShortcut("f"),
 			).
 			AddOption(
-				*option.
-					New("bar", option.Optional).
+				*option.New("bar", option.Optional).
 					SetShortcut("b"),
 			).
 			SetOptions(map[string]string{"foo": option.Defined, "bar": "bar"}),
@@ -267,13 +244,11 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "-fbbar"}).
 			SetMessage("->parse() parses short options when they are aggregated as a single one and the last one has an optional value with no separator").
 			AddOption(
-				*option.
-					New("foo", option.None).
+				*option.New("foo", option.None).
 					SetShortcut("f"),
 			).
 			AddOption(
-				*option.
-					New("bar", option.Optional).
+				*option.New("bar", option.Optional).
 					SetShortcut("b"),
 			).
 			SetOptions(map[string]string{"foo": option.Defined, "bar": "bar"}),
@@ -282,13 +257,11 @@ func provideOptionsPatterns() []test_helper.ParserPattern {
 			NewParserPattern([]string{"cli.php", "-fbbar"}).
 			SetMessage("->parse() parses short options when they are aggregated as a single one and one of them takes a value").
 			AddOption(
-				*option.
-					New("foo", option.Optional).
+				*option.New("foo", option.Optional).
 					SetShortcut("f"),
 			).
 			AddOption(
-				*option.
-					New("bar", option.Optional).
+				*option.New("bar", option.Optional).
 					SetShortcut("b"),
 			).
 			SetOptions(map[string]string{"foo": "bbar"}),

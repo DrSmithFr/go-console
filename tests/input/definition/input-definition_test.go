@@ -1,9 +1,9 @@
 package definition
 
 import (
-	"github.com/DrSmithFr/go-console/pkg/input/argument"
-	"github.com/DrSmithFr/go-console/pkg/input/definition"
-	"github.com/DrSmithFr/go-console/pkg/input/option"
+	"github.com/DrSmithFr/go-console/input/argument"
+	"github.com/DrSmithFr/go-console/input/definition"
+	"github.com/DrSmithFr/go-console/input/option"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -16,20 +16,15 @@ var arguments = map[string]argument.InputArgument{
 }
 
 var options = map[string]option.InputOption{
-	"foo": *option.
-		New("foo", option.Optional).
+	"foo": *option.New("foo", option.Optional).
 		SetShortcut("f"),
-	"bar": *option.
-		New("bar", option.Optional).
+	"bar": *option.New("bar", option.Optional).
 		SetShortcut("b"),
-	"foo1": *option.
-		New("fooBis", option.Optional).
+	"foo1": *option.New("fooBis", option.Optional).
 		SetShortcut("f"),
-	"foo2": *option.
-		New("foo", option.Optional).
+	"foo2": *option.New("foo", option.Optional).
 		SetShortcut("p"),
-	"multi": *option.
-		New("multi", option.Optional).
+	"multi": *option.New("multi", option.Optional).
 		SetShortcut("m|mm|mmm"),
 }
 
@@ -40,8 +35,7 @@ func TestConstructorArguments(t *testing.T) {
 }
 
 func TestSetArguments(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		SetArguments([]argument.InputArgument{
 			arguments["foo"],
 		})
@@ -68,8 +62,7 @@ func TestSetArguments(t *testing.T) {
 }
 
 func TestAddArguments(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		AddArguments([]argument.InputArgument{
 			arguments["foo"],
 		})
@@ -97,8 +90,7 @@ func TestAddArguments(t *testing.T) {
 }
 
 func TestAddArgument(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		AddArgument(arguments["foo"])
 
 	assert.Equal(
@@ -123,8 +115,7 @@ func TestAddArgument(t *testing.T) {
 
 func TestArgumentsMustHaveDifferentNames(t *testing.T) {
 	assert.Panics(t, func() {
-		definition.
-			New().
+		definition.New().
 			AddArgument(arguments["foo"]).
 			AddArgument(arguments["foo1"])
 	})
@@ -132,8 +123,7 @@ func TestArgumentsMustHaveDifferentNames(t *testing.T) {
 
 func TestArrayArgumentHasToBeLast(t *testing.T) {
 	assert.Panics(t, func() {
-		definition.
-			New().
+		definition.New().
 			AddArgument(*argument.New("fooarray", argument.List)).
 			AddArgument(*argument.New("anotherbar", argument.Optional))
 	})
@@ -141,16 +131,14 @@ func TestArrayArgumentHasToBeLast(t *testing.T) {
 
 func TestRequiredArgumentCannotFollowAnOptionalOne(t *testing.T) {
 	assert.Panics(t, func() {
-		definition.
-			New().
+		definition.New().
 			AddArgument(arguments["foo"]).
 			AddArgument(arguments["foo2"])
 	})
 }
 
 func TestGetArgument(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		AddArgument(arguments["foo"])
 
 	assert.Equal(t, arguments["foo"], *def.GetArgument("foo"))
@@ -158,16 +146,14 @@ func TestGetArgument(t *testing.T) {
 
 func TestGetInvalidArgument(t *testing.T) {
 	assert.Panics(t, func() {
-		definition.
-			New().
+		definition.New().
 			AddArgument(arguments["foo"]).
 			GetArgument("bar")
 	})
 }
 
 func TestHasArgument(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		AddArgument(arguments["foo"])
 
 	assert.True(t, def.HasArgument("foo"))
@@ -175,8 +161,7 @@ func TestHasArgument(t *testing.T) {
 }
 
 func TestGetArgumentRequiredCount(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		AddArgument(arguments["foo2"])
 
 	assert.Equal(t, 1, def.GetArgumentRequiredCount())
@@ -187,8 +172,7 @@ func TestGetArgumentRequiredCount(t *testing.T) {
 }
 
 func TestGetArgumentCount(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		AddArgument(arguments["foo2"])
 
 	assert.Equal(t, 1, def.GetArgumentCount())
@@ -199,18 +183,14 @@ func TestGetArgumentCount(t *testing.T) {
 }
 
 func TestGetArgumentDefaults(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		SetArguments([]argument.InputArgument{
-			*argument.
-				New("foo1", argument.Optional),
+			*argument.New("foo1", argument.Optional),
 
-			*argument.
-				New("foo2", argument.Optional).
+			*argument.New("foo2", argument.Optional).
 				SetDefault("default"),
 
-			*argument.
-				New("foo3", argument.Optional|argument.List),
+			*argument.New("foo3", argument.Optional|argument.List),
 		})
 
 	validation := map[string][]string{
@@ -224,11 +204,9 @@ func TestGetArgumentDefaults(t *testing.T) {
 	assert.Equal(t, validation["foo2"], def.GetArgumentDefaults()["foo2"])
 	assert.Equal(t, validation["foo3"], def.GetArgumentDefaults()["foo3"])
 
-	def2 := definition.
-		New().
+	def2 := definition.New().
 		SetArguments([]argument.InputArgument{
-			*argument.
-				New("foo4", argument.Optional|argument.List).
+			*argument.New("foo4", argument.Optional|argument.List).
 				SetDefaults([]string{"1", "2"}),
 		})
 
@@ -236,8 +214,7 @@ func TestGetArgumentDefaults(t *testing.T) {
 }
 
 func TestSetOptions(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		SetOptions([]option.InputOption{
 			options["foo"],
 		})
@@ -265,8 +242,7 @@ func TestSetOptions(t *testing.T) {
 
 func TestSetOptionsClearsOptions(t *testing.T) {
 	assert.Panics(t, func() {
-		definition.
-			New().
+		definition.New().
 			SetOptions([]option.InputOption{
 				options["bar"],
 			}).
@@ -275,8 +251,7 @@ func TestSetOptionsClearsOptions(t *testing.T) {
 }
 
 func TestAddOptions(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		AddOptions([]option.InputOption{
 			options["foo"],
 		})
@@ -304,8 +279,7 @@ func TestAddOptions(t *testing.T) {
 }
 
 func TestAddOption(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		AddOption(options["foo"])
 
 	assert.Equal(
@@ -330,8 +304,7 @@ func TestAddOption(t *testing.T) {
 
 func TestAddDuplicateOption(t *testing.T) {
 	assert.Panics(t, func() {
-		definition.
-			New().
+		definition.New().
 			AddOption(options["foo"]).
 			AddOption(options["foo2"])
 	})
@@ -339,16 +312,14 @@ func TestAddDuplicateOption(t *testing.T) {
 
 func TestAddDuplicateShortcutOption(t *testing.T) {
 	assert.Panics(t, func() {
-		definition.
-			New().
+		definition.New().
 			AddOption(options["foo"]).
 			AddOption(options["foo1"])
 	})
 }
 
 func TestGetOption(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		AddOption(options["foo"])
 
 	assert.Equal(t, options["foo"], *def.GetOption("foo"))
@@ -356,16 +327,14 @@ func TestGetOption(t *testing.T) {
 
 func TestGetInvalidOption(t *testing.T) {
 	assert.Panics(t, func() {
-		definition.
-			New().
+		definition.New().
 			AddOption(options["foo"]).
 			GetOption("bar")
 	})
 }
 
 func TestHasOption(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		AddOption(options["foo"])
 
 	assert.True(t, def.HasOption("foo"))
@@ -373,8 +342,7 @@ func TestHasOption(t *testing.T) {
 }
 
 func TestHasShortcut(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		AddOption(options["foo"])
 
 	assert.True(t, def.HasShortcut("f"))
@@ -382,16 +350,14 @@ func TestHasShortcut(t *testing.T) {
 }
 
 func TestGetOptionForShortcut(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		AddOption(options["foo"])
 
 	assert.Equal(t, options["foo"], *def.GetOptionForShortcut("f"))
 }
 
 func TestGetOptionForMultiShortcut(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		AddOption(options["multi"])
 
 	assert.Equal(t, options["multi"], *def.GetOptionForShortcut("m"))
@@ -401,38 +367,29 @@ func TestGetOptionForMultiShortcut(t *testing.T) {
 
 func TestGetOptionForInvalidShortcut(t *testing.T) {
 	assert.Panics(t, func() {
-		definition.
-			New().
+		definition.New().
 			GetOptionForShortcut("l")
 	})
 }
 
 func TestGetOptionDefaults(t *testing.T) {
-	def := definition.
-		New().
+	def := definition.New().
 		SetOptions([]option.InputOption{
-			*option.
-				New("foo1", option.None),
+			*option.New("foo1", option.None),
 
-			*option.
-				New("foo2", option.Required),
+			*option.New("foo2", option.Required),
 
-			*option.
-				New("foo3", option.Required).
+			*option.New("foo3", option.Required).
 				SetDefault("default"),
 
-			*option.
-				New("foo4", option.Optional),
+			*option.New("foo4", option.Optional),
 
-			*option.
-				New("foo5", option.Optional).
+			*option.New("foo5", option.Optional).
 				SetDefault("default"),
 
-			*option.
-				New("foo6", option.Optional|option.List),
+			*option.New("foo6", option.Optional|option.List),
 
-			*option.
-				New("foo7", option.Optional|option.List).
+			*option.New("foo7", option.Optional|option.List).
 				SetDefaults([]string{"1", "2"}),
 		})
 
@@ -471,40 +428,33 @@ func getSynopticPattern() []synopticPattern {
 	return []synopticPattern{
 		// testing options
 		{
-			definition: *definition.
-				New().
+			definition: *definition.New().
 				AddOption(*option.New("foo", option.None)),
 			synoptic: "[--foo]",
 			message:  "puts optional options in square brackets",
 		},
 		{
-			definition: *definition.
-				New().
+			definition: *definition.New().
 				AddOption(
-					*option.
-						New("foo", option.None).
+					*option.New("foo", option.None).
 						SetShortcut("f"),
 				),
 			synoptic: "[-f|--foo]",
 			message:  "separates shortcut with a pipe",
 		},
 		{
-			definition: *definition.
-				New().
+			definition: *definition.New().
 				AddOption(
-					*option.
-						New("foo", option.Required).
+					*option.New("foo", option.Required).
 						SetShortcut("f"),
 				),
 			synoptic: "[-f|--foo FOO]",
 			message:  "uses shortcut as value placeholder",
 		},
 		{
-			definition: *definition.
-				New().
+			definition: *definition.New().
 				AddOption(
-					*option.
-						New("foo", option.Optional).
+					*option.New("foo", option.Optional).
 						SetShortcut("f"),
 				),
 			synoptic: "[-f|--foo [FOO]]",
@@ -513,55 +463,44 @@ func getSynopticPattern() []synopticPattern {
 
 		// testing arguments
 		{
-			definition: *definition.
-				New().
+			definition: *definition.New().
 				AddArgument(
-					*argument.
-						New("foo", argument.Required),
+					*argument.New("foo", argument.Required),
 				),
 			synoptic: "<foo>",
 			message:  "puts arguments in angle brackets",
 		},
 		{
-			definition: *definition.
-				New().
+			definition: *definition.New().
 				AddArgument(
-					*argument.
-						New("foo", argument.Optional),
+					*argument.New("foo", argument.Optional),
 				),
 			synoptic: "[<foo>]",
 			message:  "puts optional arguments in square brackets",
 		},
 		{
-			definition: *definition.
-				New().
+			definition: *definition.New().
 				AddArgument(
-					*argument.
-						New("foo", argument.Optional),
+					*argument.New("foo", argument.Optional),
 				).
 				AddArgument(
-					*argument.
-						New("bar", argument.Optional),
+					*argument.New("bar", argument.Optional),
 				),
 			synoptic: "[<foo> [<bar>]]",
 			message:  "chains optional arguments inside brackets",
 		},
 		{
-			definition: *definition.
-				New().
+			definition: *definition.New().
 				AddArgument(
-					*argument.
-						New("foo", argument.List),
+					*argument.New("foo", argument.List),
 				),
 			synoptic: "[<foo>...]",
 			message:  "uses an ellipsis for array arguments",
 		},
 		{
-			definition: *definition.
-				New().
+			definition: *definition.New().
 				AddArgument(
-					*argument.
-						New("foo", argument.List|argument.Required),
+					*argument.New("foo", argument.List|argument.Required),
 				),
 			synoptic: "<foo>...",
 			message:  "uses an ellipsis for required array arguments",
@@ -569,12 +508,10 @@ func getSynopticPattern() []synopticPattern {
 
 		// testing options and arguments
 		{
-			definition: *definition.
-				New().
+			definition: *definition.New().
 				AddOption(*option.New("foo", option.None)).
 				AddArgument(
-					*argument.
-						New("foo", argument.Required),
+					*argument.New("foo", argument.Required),
 				),
 			synoptic: "[--foo] [--] <foo>",
 			message:  "puts [--] between options and arguments",
