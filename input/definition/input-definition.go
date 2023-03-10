@@ -277,6 +277,7 @@ func (i *InputDefinition) Synopsis(short bool) string {
 	} else if !short {
 		for _, key := range i.optionKeysOrdered {
 			opt := i.Option(key)
+
 			value := ""
 			start := ""
 			end := ""

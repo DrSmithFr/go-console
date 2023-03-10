@@ -8,9 +8,16 @@ import (
 	"github.com/DrSmithFr/go-console/input/argument"
 	"github.com/DrSmithFr/go-console/input/option"
 	"github.com/DrSmithFr/go-console/output"
+	"github.com/DrSmithFr/go-console/table"
 	"github.com/DrSmithFr/go-console/verbosity"
 	"os"
 	"strings"
+)
+
+const (
+	ExitSuccess = iota
+	ExitError
+	ExitInvalid
 )
 
 // simple constructor
@@ -20,43 +27,29 @@ func NewCli() *Cli {
 
 	// manage verbosity
 	cmd := CustomCli(in, out)
-	cmd.
-		AddInputOption(
-			option.New("quiet", option.None).
-				SetShortcut("q"),
-		).
-		AddInputOption(
-			option.New("verbose", option.None).
-				SetShortcut("v"),
-		).
-		AddInputOption(
-			option.New("very-verbose", option.None).
-				SetShortcut("vv"),
-		).
-		AddInputOption(
-			option.New("debug", option.None).
-				SetShortcut("vvv"),
-		)
+	cmd.addDefaultOptions()
 
 	return cmd
 }
 
 // custom constructor
 func CustomCli(in input.InputInterface, out output.OutputInterface) *Cli {
-	g := &Cli{
+	cmd := &Cli{
 		alreadyParsed:    false,
 		definitionParsed: true,
 	}
 
+	cmd.addDefaultOptions()
+
 	// clone the formatter to retrieve styles and avoid state change
 	format := *out.Formatter()
 
-	g.in = in
-	g.out = out
-	g.lineLength = MAX_LINE_LENGTH
-	g.bufferedOutput = *output.NewBufferedOutput(false, &format)
+	cmd.in = in
+	cmd.out = out
+	cmd.lineLength = MAX_LINE_LENGTH
+	cmd.bufferedOutput = *output.NewBufferedOutput(false, &format)
 
-	return g
+	return cmd
 }
 
 // Output decorator helpers for the Style Guide
@@ -64,15 +57,30 @@ type Cli struct {
 	abstractStyler
 	alreadyParsed bool
 
+	caller      string
+	description string
+
 	// Short definition
 	definitionParsed bool
 	DefaultOpts      bool
+
+	Name string
+	Desc string
 
 	In  input.InputInterface
 	Out output.OutputInterface
 
 	Args []Arg
 	Opts []Opt
+}
+
+func (cmd *Cli) Description() string {
+	return cmd.description
+}
+
+func (cmd *Cli) SetDescription(description string) *Cli {
+	cmd.description = description
+	return cmd
 }
 
 type Arg struct {
@@ -90,80 +98,120 @@ type Opt struct {
 	Shortcut string
 	Mode     int
 
-	description string
+	Description string
 
 	DefaultValue  string
 	DefaultValues []string
 }
 
+func (cmd *Cli) addDefaultOptions() {
+	cmd.
+		// add help option
+		AddInputOption(
+			option.
+				New("help", option.None).
+				SetShortcut("p").
+				SetDescription("Display help for the given command."),
+		).
+		// add help option
+		AddInputOption(
+			option.
+				New("no-interaction", option.None).
+				SetShortcut("n").
+				SetDescription("Do not ask any interactive question"),
+		).
+		// add verbosity options
+		AddInputOption(
+			option.
+				New("quiet", option.None).
+				SetShortcut("q").
+				SetDescription("Do not output any message"),
+		).
+		AddInputOption(
+			option.New("verbose", option.Optional).
+				SetShortcut("v|vv|vvv").
+				SetDescription("Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug"),
+		)
+}
+
 // Implements io.Writer
-func (g *Cli) Write(p []byte) (n int, err error) {
-	return g.out.Write(p)
+func (cmd *Cli) Write(p []byte) (n int, err error) {
+	return cmd.out.Write(p)
 }
 
 // (helper) add option to input definition
-func (g *Cli) AddInputOption(opt *option.InputOption) *Cli {
-	if g.alreadyParsed {
+func (cmd *Cli) AddInputOption(opt *option.InputOption) *Cli {
+	if cmd.alreadyParsed {
 		panic(errors.New("cannot add option on parsed input"))
 	}
 
-	g.in.Definition().AddOption(*opt)
+	cmd.in.Definition().AddOption(*opt)
 
-	return g
+	return cmd
 }
 
 // (helper) add argument to input definition
-func (g *Cli) AddInputArgument(arg *argument.InputArgument) *Cli {
-	if g.alreadyParsed {
+func (cmd *Cli) AddInputArgument(arg *argument.InputArgument) *Cli {
+	if cmd.alreadyParsed {
 		panic(errors.New("cannot add argument on parsed input"))
 	}
 
-	g.in.Definition().AddArgument(*arg)
+	cmd.in.Definition().AddArgument(*arg)
 
-	return g
+	return cmd
 }
 
-func (g *Cli) Build() *Cli {
-	if g.definitionParsed == false {
-		g = g.parseDefinition()
-		g.definitionParsed = true
+func (cmd *Cli) Build() *Cli {
+	if cmd.definitionParsed == false {
+		cmd = cmd.parseDefinition()
+		cmd.definitionParsed = true
 	}
 
-	g.parseInput()
-	g.validateInput()
-	g.findOutputVerbosity()
+	cmd.parseInput()
+	cmd.validateInput()
+	cmd.findOutputVerbosity()
 
-	return g
+	cmd.handleHelpCall()
+
+	return cmd
 }
 
-func (g *Cli) parseDefinition() *Cli {
+func (cmd *Cli) parseDefinition() *Cli {
 	var in input.InputInterface
-	if g.In != nil {
-		in = g.In
+	if cmd.In != nil {
+		in = cmd.In
 	} else {
 		in = input.NewArgvInput(nil)
 	}
 
 	var out output.OutputInterface
-	if g.Out != nil {
-		out = g.Out
+	if cmd.Out != nil {
+		out = cmd.Out
 	} else {
 		out = output.NewCliOutput(true, nil)
 	}
 
-	g.in = in
-	g.out = out
+	if cmd.Name != "" {
+		cmd.caller = cmd.Name
+	}
+
+	if cmd.Desc != "" {
+		cmd.description = cmd.Desc
+	}
+
+	cmd.in = in
+	cmd.out = out
 
 	// clone the formatter to retrieve styles and avoid state change
 	format := *out.Formatter()
 
-	g.alreadyParsed = false
+	cmd.alreadyParsed = false
 
-	g.lineLength = MAX_LINE_LENGTH
-	g.bufferedOutput = *output.NewBufferedOutput(false, &format)
+	cmd.lineLength = MAX_LINE_LENGTH
+	cmd.bufferedOutput = *output.NewBufferedOutput(false, &format)
 
-	if len(g.Args) > 0 {
-		for _, arg := range g.Args {
+	if len(cmd.Args) > 0 {
+		for _, arg := range cmd.Args {
 			newArg := argument.New(arg.Name, arg.Mode).
 				SetDescription(arg.Description)
 
@@ -175,20 +223,20 @@ func (g *Cli) parseDefinition() *Cli {
 				newArg.SetDefaults(arg.DefaultValues)
 			}
 
-			g.AddInputArgument(newArg)
+			cmd.AddInputArgument(newArg)
 		}
 	}
 
-	if len(g.Opts) > 0 {
-		for _, opt := range g.Opts {
+	if len(cmd.Opts) > 0 {
+		for _, opt := range cmd.Opts {
 			newOpt := option.New(opt.Name, opt.Mode)
 
 			if opt.Shortcut != "" {
 				newOpt.SetShortcut(opt.Shortcut)
 			}
 
-			if opt.description != "" {
-				newOpt.SetDescription(opt.description)
+			if opt.Description != "" {
+				newOpt.SetDescription(opt.Description)
 			}
 
 			if opt.DefaultValue != "" {
@@ -199,77 +247,62 @@ func (g *Cli) parseDefinition() *Cli {
 				newOpt.SetDefaults(opt.DefaultValues)
 			}
 
-			g.AddInputOption(newOpt)
+			cmd.AddInputOption(newOpt)
 		}
 	}
 
-	if !g.DefaultOpts {
-		g.
-			AddInputOption(
-				option.New("quiet", option.None).
-					SetShortcut("q"),
-			).
-			AddInputOption(
-				option.New("verbose", option.None).
-					SetShortcut("v"),
-			).
-			AddInputOption(
-				option.New("very-verbose", option.None).
-					SetShortcut("vv"),
-			).
-			AddInputOption(
-				option.New("debug", option.None).
-					SetShortcut("vvv"),
-			)
+	if !cmd.DefaultOpts {
+		cmd.addDefaultOptions()
 	}
 
-	return g
+	return cmd
 }
 
-func (g *Cli) parseInput() *Cli {
-	if g.alreadyParsed {
+func (cmd *Cli) parseInput() *Cli {
+	if cmd.alreadyParsed {
 		panic(errors.New("argv is already parsed"))
 	}
 
-	defer g.handleParsingException()
+	defer cmd.handleParsingException()
 
-	g.in.Parse()
-	g.alreadyParsed = true
+	cmd.in.Parse()
+	cmd.alreadyParsed = true
 
-	return g
+	return cmd
 }
 
-func (g *Cli) validateInput() *Cli {
-	if !g.alreadyParsed {
+func (cmd *Cli) validateInput() *Cli {
+	if !cmd.alreadyParsed {
 		panic(errors.New("cannot validate unparsed input"))
 	}
 
-	defer g.handleParsingException()
+	defer cmd.handleParsingException()
 
-	g.in.Validate()
+	cmd.in.Validate()
 
-	return g
+	return cmd
 }
 
-func (g *Cli) findOutputVerbosity() *Cli {
+func (cmd *Cli) findOutputVerbosity() *Cli {
 	level := verbosity.Normal
 
-	if g.in.Option("quiet") == option.Defined {
+	if cmd.in.Option("quiet") == option.Defined {
 		level = verbosity.Quiet
-	} else if g.in.Option("verbose") == option.Defined {
-		level = verbosity.Verbose
-	} else if g.in.Option("very-verbose") == option.Defined {
-		level = verbosity.VeryVerbose
-	} else if g.in.Option("debug") == option.Defined {
-		level = verbosity.Debug
+	} else if cmd.in.Option("verbose") == option.Defined {
+		lvl := cmd.in.Option("verbose")
+		if lvl == "vv" {
+			level = verbosity.Debug
+		} else if lvl == "v" {
+			level = verbosity.VeryVerbose
+		}
 	}
 
-	g.out.SetVerbosity(level)
+	cmd.out.SetVerbosity(level)
 
-	return g
+	return cmd
 }
 
-func (g *Cli) handleParsingException() {
+func (cmd *Cli) handleParsingException() {
 	err := recover()
 
 	if err == nil {
@@ -277,23 +310,23 @@ func (g *Cli) handleParsingException() {
 		return
 	}
 
-	g.PrintError(fmt.Sprintf("%s", err))
+	cmd.PrintError(fmt.Sprintf("%s", err))
 
-	cmd := os.Args[0]
-	synopsis := g.in.Definition().Synopsis(false)
+	args := os.Args[0]
+	synopsis := cmd.in.Definition().Synopsis(false)
 
 	usage := fmt.Sprintf(
 		"<info>Usage:</info> <comment>%s %s</comment>",
-		cmd,
+		args,
 		formatter.Escape(synopsis),
 	)
 
-	g.out.Println(usage)
+	cmd.out.Println(usage)
 
 	os.Exit(2)
 }
 
-func (g *Cli) HandleRuntimeException() {
+func (cmd *Cli) HandleRuntimeException() {
 	err := recover()
 
 	if err == nil {
@@ -307,11 +340,11 @@ func (g *Cli) HandleRuntimeException() {
 	traces := strings.TrimPrefix(full, msg)
 	traces = strings.Replace(traces, "\n\t", "() at ", -1)
 
-	g.PrintError(msg)
+	cmd.PrintError(msg)
 
-	g.out.Print("<comment>Exception trace:</comment>")
+	cmd.out.Print("<comment>Exception trace:</comment>")
 	for _, trace := range strings.Split(traces, "\n") {
-		g.out.Println(
+		cmd.out.Println(
 			fmt.Sprintf(
 				" %s",
 				formatter.Escape(trace),
@@ -320,4 +353,151 @@ func (g *Cli) HandleRuntimeException() {
 	}
 
 	os.Exit(2)
+}
+
+func (cmd *Cli) handleHelpCall() {
+	if cmd.in.Option("help") == option.Undefined {
+		return
+	}
+
+	if cmd.Description() != "" {
+		cmd.PrintText("<comment>Description:</comment>")
+		cmd.PrintText(cmd.Description())
+		cmd.PrintNewLine(1)
+	}
+
+	cmd.PrintText("<comment>Usage:</comment>")
+
+	synopsis := cmd.in.Definition().Synopsis(false)
+	synopsis = strings.ReplaceAll(synopsis, "<", "\\<")
+
+	var cmdName string
+	if cmd.caller != "" {
+		cmdName = cmd.caller
+	} else {
+		cmdName = os.Args[0]
+	}
+
+	cmd.out.SetDecorated(false)
+	cmd.PrintText(fmt.Sprintf(" %s <info>%s</info>", cmdName, synopsis))
+	cmd.out.SetDecorated(true)
+
+	render := table.
+		NewRender(cmd.out).
+		SetStyleFromName("compact")
+
+	if len(cmd.in.Definition().Arguments()) > 0 {
+		cmd.PrintNewLine(1)
+		cmd.PrintText("<comment>Arguments:</comment>")
+
+		render.
+			SetContent(cmd.createArgsTable()).
+			Render()
+	}
+
+	if len(cmd.in.Definition().Options()) > 0 {
+		cmd.PrintNewLine(1)
+		cmd.PrintText("<comment>Options:</comment>")
+
+		render.
+			SetContent(cmd.createOptsTable()).
+			Render()
+	}
+
+	os.Exit(ExitSuccess)
+}
+
+func (cmd *Cli) createArgsTable() *table.Table {
+	argTab := table.NewTable()
+
+	for _, argKey := range cmd.in.Definition().ArgumentsOrder() {
+		arg := cmd.in.Definition().Argument(argKey)
+
+		name := fmt.Sprintf(
+			" <info>%s</info>",
+			arg.Name(),
+		)
+
+		flags := []string{}
+		if arg.IsRequired() {
+			flags = append(flags, "required")
+		} else {
+			flags = append(flags, "optional")
+		}
+
+		if arg.IsList() {
+			flags = append(flags, "list")
+		}
+
+		flagLine := fmt.Sprintf("<comment>[%s]</comment>", strings.Join(flags, "|"))
+
+		desc := arg.Description()
+
+		if !arg.IsList() && arg.Default() != "" {
+			desc += fmt.Sprintf(
+				" <comment>[default: \"%s\"]</comment>",
+				arg.Default(),
+			)
+		}
+
+		if arg.IsList() && arg.Defaults() != nil {
+			desc += fmt.Sprintf(
+				" <comment>[defaults: \"%s\"]</comment>",
+				desc,
+				strings.Join(arg.Defaults(), "\", \""),
+			)
+		}
+
+		argTab.
+			AddRowFromString([]string{
+				name, flagLine, desc,
+			})
+	}
+
+	return argTab
+}
+
+func (cmd *Cli) createOptsTable() *table.Table {
+	optTab := table.NewTable()
+
+	for _, optKey := range cmd.in.Definition().OptionsOrder() {
+		opt := cmd.in.Definition().Option(optKey)
+		shortcut := ""
+
+		if opt.Shortcut() != "" {
+			shortcut = fmt.Sprintf(
+				"<info>-%s,</info>",
+				opt.Shortcut(),
+			)
+		}
+
+		name := fmt.Sprintf(
+			" <info>--%s</info>",
+			opt.Name(),
+		)
+
+		desc := opt.Description()
+
+		if !opt.IsList() && opt.Default() != "" {
+			desc += fmt.Sprintf(
+				" <comment>[default: \"%s\"]</comment>",
+				opt.Default(),
+			)
+		}
+
+		if opt.IsList() && opt.Defaults() != nil {
+			desc += fmt.Sprintf(
+				" <comment>[defaults: [[\"%s\"]]</comment>",
+				desc,
+				strings.Join(opt.Defaults(), "\", \""),
+			)
+		}
+
+		optTab.
+			AddRowFromString([]string{
+				shortcut, name, desc,
+			})
+	}
+
+	return optTab
 }
