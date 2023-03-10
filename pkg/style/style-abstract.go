@@ -42,7 +42,7 @@ func (g *abstractStyler) GetOutput() output.OutputInterface {
 
 // Add newline(s).
 func (g *abstractStyler) NewLine(count int) {
-	g.writeArray([]string{strings.Repeat("\n", count)}, false)
+	g.writeList([]string{strings.Repeat("\n", count)}, false)
 }
 
 // Formats a command title.
@@ -51,7 +51,7 @@ func (g *abstractStyler) Title(message string) {
 
 	messageRealLength := helper.StrlenWithoutDecoration(g.out.GetFormatter(), message)
 
-	g.writeArray(
+	g.writeList(
 		[]string{
 			fmt.Sprintf("<comment>%s</>", message),
 			fmt.Sprintf("<comment>%s</>", strings.Repeat("=", messageRealLength)),
@@ -68,7 +68,7 @@ func (g *abstractStyler) Section(message string) {
 
 	messageRealLength := helper.StrlenWithoutDecoration(g.out.GetFormatter(), message)
 
-	g.writeArray(
+	g.writeList(
 		[]string{
 			fmt.Sprintf("<comment>%s</>", message),
 			fmt.Sprintf("<comment>%s</>", strings.Repeat("-", messageRealLength)),
@@ -98,7 +98,7 @@ func (g *abstractStyler) Text(message string) {
 }
 
 // Formats informational text array.
-func (g *abstractStyler) TextArray(messages []string) {
+func (g *abstractStyler) Texts(messages []string) {
 	g.autoPrependText()
 
 	for _, msg := range messages {
@@ -110,61 +110,61 @@ func (g *abstractStyler) TextArray(messages []string) {
 
 // Formats a comment bar.
 func (g *abstractStyler) Comment(message string) {
-	g.CommentArray([]string{message})
+	g.Comments([]string{message})
 }
 
 // Formats a comment bar.
-func (g *abstractStyler) CommentArray(messages []string) {
-	g.blockArray(messages, "", "", "<fg=default;bg=default> // </>", false, false)
+func (g *abstractStyler) Comments(messages []string) {
+	g.blockList(messages, "", "", "<fg=default;bg=default> // </>", false, false)
 }
 
 // Formats a success result bar.
 func (g *abstractStyler) Success(message string) {
-	g.SuccessArray([]string{message})
+	g.Successes([]string{message})
 }
 
 // Formats a success result bar.
-func (g *abstractStyler) SuccessArray(messages []string) {
-	g.blockArray(messages, "OK", "fg=black;bg=green", " ", true, false)
+func (g *abstractStyler) Successes(messages []string) {
+	g.blockList(messages, "OK", "fg=black;bg=green", " ", true, false)
 }
 
 func (g *abstractStyler) Error(message string) {
-	g.ErrorArray([]string{message})
+	g.Errors([]string{message})
 }
 
 // Formats an error result bar.
-func (g *abstractStyler) ErrorArray(messages []string) {
-	g.blockArray(messages, "ERROR", "fg=white;bg=red", " ", true, false)
+func (g *abstractStyler) Errors(messages []string) {
+	g.blockList(messages, "ERROR", "fg=white;bg=red", " ", true, false)
 }
 
 // Formats an warning result bar.
 func (g *abstractStyler) Warning(message string) {
-	g.WarningArray([]string{message})
+	g.Warnings([]string{message})
 }
 
 // Formats an warning result bar.
-func (g *abstractStyler) WarningArray(messages []string) {
-	g.blockArray(messages, "WARNING", "fg=white;bg=red", " ", true, false)
+func (g *abstractStyler) Warnings(messages []string) {
+	g.blockList(messages, "WARNING", "fg=white;bg=red", " ", true, false)
 }
 
 // Formats a note admonition.
 func (g *abstractStyler) Note(message string) {
-	g.NoteArray([]string{message})
+	g.Notes([]string{message})
 }
 
 // Formats a note admonition.
-func (g *abstractStyler) NoteArray(messages []string) {
-	g.blockArray(messages, "NOTE", "fg=yellow", " ! ", false, false)
+func (g *abstractStyler) Notes(messages []string) {
+	g.blockList(messages, "NOTE", "fg=yellow", " ! ", false, false)
 }
 
 // Formats a caution admonition.
 func (g *abstractStyler) Caution(message string) {
-	g.CautionArray([]string{message})
+	g.Cautions([]string{message})
 }
 
 // Formats a caution admonition.
-func (g *abstractStyler) CautionArray(messages []string) {
-	g.blockArray(messages, "CAUTION", "fg=white;bg=red", " ! ", true, false)
+func (g *abstractStyler) Cautions(messages []string) {
+	g.blockList(messages, "CAUTION", "fg=white;bg=red", " ! ", true, false)
 }
 
 //
@@ -181,7 +181,7 @@ func (g *abstractStyler) write(message string, newLine bool) {
 	}
 }
 
-func (g *abstractStyler) writeArray(messages []string, newLine bool) {
+func (g *abstractStyler) writeList(messages []string, newLine bool) {
 	for _, message := range messages {
 		g.write(message, newLine)
 	}
@@ -224,21 +224,21 @@ func (g *abstractStyler) autoPrependText() {
 
 func (g *abstractStyler) block(message string, title string, style string, prefix string, padding bool, escape bool) {
 	g.autoPrependBlock()
-	g.writeArray(g.createBlock(message, title, style, prefix, padding, escape), false)
+	g.writeList(g.createBlock(message, title, style, prefix, padding, escape), false)
 	g.NewLine(1)
 }
 
 func (g *abstractStyler) createBlock(message string, title string, style string, prefix string, padding bool, escape bool) []string {
-	return g.createBlockArray([]string{message}, title, style, prefix, padding, escape)
+	return g.createBlockList([]string{message}, title, style, prefix, padding, escape)
 }
 
-func (g *abstractStyler) blockArray(message []string, title string, style string, prefix string, padding bool, escape bool) {
+func (g *abstractStyler) blockList(message []string, title string, style string, prefix string, padding bool, escape bool) {
 	g.autoPrependBlock()
-	g.writeArray(g.createBlockArray(message, title, style, prefix, padding, escape), true)
+	g.writeList(g.createBlockList(message, title, style, prefix, padding, escape), true)
 	g.NewLine(1)
 }
 
-func (g *abstractStyler) createBlockArray(messages []string, title string, style string, prefix string, padding bool, escape bool) []string {
+func (g *abstractStyler) createBlockList(messages []string, title string, style string, prefix string, padding bool, escape bool) []string {
 	indentLength := 0
 	prefixLength := helper.StrlenWithoutDecoration(g.out.GetFormatter(), prefix)
 

@@ -53,7 +53,7 @@ func (a *InputArgument) IsRequired() bool {
 }
 
 // Returns true if the argument can take multiple values.
-func (a *InputArgument) IsArray() bool {
+func (a *InputArgument) IsList() bool {
 	return List == (List & a.mode)
 }
 
@@ -63,7 +63,7 @@ func (a *InputArgument) SetDefault(defaultValue string) *InputArgument {
 		panic(errors.New("cannot set a default value except for InputArgument::Optional mode"))
 	}
 
-	if a.IsArray() {
+	if a.IsList() {
 		panic(errors.New("cannot use SetDefaultAnswer() for InputArgument::List mode, use SetDefaults() instead"))
 	}
 
@@ -77,7 +77,7 @@ func (a *InputArgument) SetDefaults(values []string) *InputArgument {
 		panic(errors.New("cannot set a default value except for InputArgument::Optional mode"))
 	}
 
-	if !a.IsArray() {
+	if !a.IsList() {
 		panic(errors.New("cannot use SetDefaults() except for InputArgument::List mode, use SetDefaultAnswer() instead"))
 	}
 
@@ -88,7 +88,7 @@ func (a *InputArgument) SetDefaults(values []string) *InputArgument {
 
 // Returns the default value.
 func (a *InputArgument) GetDefault() string {
-	if a.IsArray() {
+	if a.IsList() {
 		panic(errors.New("cannot use GetDefaultAnswer() for InputArgument::List mode, use GetDefaults() instead"))
 	}
 
@@ -97,7 +97,7 @@ func (a *InputArgument) GetDefault() string {
 
 // Returns the defaults value.
 func (a *InputArgument) GetDefaults() []string {
-	if !a.IsArray() {
+	if !a.IsList() {
 		panic(errors.New("cannot use GetDefaults() except for InputArgument::List, use GetDefaultAnswer() instead"))
 	}
 

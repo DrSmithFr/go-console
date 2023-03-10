@@ -54,7 +54,7 @@ func main() {
 		),
 	)
 
-	io.TextArray([]string{
+	io.Texts([]string{
 		"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
 		"<comment>Lorem ipsum dolor sit amet</comment>, <info>consectetur adipiscing elit.</info>",
 		"<b>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b>",
@@ -99,7 +99,7 @@ func main() {
 			}),
 	)
 
-	io.TextArray([]string{
+	io.Texts([]string{
 		" ",
 		" ",
 		" ",

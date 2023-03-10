@@ -168,16 +168,16 @@ func (i *ArgvInput) parseArgument(token string) {
 	if nbArgs < len(keys) && i.definition.HasArgument(keys[nbArgs]) {
 		arg := i.definition.GetArgument(keys[nbArgs])
 
-		if arg.IsArray() {
+		if arg.IsList() {
 			i.argumentArrays[arg.GetName()] = []string{token}
 		} else {
 			i.arguments[arg.GetName()] = token
 		}
 
-		// if last argument isArray(), append token to last argument
+		// if last argument isList(), append token to last argument
 	} else if nbArgs-1 <= len(keys) &&
 		i.definition.HasArgument(keys[nbArgs-1]) &&
-		i.definition.GetArgument(keys[nbArgs-1]).IsArray() {
+		i.definition.GetArgument(keys[nbArgs-1]).IsList() {
 		arg := i.definition.GetArgument(keys[nbArgs-1])
 		i.argumentArrays[arg.GetName()] = append(i.argumentArrays[arg.GetName()], token)
 
@@ -242,12 +242,12 @@ func (i *ArgvInput) addLongOption(name string, value string) {
 			panic(errors.New(fmt.Sprintf("the '--%s' option requires a value", name)))
 		}
 
-		if !opt.IsArray() && !opt.IsValueOptional() {
+		if !opt.IsList() && !opt.IsValueOptional() {
 			value = option.Defined
 		}
 	}
 
-	if opt.IsArray() {
+	if opt.IsList() {
 		i.optionArrays[name] = append(i.optionArrays[name], value)
 	} else {
 		i.options[name] = value

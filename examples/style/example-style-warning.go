@@ -15,7 +15,7 @@ func main() {
 	io.Warning("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam nec nisl nec mi blandit malesuada. Nunc augue risus, posuere vitae feugiat quis, pulvinar non ligula.")
 
 	// consider using arrays when displaying long messages
-	io.WarningArray([]string{
+	io.Warnings([]string{
 		"Lorem Ipsum Dolor Sit Amet",
 		"Lorem Ipsum Dolor Sit Amet",
 		"Lorem Ipsum Dolor Sit Amet",

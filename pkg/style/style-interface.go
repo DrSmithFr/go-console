@@ -26,43 +26,43 @@ type StylerInterface interface {
 	Text(message string)
 
 	// Formats informational text array.
-	TextArray(message []string)
+	Texts(message []string)
 
 	// Formats a comment bar.
 	Comment(message string)
 
 	// Formats a comment bar.
-	CommentArray(message []string)
+	Comments(message []string)
 
 	// Formats a success result bar.
 	Success(message string)
 
 	// Formats a success result bar.
-	SuccessArray(message []string)
+	Successes(message []string)
 
 	// Formats an error result bar.
 	Error(message string)
 
 	// Formats an error result bar.
-	ErrorArray(message []string)
+	Errors(message []string)
 
 	// Formats an warning result bar.
 	Warning(message string)
 
 	// Formats an warning result bar.
-	WarningArray(message []string)
+	Warnings(message []string)
 
 	// Formats a note admonition.
 	Note(message string)
 
 	// Formats a note admonition.
-	NoteArray(message []string)
+	Notes(message []string)
 
 	// Formats a caution admonition.
 	Caution(message string)
 
 	// Formats a caution admonition.
-	CautionArray(message []string)
+	Cautions(message []string)
 
 	// Add newline(s).
 	NewLine(count int)

@@ -48,7 +48,7 @@ func New(
 		defaultValues: []string{},
 	}
 
-	if opt.IsArray() && !opt.AcceptValue() {
+	if opt.IsList() && !opt.AcceptValue() {
 		panic(errors.New("impossible to have an option mode List if the option does not accept a value"))
 	}
 
@@ -123,7 +123,7 @@ func (a *InputOption) IsValueOptional() bool {
 }
 
 // returns true if the option takes an optional value.
-func (a *InputOption) IsArray() bool {
+func (a *InputOption) IsList() bool {
 	return List == (List & a.mode)
 }
 
@@ -133,7 +133,7 @@ func (a *InputOption) SetDefault(defaultValue string) *InputOption {
 		panic(errors.New("cannot set a default value when using InputOption::VALUE_NONE mode"))
 	}
 
-	if a.IsArray() {
+	if a.IsList() {
 		panic(errors.New("cannot use SetDefaultAnswer() for InputOption::VALUE_IS_ARRAY mode, use SetDefaults() instead"))
 	}
 
@@ -147,7 +147,7 @@ func (a *InputOption) SetDefaults(values []string) *InputOption {
 		panic(errors.New("cannot set default values when using InputOption::VALUE_NONE mode"))
 	}
 
-	if !a.IsArray() {
+	if !a.IsList() {
 		panic(errors.New("cannot use SetDefaults() except for InputOption::List mode, use SetDefaultAnswer() instead"))
 	}
 
@@ -158,7 +158,7 @@ func (a *InputOption) SetDefaults(values []string) *InputOption {
 
 // Returns the default value.
 func (a *InputOption) GetDefault() string {
-	if a.IsArray() {
+	if a.IsList() {
 		panic(errors.New("cannot use GetDefaultAnswer() for InputOption::List mode, use GetDefaults() instead"))
 	}
 
@@ -167,7 +167,7 @@ func (a *InputOption) GetDefault() string {
 
 // Returns the defaults value.
 func (a *InputOption) GetDefaults() []string {
-	if !a.IsArray() {
+	if !a.IsList() {
 		panic(errors.New("cannot use GetDefaults() except for InputOption::List, use GetDefaultAnswer() instead"))
 	}
 
@@ -176,14 +176,14 @@ func (a *InputOption) GetDefaults() []string {
 
 // compare to another option
 func (a *InputOption) Equals(b InputOption) bool {
-	if b.IsArray() != a.IsArray() {
+	if b.IsList() != a.IsList() {
 		return false
 	}
 
-	if a.IsArray() {
+	if a.IsList() {
 		return b.GetName() == a.GetName() &&
 			b.GetShortcut() == a.GetShortcut() &&
-			b.IsArray() == a.IsArray() &&
+			b.IsList() == a.IsList() &&
 			b.IsValueRequired() == a.IsValueRequired() &&
 			b.IsValueOptional() == a.IsValueOptional() &&
 			helper.IsStringSliceEqual(b.GetDefaults(), a.GetDefaults())
@@ -192,7 +192,7 @@ func (a *InputOption) Equals(b InputOption) bool {
 	return b.GetName() == a.GetName() &&
 		b.GetShortcut() == a.GetShortcut() &&
 		b.GetDefault() == a.GetDefault() &&
-		b.IsArray() == a.IsArray() &&
+		b.IsList() == a.IsList() &&
 		b.IsValueRequired() == a.IsValueRequired() &&
 		b.IsValueOptional() == a.IsValueOptional()
 }

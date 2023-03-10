@@ -144,7 +144,7 @@ func main() {
   // You can access the names argument as an array:
   //
 
-  names := io.GetInput().GetArgumentArray("names")
+  names := io.GetInput().GetArgumentList("names")
 
   for _, name := range names {
     io.Text(fmt.Sprintf("Hi %s!", name))
@@ -387,7 +387,7 @@ instructions for the user running the command:
 io.Text("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
-io.TextArray([]string{
+io.Texts([]string{
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
@@ -440,7 +440,7 @@ cluttering command's output:
 io.Note("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
-io.NoteArray([]string{
+io.Notes([]string{
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
@@ -461,7 +461,7 @@ error message, so you should avoid using this helper unless strictly necessary:
 io.Caution("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
-io.CautionArray([]string{
+io.Cautions([]string{
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
@@ -485,7 +485,7 @@ repeatedly during the execution of the command:
 io.Success("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
-io.SuccessArray([]string{
+io.Successes([]string{
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
@@ -507,7 +507,7 @@ use it repeatedly during the execution of the command:
 io.Warning("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
-io.WarningArray([]string{
+io.Warnings([]string{
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
@@ -529,7 +529,7 @@ repeatedly during the execution of the command:
 io.Error("Lorem Ipsum Dolor Sit Amet, [...]")
 
 // consider using arrays when displaying long messages
-io.ErrorArray([]string{
+io.Errors([]string{
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",
   "Lorem Ipsum Dolor Sit Amet",

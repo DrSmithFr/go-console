@@ -49,8 +49,8 @@ func (i *abstractInput) GetArgument(name string) string {
 
 	arg := i.definition.GetArgument(name)
 
-	if arg.IsArray() {
-		panic(errors.New(fmt.Sprintf("the '%s' argument is an array, use GetArgumentArray() instead", name)))
+	if arg.IsList() {
+		panic(errors.New(fmt.Sprintf("the '%s' argument is an array, use GetArgumentList() instead", name)))
 	}
 
 	if val, ok := i.arguments[name]; ok {
@@ -61,14 +61,14 @@ func (i *abstractInput) GetArgument(name string) string {
 }
 
 // Returns the argument array value for a given argument name
-func (i *abstractInput) GetArgumentArray(name string) []string {
+func (i *abstractInput) GetArgumentList(name string) []string {
 	if !i.definition.HasArgument(name) {
 		panic(errors.New(fmt.Sprintf("the '%s' argument does not exist", name)))
 	}
 
 	arg := i.definition.GetArgument(name)
 
-	if !arg.IsArray() {
+	if !arg.IsList() {
 		panic(errors.New(fmt.Sprintf("the '%s' argument is not an array, use GetArgument() instead", name)))
 	}
 
@@ -87,22 +87,22 @@ func (i *abstractInput) SetArgument(name string, value string) {
 
 	arg := i.definition.GetArgument(name)
 
-	if arg.IsArray() {
-		panic(errors.New(fmt.Sprintf("the '%s' argument is an array, use SetArgumentArray() instead", name)))
+	if arg.IsList() {
+		panic(errors.New(fmt.Sprintf("the '%s' argument is an array, use SetArgumentList() instead", name)))
 	}
 
 	i.arguments[name] = value
 }
 
 // Sets an argument array value by name
-func (i *abstractInput) SetArgumentArray(name string, value []string) {
+func (i *abstractInput) SetArgumentList(name string, value []string) {
 	if !i.definition.HasArgument(name) {
 		panic(errors.New(fmt.Sprintf("the '%s' argument does not exist", name)))
 	}
 
 	arg := i.definition.GetArgument(name)
 
-	if !arg.IsArray() {
+	if !arg.IsList() {
 		panic(errors.New(fmt.Sprintf("the '%s' argument is not an array, use SetArgument() instead", name)))
 	}
 
@@ -115,7 +115,7 @@ func (i *abstractInput) GetOptions() map[string]string {
 }
 
 // Returns all the given options array merged with the default values
-func (i *abstractInput) GetOptionArrays() map[string][]string {
+func (i *abstractInput) GetOptionLists() map[string][]string {
 	return i.optionArrays
 }
 
@@ -132,8 +132,8 @@ func (i *abstractInput) GetOption(name string) string {
 
 	opt := i.definition.GetOption(name)
 
-	if opt.IsArray() {
-		panic(errors.New(fmt.Sprintf("the '%s' option is an array, use GetOptionArray() instead", name)))
+	if opt.IsList() {
+		panic(errors.New(fmt.Sprintf("the '%s' option is an array, use GetOptionList() instead", name)))
 	}
 
 	if val, ok := i.options[name]; ok {
@@ -149,14 +149,14 @@ func (i *abstractInput) GetOption(name string) string {
 }
 
 // Returns the option array value for a given option name
-func (i *abstractInput) GetOptionArray(name string) []string {
+func (i *abstractInput) GetOptionList(name string) []string {
 	if !i.definition.HasOption(name) {
 		panic(errors.New(fmt.Sprintf("the '%s' option does not exist", name)))
 	}
 
 	opt := i.definition.GetOption(name)
 
-	if !opt.IsArray() {
+	if !opt.IsList() {
 		panic(errors.New(fmt.Sprintf("the '%s' option is not an array, use GetOption() instead", name)))
 	}
 
@@ -175,22 +175,22 @@ func (i *abstractInput) SetOption(name string, value string) {
 
 	opt := i.definition.GetOption(name)
 
-	if opt.IsArray() {
-		panic(errors.New(fmt.Sprintf("the '%s' option is an array, use SetOptionArray() instead", name)))
+	if opt.IsList() {
+		panic(errors.New(fmt.Sprintf("the '%s' option is an array, use SetOptionList() instead", name)))
 	}
 
 	i.options[name] = value
 }
 
 // Sets an option array value by name
-func (i *abstractInput) SetOptionArray(name string, value []string) {
+func (i *abstractInput) SetOptionList(name string, value []string) {
 	if !i.definition.HasOption(name) {
 		panic(errors.New(fmt.Sprintf("the '%s' option does not exist", name)))
 	}
 
 	opt := i.definition.GetOption(name)
 
-	if !opt.IsArray() {
+	if !opt.IsList() {
 		panic(errors.New(fmt.Sprintf("the '%s' option is not an array, use SetOption() instead", name)))
 	}
 

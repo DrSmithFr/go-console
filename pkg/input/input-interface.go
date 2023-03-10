@@ -42,13 +42,13 @@ type InputInterface interface {
 	GetArgument(name string) string
 
 	// Returns the argument array value for a given array argument name.
-	GetArgumentArray(name string) []string
+	GetArgumentList(name string) []string
 
 	// Set the argument value for a given argument name.
 	SetArgument(name string, value string)
 
 	// Set the argument value for a given array argument name.
-	SetArgumentArray(name string, value []string)
+	SetArgumentList(name string, value []string)
 
 	// Returns the argument value for a given argument name.
 	HasArgument(name string) bool
@@ -57,19 +57,19 @@ type InputInterface interface {
 	GetOptions() map[string]string
 
 	// Returns all the given array options merged with the default values.
-	GetOptionArrays() map[string][]string
+	GetOptionLists() map[string][]string
 
 	// Returns the option value for a given option name.
 	GetOption(name string) string
 
 	// Returns the option array value for a given array option name.
-	GetOptionArray(name string) []string
+	GetOptionList(name string) []string
 
 	// Sets an option value by name.
 	SetOption(name string, value string)
 
 	// Sets an array option value by name.
-	SetOptionArray(name string, value []string)
+	SetOptionList(name string, value []string)
 
 	// Returns true if an InputOption object exists by name.
 	HasOption(name string) bool

@@ -85,12 +85,12 @@ func TestSingleDashOptionShortcutIsInvalid(t *testing.T) {
 	})
 }
 
-func TestIsArray(t *testing.T) {
+func TestIsList(t *testing.T) {
 	opt1 := option.New("foo", option.Optional|option.List)
-	assert.True(t, opt1.IsArray())
+	assert.True(t, opt1.IsList())
 
 	opt2 := option.New("foo", option.None)
-	assert.False(t, opt2.IsArray())
+	assert.False(t, opt2.IsList())
 }
 
 func TestGetDescription(t *testing.T) {
@@ -137,7 +137,7 @@ func TestSetDefaultsOnNoneOption(t *testing.T) {
 	})
 }
 
-func TestSetDefaultsOnNotArray(t *testing.T) {
+func TestSetDefaultsOnNotList(t *testing.T) {
 	assert.Panics(t, func() {
 		option.
 			New("foo", option.Optional).
@@ -145,7 +145,7 @@ func TestSetDefaultsOnNotArray(t *testing.T) {
 	})
 }
 
-func TestSetDefaultOnArray(t *testing.T) {
+func TestSetDefaultOnList(t *testing.T) {
 	assert.Panics(t, func() {
 		option.
 			New("foo", option.List).

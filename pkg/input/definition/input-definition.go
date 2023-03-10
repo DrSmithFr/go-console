@@ -77,7 +77,7 @@ func (i *InputDefinition) AddArgument(arg argument.InputArgument) *InputDefiniti
 		panic(errors.New("cannot add a required argument after an optional one"))
 	}
 
-	if arg.IsArray() {
+	if arg.IsList() {
 		i.hasAnArrayArgument = true
 	}
 
@@ -139,7 +139,7 @@ func (i *InputDefinition) GetArgumentDefaults() map[string][]string {
 	for _, key := range i.argumentKeysOrdered {
 		arg := i.GetArgument(key)
 
-		if arg.IsArray() {
+		if arg.IsList() {
 			values[arg.GetName()] = arg.GetDefaults()
 		} else {
 			if "" != arg.GetDefault() {
@@ -243,7 +243,7 @@ func (i *InputDefinition) GetOptionDefaults() map[string][]string {
 	for _, key := range i.optionKeysOrdered {
 		opt := i.GetOption(key)
 
-		if opt.IsArray() {
+		if opt.IsList() {
 			values[opt.GetName()] = opt.GetDefaults()
 		} else {
 			if "" != opt.GetDefault() {
@@ -323,7 +323,7 @@ func (i *InputDefinition) GetSynopsis(short bool) string {
 		arg := i.GetArgument(key)
 		element := fmt.Sprintf("<%s>", arg.GetName())
 
-		if arg.IsArray() {
+		if arg.IsList() {
 			element = fmt.Sprintf("%s...", element)
 		}
 

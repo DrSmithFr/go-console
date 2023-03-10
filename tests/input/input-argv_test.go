@@ -39,7 +39,7 @@ func TestParsePatterns(t *testing.T) {
 		in.Bind(*pattern.Definition())
 
 		assert.Equalf(t, pattern.Options(), in.GetOptions(), pattern.Message())
-		assert.Equalf(t, pattern.OptionArrays(), in.GetOptionArrays(), pattern.Message())
+		assert.Equalf(t, pattern.OptionArrays(), in.GetOptionLists(), pattern.Message())
 	}
 }
 

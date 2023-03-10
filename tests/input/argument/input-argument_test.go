@@ -29,15 +29,15 @@ func TestInvalidModes(t *testing.T) {
 	)
 }
 
-func TestIsArray(t *testing.T) {
+func TestIsList(t *testing.T) {
 	arg1 := argument.New("foo", argument.List)
-	assert.True(t, arg1.IsArray())
+	assert.True(t, arg1.IsList())
 
 	arg2 := argument.New("foo", argument.Optional|argument.List)
-	assert.True(t, arg2.IsArray())
+	assert.True(t, arg2.IsList())
 
 	arg3 := argument.New("foo", argument.Optional)
-	assert.False(t, arg3.IsArray())
+	assert.False(t, arg3.IsList())
 }
 
 func TestGetDescription(t *testing.T) {
@@ -62,7 +62,7 @@ func TestGetDefault(t *testing.T) {
 	assert.Equal(t, []string{"default"}, arg2.GetDefaults())
 }
 
-func TestSetDefaultsOnNotArray(t *testing.T) {
+func TestSetDefaultsOnNotList(t *testing.T) {
 	assert.Panics(t, func() {
 		argument.
 			New("foo", argument.Optional).
@@ -70,7 +70,7 @@ func TestSetDefaultsOnNotArray(t *testing.T) {
 	})
 }
 
-func TestSetDefaultOnArray(t *testing.T) {
+func TestSetDefaultOnList(t *testing.T) {
 	assert.Panics(t, func() {
 		argument.
 			New("foo", argument.List).
