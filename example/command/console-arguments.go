@@ -20,15 +20,33 @@ func main() {
 	// Easy way to create a command with arguments and options
 	//
 
-	io := go_console.NewCli().
-		AddInputArgument(
-			argument.New("name", argument.Required),
-		).
-		AddInputOption(
-			option.New("foo", option.None).
-				SetShortcut("f"),
-		).
-		Build()
+	io := go_console.Cli{
+		Args: []go_console.Arg{
+			{
+				Name: "name",
+				Mode: argument.Required,
+			},
+		},
+		Opts: []go_console.Opt{
+			{
+				Name:     "foo",
+				Shortcut: "f",
+				Mode:     option.None,
+			},
+		},
+	}
+
+	io.Build()
+
+	//io := go_console.NewCli().
+	//	AddInputArgument(
+	//		argument.New("name", argument.Required),
+	//	).
+	//	AddInputOption(
+	//		option.New("foo", option.None).
+	//			SetShortcut("f"),
+	//	).
+	//	Build()
 
 	name := io.Input().Argument("name")
 

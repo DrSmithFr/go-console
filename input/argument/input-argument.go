@@ -6,8 +6,7 @@ import (
 )
 
 const (
-	Default = Optional
-
+	Default  = Optional
 	Required = 1
 	Optional = 2
 	List     = 4

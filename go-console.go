@@ -44,7 +44,8 @@ func NewCli() *Cli {
 // custom constructor
 func CustomCli(in input.InputInterface, out output.OutputInterface) *Cli {
 	g := &Cli{
-		alreadyParsed: false,
+		alreadyParsed:    false,
+		definitionParsed: true,
 	}
 
 	// clone the formatter to retrieve styles and avoid state change
@@ -62,6 +63,37 @@ func CustomCli(in input.InputInterface, out output.OutputInterface) *Cli {
 type Cli struct {
 	abstractStyler
 	alreadyParsed bool
+
+	// Short definition
+	definitionParsed bool
+	DefaultOpts      bool
+
+	In  input.InputInterface
+	Out output.OutputInterface
+
+	Args []Arg
+	Opts []Opt
+}
+
+type Arg struct {
+	Name string
+	Mode int
+
+	Description string
+
+	DefaultValue  string
+	DefaultValues []string
+}
+
+type Opt struct {
+	Name     string
+	Shortcut string
+	Mode     int
+
+	description string
+
+	DefaultValue  string
+	DefaultValues []string
 }
 
 // (helper) add option to input definition
@@ -87,9 +119,104 @@ func (g *Cli) AddInputArgument(arg *argument.InputArgument) *Cli {
 }
 
 func (g *Cli) Build() *Cli {
+	if g.definitionParsed == false {
+		g = g.parseDefinition()
+		g.definitionParsed = true
+	}
+
 	g.parseInput()
 	g.validateInput()
 	g.findOutputVerbosity()
+
+	return g
+}
+
+func (g *Cli) parseDefinition() *Cli {
+	var in input.InputInterface
+	if g.In != nil {
+		in = g.In
+	} else {
+		in = input.NewArgvInput(nil)
+	}
+
+	var out output.OutputInterface
+	if g.Out != nil {
+		out = g.Out
+	} else {
+		out = output.NewCliOutput(true, nil)
+	}
+
+	g.in = in
+	g.out = out
+
+	// clone the formatter to retrieve styles and avoid state change
+	format := *out.Formatter()
+
+	g.alreadyParsed = false
+
+	g.lineLength = MAX_LINE_LENGTH
+	g.bufferedOutput = *output.NewBufferedOutput(false, &format)
+
+	if len(g.Args) > 0 {
+		for _, arg := range g.Args {
+			newArg := argument.New(arg.Name, arg.Mode).
+				SetDescription(arg.Description)
+
+			if arg.DefaultValue != "" {
+				newArg.SetDefault(arg.DefaultValue)
+			}
+
+			if len(arg.DefaultValues) > 0 {
+				newArg.SetDefaults(arg.DefaultValues)
+			}
+
+			g.AddInputArgument(newArg)
+		}
+	}
+
+	if len(g.Opts) > 0 {
+		for _, opt := range g.Opts {
+			newOpt := option.New(opt.Name, opt.Mode)
+
+			if opt.Shortcut != "" {
+				newOpt.SetShortcut(opt.Shortcut)
+			}
+
+			if opt.description != "" {
+				newOpt.SetDescription(opt.description)
+			}
+
+			if opt.DefaultValue != "" {
+				newOpt.SetDefault(opt.DefaultValue)
+			}
+
+			if len(opt.DefaultValues) > 0 {
+				newOpt.SetDefaults(opt.DefaultValues)
+			}
+
+			g.AddInputOption(newOpt)
+		}
+	}
+
+	if !g.DefaultOpts {
+		g.
+			AddInputOption(
+				option.New("quiet", option.None).
+					SetShortcut("q"),
+			).
+			AddInputOption(
+				option.New("verbose", option.None).
+					SetShortcut("v"),
+			).
+			AddInputOption(
+				option.New("very-verbose", option.None).
+					SetShortcut("vv"),
+			).
+			AddInputOption(
+				option.New("debug", option.None).
+					SetShortcut("vvv"),
+			)
+	}
 
 	return g
 }
