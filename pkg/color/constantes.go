@@ -2,21 +2,21 @@ package color
 
 const (
 	// empty color
-	NULL = ""
+	Null = ""
 
-	BLACK   = "black"
-	RED     = "red"
-	GREEN   = "green"
-	YELLOW  = "yellow"
-	BLUE    = "blue"
-	MAGENTA = "magenta"
-	CYAN    = "cyan"
-	WHITE   = "white"
-	DEFAULT = "default"
+	Black   = "black"
+	Red     = "red"
+	Green   = "green"
+	Yellow  = "yellow"
+	Blue    = "blue"
+	Magenta = "magenta"
+	Cyan    = "cyan"
+	White   = "white"
+	Default = "default"
 
-	BOLD       = "bold"
-	UNDERSCORE = "underscore"
-	BLINK      = "blink"
-	REVERSE    = "reverse"
-	CONCEAL    = "conceal"
+	Bold       = "bold"
+	Underscore = "underscore"
+	Blink      = "blink"
+	Reverse    = "reverse"
+	Conceal    = "conceal"
 )

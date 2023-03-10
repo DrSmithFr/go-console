@@ -95,7 +95,7 @@ func (i *ArgvInput) parseShortOption(token string) {
 	name := token[1:]
 
 	if len(name) > 1 {
-		// allow long shortcut with NONE value
+		// allow long shortcut with None value
 		if i.definition.HasShortcut(name) && i.definition.GetOptionForShortcut(name).IsValueNone() {
 			i.addShortOption(name, "")
 			return
@@ -220,8 +220,8 @@ func (i *ArgvInput) addLongOption(name string, value string) {
 	if "" != value && !opt.AcceptValue() {
 		panic(errors.New(fmt.Sprintf("the '--%s' option does not accept a value", name)))
 	} else if !opt.AcceptValue() {
-		// TODO find a better way to handle option.NONE
-		value = option.DEFINED
+		// TODO find a better way to handle option.None
+		value = option.Defined
 	}
 
 	if "" == value && opt.AcceptValue() && len(i.parsed) > 0 {
@@ -243,7 +243,7 @@ func (i *ArgvInput) addLongOption(name string, value string) {
 		}
 
 		if !opt.IsArray() && !opt.IsValueOptional() {
-			value = option.DEFINED
+			value = option.Defined
 		}
 	}
 

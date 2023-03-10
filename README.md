@@ -79,12 +79,12 @@ func main() {
     NewConsoleCommand().
     AddInputArgument(
       argument.
-        New("name", argument.REQUIRED).
+        New("name", argument.Required).
         SetDescription("Who do you want to greet?"),
     ).
     AddInputArgument(
       argument.
-        New("last_name", argument.OPTIONAL).
+        New("last_name", argument.Optional).
         SetDescription("Your last name?"),
     ).
     Build()
@@ -135,7 +135,7 @@ func main() {
     NewConsoleCommand().
     AddInputArgument(
       argument.
-        New("names", argument.IS_ARRAY).
+        New("names", argument.List | argument.Required).
         SetDescription("Who do you want to greet?"),
     ).
     Build()
@@ -178,7 +178,7 @@ io := style.
   NewConsoleCommand().
   AddInputArgument(
     argument.
-      New("names", argument.IS_ARRAY | argument.REQUIRED),
+      New("names", argument.List | argument.Required),
   ).
   ParseInput().
   ValidateInput()
@@ -209,12 +209,12 @@ func main() {
     NewConsoleCommand().
     AddInputArgument(
       argument.
-        New("name", argument.REQUIRED).
+        New("name", argument.Required).
         SetDescription("Who do you want to greet?"),
     ).
     AddInputOption(
       option.
-        New("iterations", option.REQUIRED).
+        New("iterations", option.Required).
         SetDescription("How many times should the message be printed?").
         SetDefault("1"),
     ).
@@ -263,7 +263,7 @@ io := style.
   NewConsoleCommand().
   AddInputOption(
     option.
-      New("iterations", option.REQUIRED).
+      New("iterations", option.Required).
       SetShortcut("i"),
   ).
   ParseInput().
@@ -302,7 +302,7 @@ You can combine `IS_ARRAY` with `REQUIRED` and `OPTIONAL` like this:
 io := style.
   NewConsoleCommand().
   AddInputOption(
-    option.New("iterations", option.IS_ARRAY | option.REQUIRED),
+    option.New("iterations", option.List | option.Required),
   ).
   ParseInput().
   ValidateInput()
@@ -637,13 +637,13 @@ func main() {
   out := output.NewConsoleOutput(true, nil)
 
   // create new style
-  s := formatter.NewOutputFormatterStyle(color.RED, color.YELLOW, []string{color.BOLD, color.BLINK})
+  s := formatter.NewOutputFormatterStyle(color.Red, color.Yellow, []string{color.Bold, color.Blink})
 
   // add style to formatter
   out.GetFormatter().SetStyle("fire", *s)
 
   // use the new style
-  out.Writeln("<fire>foo</>")
+  out.Writeln("<fire>foo</fire>")
 }
 ```
 
@@ -673,28 +673,28 @@ import (
 
 func main() {
   // create a default style
-  s1 := formatter.NewOutputFormatterStyle(color.NULL, color.NULL, nil)
+  s1 := formatter.NewOutputFormatterStyle(color.Null, color.Null, nil)
   fmt.Printf(s1.Apply("some text without coloration\n"))
 
-  s1.SetBackground(color.RED)
+  s1.SetBackground(color.Red)
   fmt.Printf(s1.Apply("some text with red background\n"))
 
-  s1.SetForeground(color.GREEN)
+  s1.SetForeground(color.Green)
   fmt.Printf(s1.Apply("some text with red background and green text\n"))
 
-  s1.SetOption(color.BOLD)
+  s1.SetOption(color.Bold)
   fmt.Printf(s1.Apply("some bold text with red background and green text \n"))
 
   // override all options in one time
-  s1.SetOptions([]string{color.UNDERSCORE})
+  s1.SetOptions([]string{color.Underscore})
   fmt.Printf(s1.Apply("some underscore text with red background and green text \n"))
 
   // quick declaration
-  s2 := formatter.NewOutputFormatterStyle(color.BLUE, color.YELLOW, nil)
+  s2 := formatter.NewOutputFormatterStyle(color.Blue, color.Yellow, nil)
   fmt.Printf(s2.Apply("some text with yellow background and blue text\n"))
 
   // quick declaration with options
-  s3 := formatter.NewOutputFormatterStyle(color.DEFAULT, color.DEFAULT, []string{color.UNDERSCORE, color.BOLD})
+  s3 := formatter.NewOutputFormatterStyle(color.Default, color.Default, []string{color.Underscore, color.Bold})
   fmt.Printf(s3.Apply("some bold and underscore text\n"))
 }
 ```
@@ -884,10 +884,10 @@ func main() {
   answer := qh.Ask(
     question.
       NewComfirmation("Continue with this action?").
-      SetDefaultAnswer(answers.YES).
+      SetDefaultAnswer(answers.Yes).
       SetMaxAttempts(2),
   )
-  if answer == answers.YES {
+  if answer == answers.Yes {
     io.Text("Great!")
   } else {
     io.Text("... ok :(")
@@ -1314,8 +1314,8 @@ You can optionally display titles at the top and the bottom of the table:
 
 ```go
   tab.
-SetHeaderTitle("Books").
-SetFooterTitle("Page 1/2")
+    SetHeaderTitle("Books").
+    SetFooterTitle("Page 1/2")
 ```
 
 <p align="center">

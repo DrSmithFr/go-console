@@ -110,8 +110,8 @@ func (h *Helper) writePrompt(question QuestionBasicInterface) {
 		message := fmt.Sprintf(
 			"<question>%s</question> [<info>%s</info>/<info>%s</info>] ",
 			confirmation.GetQuestion(),
-			answers.YES,
-			answers.NO,
+			answers.Yes,
+			answers.No,
 		)
 
 		h.out.Write(message)

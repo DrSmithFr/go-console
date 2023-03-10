@@ -65,10 +65,10 @@ func main() {
 	answer := qh.Ask(
 		question.
 			NewComfirmation("Do you like this library?").
-			SetDefaultAnswer(answers.YES).
+			SetDefaultAnswer(answers.Yes).
 			SetMaxAttempts(2),
 	)
-	if answer == answers.YES {
+	if answer == answers.Yes {
 		io.Text("Great!")
 	} else {
 		io.Text("... ok :(")

@@ -6,17 +6,17 @@ import (
 )
 
 const (
-	DEFAULT = OPTIONAL
+	Default = Optional
 
-	REQUIRED = 1
-	OPTIONAL = 2
-	IS_ARRAY = 4
+	Required = 1
+	Optional = 2
+	List     = 4
 )
 
 // constructor
 func New(
 	name string, // The argument name
-	mode int, // The argument mode: REQUIRED or OPTIONAL (default: OPTIONAL)
+	mode int, // The argument mode: Required or Optional (default: Optional)
 ) *InputArgument {
 	if mode > 7 || mode < 1 {
 		panic(errors.New(fmt.Sprintf("Argument mode '%d' is not valid.", mode)))
@@ -49,22 +49,22 @@ func (a *InputArgument) GetName() string {
 
 // Returns true if the argument is required.
 func (a *InputArgument) IsRequired() bool {
-	return REQUIRED == (REQUIRED & a.mode)
+	return Required == (Required & a.mode)
 }
 
 // Returns true if the argument can take multiple values.
 func (a *InputArgument) IsArray() bool {
-	return IS_ARRAY == (IS_ARRAY & a.mode)
+	return List == (List & a.mode)
 }
 
 // Sets the default value.
 func (a *InputArgument) SetDefault(defaultValue string) *InputArgument {
-	if REQUIRED == a.mode && "" != defaultValue {
-		panic(errors.New("cannot set a default value except for InputArgument::OPTIONAL mode"))
+	if Required == a.mode && "" != defaultValue {
+		panic(errors.New("cannot set a default value except for InputArgument::Optional mode"))
 	}
 
 	if a.IsArray() {
-		panic(errors.New("cannot use SetDefaultAnswer() for InputArgument::IS_ARRAY mode, use SetDefaults() instead"))
+		panic(errors.New("cannot use SetDefaultAnswer() for InputArgument::List mode, use SetDefaults() instead"))
 	}
 
 	a.defaultValue = defaultValue
@@ -73,12 +73,12 @@ func (a *InputArgument) SetDefault(defaultValue string) *InputArgument {
 
 // Sets the default value for array args.
 func (a *InputArgument) SetDefaults(values []string) *InputArgument {
-	if REQUIRED == a.mode && 0 != len(values) {
-		panic(errors.New("cannot set a default value except for InputArgument::OPTIONAL mode"))
+	if Required == a.mode && 0 != len(values) {
+		panic(errors.New("cannot set a default value except for InputArgument::Optional mode"))
 	}
 
 	if !a.IsArray() {
-		panic(errors.New("cannot use SetDefaults() except for InputArgument::IS_ARRAY mode, use SetDefaultAnswer() instead"))
+		panic(errors.New("cannot use SetDefaults() except for InputArgument::List mode, use SetDefaultAnswer() instead"))
 	}
 
 	a.defaultValues = values
@@ -89,7 +89,7 @@ func (a *InputArgument) SetDefaults(values []string) *InputArgument {
 // Returns the default value.
 func (a *InputArgument) GetDefault() string {
 	if a.IsArray() {
-		panic(errors.New("cannot use GetDefaultAnswer() for InputArgument::IS_ARRAY mode, use GetDefaults() instead"))
+		panic(errors.New("cannot use GetDefaultAnswer() for InputArgument::List mode, use GetDefaults() instead"))
 	}
 
 	return a.defaultValue
@@ -98,7 +98,7 @@ func (a *InputArgument) GetDefault() string {
 // Returns the defaults value.
 func (a *InputArgument) GetDefaults() []string {
 	if !a.IsArray() {
-		panic(errors.New("cannot use GetDefaults() except for InputArgument::IS_ARRAY, use GetDefaultAnswer() instead"))
+		panic(errors.New("cannot use GetDefaults() except for InputArgument::List, use GetDefaultAnswer() instead"))
 	}
 
 	return a.defaultValues

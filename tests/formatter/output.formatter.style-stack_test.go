@@ -10,15 +10,15 @@ import (
 func TestPush(t *testing.T) {
 	stack := formatter.NewOutputFormatterStyleStack(nil)
 
-	s1 := formatter.NewOutputFormatterStyle(color.WHITE, color.BLACK, nil)
-	s2 := formatter.NewOutputFormatterStyle(color.YELLOW, color.BLUE, nil)
+	s1 := formatter.NewOutputFormatterStyle(color.White, color.Black, nil)
+	s2 := formatter.NewOutputFormatterStyle(color.Yellow, color.Blue, nil)
 
 	stack.Push(s1)
 	stack.Push(s2)
 
 	assert.EqualValues(t, s2, stack.GetCurrent())
 
-	s3 := formatter.NewOutputFormatterStyle(color.GREEN, color.RED, nil)
+	s3 := formatter.NewOutputFormatterStyle(color.Green, color.Red, nil)
 	stack.Push(s3)
 
 	assert.EqualValues(t, s3, stack.GetCurrent())
@@ -27,8 +27,8 @@ func TestPush(t *testing.T) {
 func TestPop(t *testing.T) {
 	stack := formatter.NewOutputFormatterStyleStack(nil)
 
-	s1 := formatter.NewOutputFormatterStyle(color.WHITE, color.BLACK, nil)
-	s2 := formatter.NewOutputFormatterStyle(color.YELLOW, color.BLUE, nil)
+	s1 := formatter.NewOutputFormatterStyle(color.White, color.Black, nil)
+	s2 := formatter.NewOutputFormatterStyle(color.Yellow, color.Blue, nil)
 
 	stack.Push(s1)
 	stack.Push(s2)
@@ -39,7 +39,7 @@ func TestPop(t *testing.T) {
 
 func TestPopEmpty(t *testing.T) {
 	stack := formatter.NewOutputFormatterStyleStack(nil)
-	s := formatter.NewOutputFormatterStyle(color.NULL, color.NULL, nil)
+	s := formatter.NewOutputFormatterStyle(color.Null, color.Null, nil)
 
 	assert.EqualValues(t, s, stack.Pop(nil))
 }
@@ -47,9 +47,9 @@ func TestPopEmpty(t *testing.T) {
 func TestPopNotLast(t *testing.T) {
 	stack := formatter.NewOutputFormatterStyleStack(nil)
 
-	s1 := formatter.NewOutputFormatterStyle(color.WHITE, color.BLACK, nil)
-	s2 := formatter.NewOutputFormatterStyle(color.YELLOW, color.BLUE, nil)
-	s3 := formatter.NewOutputFormatterStyle(color.GREEN, color.RED, nil)
+	s1 := formatter.NewOutputFormatterStyle(color.White, color.Black, nil)
+	s2 := formatter.NewOutputFormatterStyle(color.Yellow, color.Blue, nil)
+	s3 := formatter.NewOutputFormatterStyle(color.Green, color.Red, nil)
 
 	stack.Push(s1)
 	stack.Push(s2)
@@ -62,8 +62,8 @@ func TestPopNotLast(t *testing.T) {
 func TestInvalidPop(t *testing.T) {
 	stack := formatter.NewOutputFormatterStyleStack(nil)
 
-	s1 := formatter.NewOutputFormatterStyle(color.WHITE, color.BLACK, nil)
-	s2 := formatter.NewOutputFormatterStyle(color.YELLOW, color.BLUE, nil)
+	s1 := formatter.NewOutputFormatterStyle(color.White, color.Black, nil)
+	s2 := formatter.NewOutputFormatterStyle(color.Yellow, color.Blue, nil)
 
 	stack.Push(s1)
 

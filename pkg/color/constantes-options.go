@@ -3,11 +3,11 @@ package color
 import "errors"
 
 var options = map[string]Color{
-	BOLD:       NewColor(1, 22),
-	UNDERSCORE: NewColor(4, 24),
-	BLINK:      NewColor(5, 25),
-	REVERSE:    NewColor(7, 27),
-	CONCEAL:    NewColor(8, 28),
+	Bold:       NewColor(1, 22),
+	Underscore: NewColor(4, 24),
+	Blink:      NewColor(5, 25),
+	Reverse:    NewColor(7, 27),
+	Conceal:    NewColor(8, 28),
 }
 
 // get color from option const

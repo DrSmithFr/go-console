@@ -11,7 +11,7 @@ func main() {
 	out := output.NewConsoleOutput(true, nil)
 
 	// create new style
-	s := formatter.NewOutputFormatterStyle(color.RED, color.YELLOW, []string{color.BOLD, color.BLINK})
+	s := formatter.NewOutputFormatterStyle(color.Red, color.Yellow, []string{color.Bold, color.Blink})
 
 	// add style to formatter
 	out.GetFormatter().SetStyle("fire", *s)

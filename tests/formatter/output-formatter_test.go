@@ -159,13 +159,13 @@ func TestNewStyle(t *testing.T) {
 	format := formatter.NewOutputFormatter()
 	format.SetDecorated(true)
 
-	s1 := formatter.NewOutputFormatterStyle(color.BLUE, color.WHITE, nil)
+	s1 := formatter.NewOutputFormatterStyle(color.Blue, color.White, nil)
 	format.SetStyle("test", *s1)
 
 	assert.Equal(t, s1, format.GetStyle("test"))
 	assert.NotEqual(t, s1, format.GetStyle("info"))
 
-	s2 := formatter.NewOutputFormatterStyle(color.BLUE, color.WHITE, nil)
+	s2 := formatter.NewOutputFormatterStyle(color.Blue, color.White, nil)
 	format.SetStyle("b", *s2)
 
 	assert.Equal(
@@ -179,7 +179,7 @@ func TestRedefineStyle(t *testing.T) {
 	format := formatter.NewOutputFormatter()
 	format.SetDecorated(true)
 
-	s := formatter.NewOutputFormatterStyle(color.BLUE, color.WHITE, nil)
+	s := formatter.NewOutputFormatterStyle(color.Blue, color.White, nil)
 	format.SetStyle("info", *s)
 
 	assert.Equal(

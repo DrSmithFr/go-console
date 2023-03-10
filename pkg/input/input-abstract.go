@@ -140,9 +140,9 @@ func (i *abstractInput) GetOption(name string) string {
 		return val
 	}
 
-	// TODO find a better way to handle option.NONE
+	// TODO find a better way to handle option.None
 	if !opt.AcceptValue() {
-		return option.UNDEFINED
+		return option.Undefined
 	}
 
 	return opt.GetDefault()

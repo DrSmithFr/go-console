@@ -28,22 +28,22 @@ func NewConsoleCommand() *GoStyler {
 	io.
 		AddInputOption(
 			option.
-				New("quiet", option.NONE).
+				New("quiet", option.None).
 				SetShortcut("q"),
 		).
 		AddInputOption(
 			option.
-				New("verbose", option.NONE).
+				New("verbose", option.None).
 				SetShortcut("v"),
 		).
 		AddInputOption(
 			option.
-				New("very-verbose", option.NONE).
+				New("very-verbose", option.None).
 				SetShortcut("vv"),
 		).
 		AddInputOption(
 			option.
-				New("debug", option.NONE).
+				New("debug", option.None).
 				SetShortcut("vvv"),
 		)
 
@@ -136,13 +136,13 @@ func (g *GoStyler) validateInput() *GoStyler {
 func (g *GoStyler) findOutputVerbosity() *GoStyler {
 	level := verbosity.Normal
 
-	if g.in.GetOption("quiet") == option.DEFINED {
+	if g.in.GetOption("quiet") == option.Defined {
 		level = verbosity.Quiet
-	} else if g.in.GetOption("verbose") == option.DEFINED {
+	} else if g.in.GetOption("verbose") == option.Defined {
 		level = verbosity.Verbose
-	} else if g.in.GetOption("very-verbose") == option.DEFINED {
+	} else if g.in.GetOption("very-verbose") == option.Defined {
 		level = verbosity.VeryVerbose
-	} else if g.in.GetOption("debug") == option.DEFINED {
+	} else if g.in.GetOption("debug") == option.Defined {
 		level = verbosity.Debug
 	}
 

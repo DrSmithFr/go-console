@@ -33,7 +33,7 @@ func NewComfirmation(question string) *QuestionConfirmation {
 
 	q.question = question
 
-	q.defaultAnswer = answers.NONE
+	q.defaultAnswer = answers.None
 	q.errorMessage = "Value '%s' is invalid. yes or no is expected."
 
 	norm := q.GetDefaultNormalizer()
@@ -68,11 +68,11 @@ func (q *QuestionConfirmation) GetDefaultNormalizer() normalizer.Normalizer {
 		}
 
 		if q.GetYesRegex().MatchString(answer) {
-			return answers.YES
+			return answers.Yes
 		}
 
 		if q.GetNoRegex().MatchString(answer) {
-			return answers.NO
+			return answers.No
 		}
 
 		return answer

@@ -7,15 +7,15 @@ import (
 )
 
 func TestForeground(t *testing.T) {
-	assert.Equal(t, color.NewColor(30, 39), color.GetForegroundColor(color.BLACK))
-	assert.Equal(t, color.NewColor(31, 39), color.GetForegroundColor(color.RED))
-	assert.Equal(t, color.NewColor(32, 39), color.GetForegroundColor(color.GREEN))
-	assert.Equal(t, color.NewColor(33, 39), color.GetForegroundColor(color.YELLOW))
-	assert.Equal(t, color.NewColor(34, 39), color.GetForegroundColor(color.BLUE))
-	assert.Equal(t, color.NewColor(35, 39), color.GetForegroundColor(color.MAGENTA))
-	assert.Equal(t, color.NewColor(36, 39), color.GetForegroundColor(color.CYAN))
-	assert.Equal(t, color.NewColor(37, 39), color.GetForegroundColor(color.WHITE))
-	assert.Equal(t, color.NewColor(39, 39), color.GetForegroundColor(color.DEFAULT))
+	assert.Equal(t, color.NewColor(30, 39), color.GetForegroundColor(color.Black))
+	assert.Equal(t, color.NewColor(31, 39), color.GetForegroundColor(color.Red))
+	assert.Equal(t, color.NewColor(32, 39), color.GetForegroundColor(color.Green))
+	assert.Equal(t, color.NewColor(33, 39), color.GetForegroundColor(color.Yellow))
+	assert.Equal(t, color.NewColor(34, 39), color.GetForegroundColor(color.Blue))
+	assert.Equal(t, color.NewColor(35, 39), color.GetForegroundColor(color.Magenta))
+	assert.Equal(t, color.NewColor(36, 39), color.GetForegroundColor(color.Cyan))
+	assert.Equal(t, color.NewColor(37, 39), color.GetForegroundColor(color.White))
+	assert.Equal(t, color.NewColor(39, 39), color.GetForegroundColor(color.Default))
 
 	assert.Panics(t, func() {
 		color.GetForegroundColor("undefined-color")

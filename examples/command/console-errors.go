@@ -12,11 +12,11 @@ func main() {
 		NewConsoleCommand().
 		AddInputArgument(
 			argument.
-				New("name", argument.REQUIRED),
+				New("name", argument.Required),
 		).
 		AddInputOption(
 			option.
-				New("foo", option.NONE).
+				New("foo", option.None).
 				SetShortcut("f"),
 		).
 		Build()

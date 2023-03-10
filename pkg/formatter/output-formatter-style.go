@@ -37,7 +37,7 @@ type OutputFormatterStyle struct {
 
 // Sets style foreground color.
 func (style *OutputFormatterStyle) SetForeground(name string) {
-	if color.NULL == name {
+	if color.Null == name {
 		style.foreground = nil
 		return
 	}
@@ -48,7 +48,7 @@ func (style *OutputFormatterStyle) SetForeground(name string) {
 
 // Sets style background color.
 func (style *OutputFormatterStyle) SetBackground(name string) {
-	if color.NULL == name {
+	if color.Null == name {
 		style.background = nil
 		return
 	}

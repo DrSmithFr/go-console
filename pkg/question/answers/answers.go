@@ -1,7 +1,7 @@
 package answers
 
 const (
-	YES  = "yes"
-	NO   = "no"
-	NONE = "none"
+	Yes  = "yes"
+	No   = "no"
+	None = "none"
 )

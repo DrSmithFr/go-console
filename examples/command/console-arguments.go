@@ -24,18 +24,18 @@ func main() {
 		NewConsoleCommand().
 		AddInputArgument(
 			argument.
-				New("name", argument.REQUIRED),
+				New("name", argument.Required),
 		).
 		AddInputOption(
 			option.
-				New("foo", option.NONE).
+				New("foo", option.None).
 				SetShortcut("f"),
 		).
 		Build()
 
 	name := io.GetInput().GetArgument("name")
 
-	if option.DEFINED == io.GetInput().GetOption("foo") {
+	if option.Defined == io.GetInput().GetOption("foo") {
 		io.Success(fmt.Sprintf("Hello %s, foo option is set", name))
 	} else {
 		io.Warning(fmt.Sprintf("Hello %s, foo option not set", name))

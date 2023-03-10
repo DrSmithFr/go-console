@@ -14,12 +14,12 @@ func NewOutputFormatter() *OutputFormatter {
 		styleStack:  NewOutputFormatterStyleStack(nil),
 	}
 
-	formatter.SetStyle("error", *NewOutputFormatterStyle(color.WHITE, color.RED, nil))
-	formatter.SetStyle("info", *NewOutputFormatterStyle(color.GREEN, color.NULL, nil))
-	formatter.SetStyle("comment", *NewOutputFormatterStyle(color.YELLOW, color.NULL, nil))
-	formatter.SetStyle("question", *NewOutputFormatterStyle(color.BLACK, color.CYAN, nil))
-	formatter.SetStyle("b", *NewOutputFormatterStyle(color.NULL, color.NULL, []string{color.BOLD}))
-	formatter.SetStyle("u", *NewOutputFormatterStyle(color.NULL, color.NULL, []string{color.UNDERSCORE}))
+	formatter.SetStyle("error", *NewOutputFormatterStyle(color.White, color.Red, nil))
+	formatter.SetStyle("info", *NewOutputFormatterStyle(color.Green, color.Null, nil))
+	formatter.SetStyle("comment", *NewOutputFormatterStyle(color.Yellow, color.Null, nil))
+	formatter.SetStyle("question", *NewOutputFormatterStyle(color.Black, color.Cyan, nil))
+	formatter.SetStyle("b", *NewOutputFormatterStyle(color.Null, color.Null, []string{color.Bold}))
+	formatter.SetStyle("u", *NewOutputFormatterStyle(color.Null, color.Null, []string{color.Underscore}))
 
 	return formatter
 }
@@ -227,7 +227,7 @@ func (o *OutputFormatter) createStyleFromString(text string) *OutputFormatterSty
 		return nil
 	}
 
-	style := NewOutputFormatterStyle(color.DEFAULT, color.DEFAULT, nil)
+	style := NewOutputFormatterStyle(color.Default, color.Default, nil)
 
 	for _, match := range matches {
 		match = match[1:]

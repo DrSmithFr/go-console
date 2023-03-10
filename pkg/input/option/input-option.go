@@ -9,23 +9,23 @@ import (
 )
 
 const (
-	DEFAULT = NONE
+	Default = None
 
-	NONE     = 1
-	REQUIRED = 2
-	OPTIONAL = 4
-	IS_ARRAY = 8
+	None     = 1
+	Required = 2
+	Optional = 4
+	List     = 8
 )
 
 const (
-	DEFINED   = "true"
-	UNDEFINED = "false"
+	Defined   = "true"
+	Undefined = "false"
 )
 
 // constructor
 func New(
 	name string, // The option name
-	mode int, // The option mode: One of the option constants (default: NONE)
+	mode int, // The option mode: One of the option constants (default: None)
 ) *InputOption {
 	if "--" == name[:2] {
 		name = name[2:]
@@ -49,7 +49,7 @@ func New(
 	}
 
 	if opt.IsArray() && !opt.AcceptValue() {
-		panic(errors.New("impossible to have an option mode IS_ARRAY if the option does not accept a value"))
+		panic(errors.New("impossible to have an option mode List if the option does not accept a value"))
 	}
 
 	return opt
@@ -109,22 +109,22 @@ func (a *InputOption) AcceptValue() bool {
 
 // returns true if the option requires a value.
 func (a *InputOption) IsValueRequired() bool {
-	return REQUIRED == (REQUIRED & a.mode)
+	return Required == (Required & a.mode)
 }
 
 // returns true if the option takes an optional value.
 func (a *InputOption) IsValueNone() bool {
-	return NONE == (NONE & a.mode)
+	return None == (None & a.mode)
 }
 
 // returns true if the option takes an optional value.
 func (a *InputOption) IsValueOptional() bool {
-	return OPTIONAL == (OPTIONAL & a.mode)
+	return Optional == (Optional & a.mode)
 }
 
 // returns true if the option takes an optional value.
 func (a *InputOption) IsArray() bool {
-	return IS_ARRAY == (IS_ARRAY & a.mode)
+	return List == (List & a.mode)
 }
 
 // Sets the default value.
@@ -143,12 +143,12 @@ func (a *InputOption) SetDefault(defaultValue string) *InputOption {
 
 // Sets the default value for array options
 func (a *InputOption) SetDefaults(values []string) *InputOption {
-	if NONE == (NONE&a.mode) && 0 != len(values) {
+	if None == (None&a.mode) && 0 != len(values) {
 		panic(errors.New("cannot set default values when using InputOption::VALUE_NONE mode"))
 	}
 
 	if !a.IsArray() {
-		panic(errors.New("cannot use SetDefaults() except for InputOption::IS_ARRAY mode, use SetDefaultAnswer() instead"))
+		panic(errors.New("cannot use SetDefaults() except for InputOption::List mode, use SetDefaultAnswer() instead"))
 	}
 
 	a.defaultValues = values
@@ -159,7 +159,7 @@ func (a *InputOption) SetDefaults(values []string) *InputOption {
 // Returns the default value.
 func (a *InputOption) GetDefault() string {
 	if a.IsArray() {
-		panic(errors.New("cannot use GetDefaultAnswer() for InputOption::IS_ARRAY mode, use GetDefaults() instead"))
+		panic(errors.New("cannot use GetDefaultAnswer() for InputOption::List mode, use GetDefaults() instead"))
 	}
 
 	return a.defaultValue
@@ -168,7 +168,7 @@ func (a *InputOption) GetDefault() string {
 // Returns the defaults value.
 func (a *InputOption) GetDefaults() []string {
 	if !a.IsArray() {
-		panic(errors.New("cannot use GetDefaults() except for InputOption::IS_ARRAY, use GetDefaultAnswer() instead"))
+		panic(errors.New("cannot use GetDefaults() except for InputOption::List, use GetDefaultAnswer() instead"))
 	}
 
 	return a.defaultValues

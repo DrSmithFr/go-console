@@ -9,27 +9,27 @@ import (
 )
 
 var arguments = map[string]argument.InputArgument{
-	"foo":  *argument.New("foo", argument.OPTIONAL),
-	"bar":  *argument.New("bar", argument.OPTIONAL),
-	"foo1": *argument.New("foo", argument.OPTIONAL),
-	"foo2": *argument.New("foo2", argument.REQUIRED),
+	"foo":  *argument.New("foo", argument.Optional),
+	"bar":  *argument.New("bar", argument.Optional),
+	"foo1": *argument.New("foo", argument.Optional),
+	"foo2": *argument.New("foo2", argument.Required),
 }
 
 var options = map[string]option.InputOption{
 	"foo": *option.
-		New("foo", option.OPTIONAL).
+		New("foo", option.Optional).
 		SetShortcut("f"),
 	"bar": *option.
-		New("bar", option.OPTIONAL).
+		New("bar", option.Optional).
 		SetShortcut("b"),
 	"foo1": *option.
-		New("fooBis", option.OPTIONAL).
+		New("fooBis", option.Optional).
 		SetShortcut("f"),
 	"foo2": *option.
-		New("foo", option.OPTIONAL).
+		New("foo", option.Optional).
 		SetShortcut("p"),
 	"multi": *option.
-		New("multi", option.OPTIONAL).
+		New("multi", option.Optional).
 		SetShortcut("m|mm|mmm"),
 }
 
@@ -134,8 +134,8 @@ func TestArrayArgumentHasToBeLast(t *testing.T) {
 	assert.Panics(t, func() {
 		definition.
 			New().
-			AddArgument(*argument.New("fooarray", argument.IS_ARRAY)).
-			AddArgument(*argument.New("anotherbar", argument.OPTIONAL))
+			AddArgument(*argument.New("fooarray", argument.List)).
+			AddArgument(*argument.New("anotherbar", argument.Optional))
 	})
 }
 
@@ -203,14 +203,14 @@ func TestGetArgumentDefaults(t *testing.T) {
 		New().
 		SetArguments([]argument.InputArgument{
 			*argument.
-				New("foo1", argument.OPTIONAL),
+				New("foo1", argument.Optional),
 
 			*argument.
-				New("foo2", argument.OPTIONAL).
+				New("foo2", argument.Optional).
 				SetDefault("default"),
 
 			*argument.
-				New("foo3", argument.OPTIONAL|argument.IS_ARRAY),
+				New("foo3", argument.Optional|argument.List),
 		})
 
 	validation := map[string][]string{
@@ -228,7 +228,7 @@ func TestGetArgumentDefaults(t *testing.T) {
 		New().
 		SetArguments([]argument.InputArgument{
 			*argument.
-				New("foo4", argument.OPTIONAL|argument.IS_ARRAY).
+				New("foo4", argument.Optional|argument.List).
 				SetDefaults([]string{"1", "2"}),
 		})
 
@@ -412,27 +412,27 @@ func TestGetOptionDefaults(t *testing.T) {
 		New().
 		SetOptions([]option.InputOption{
 			*option.
-				New("foo1", option.NONE),
+				New("foo1", option.None),
 
 			*option.
-				New("foo2", option.REQUIRED),
+				New("foo2", option.Required),
 
 			*option.
-				New("foo3", option.REQUIRED).
+				New("foo3", option.Required).
 				SetDefault("default"),
 
 			*option.
-				New("foo4", option.OPTIONAL),
+				New("foo4", option.Optional),
 
 			*option.
-				New("foo5", option.OPTIONAL).
+				New("foo5", option.Optional).
 				SetDefault("default"),
 
 			*option.
-				New("foo6", option.OPTIONAL|option.IS_ARRAY),
+				New("foo6", option.Optional|option.List),
 
 			*option.
-				New("foo7", option.OPTIONAL|option.IS_ARRAY).
+				New("foo7", option.Optional|option.List).
 				SetDefaults([]string{"1", "2"}),
 		})
 
@@ -473,7 +473,7 @@ func getSynopticPattern() []synopticPattern {
 		{
 			definition: *definition.
 				New().
-				AddOption(*option.New("foo", option.NONE)),
+				AddOption(*option.New("foo", option.None)),
 			synoptic: "[--foo]",
 			message:  "puts optional options in square brackets",
 		},
@@ -482,7 +482,7 @@ func getSynopticPattern() []synopticPattern {
 				New().
 				AddOption(
 					*option.
-						New("foo", option.NONE).
+						New("foo", option.None).
 						SetShortcut("f"),
 				),
 			synoptic: "[-f|--foo]",
@@ -493,7 +493,7 @@ func getSynopticPattern() []synopticPattern {
 				New().
 				AddOption(
 					*option.
-						New("foo", option.REQUIRED).
+						New("foo", option.Required).
 						SetShortcut("f"),
 				),
 			synoptic: "[-f|--foo FOO]",
@@ -504,7 +504,7 @@ func getSynopticPattern() []synopticPattern {
 				New().
 				AddOption(
 					*option.
-						New("foo", option.OPTIONAL).
+						New("foo", option.Optional).
 						SetShortcut("f"),
 				),
 			synoptic: "[-f|--foo [FOO]]",
@@ -517,7 +517,7 @@ func getSynopticPattern() []synopticPattern {
 				New().
 				AddArgument(
 					*argument.
-						New("foo", argument.REQUIRED),
+						New("foo", argument.Required),
 				),
 			synoptic: "<foo>",
 			message:  "puts arguments in angle brackets",
@@ -527,7 +527,7 @@ func getSynopticPattern() []synopticPattern {
 				New().
 				AddArgument(
 					*argument.
-						New("foo", argument.OPTIONAL),
+						New("foo", argument.Optional),
 				),
 			synoptic: "[<foo>]",
 			message:  "puts optional arguments in square brackets",
@@ -537,11 +537,11 @@ func getSynopticPattern() []synopticPattern {
 				New().
 				AddArgument(
 					*argument.
-						New("foo", argument.OPTIONAL),
+						New("foo", argument.Optional),
 				).
 				AddArgument(
 					*argument.
-						New("bar", argument.OPTIONAL),
+						New("bar", argument.Optional),
 				),
 			synoptic: "[<foo> [<bar>]]",
 			message:  "chains optional arguments inside brackets",
@@ -551,7 +551,7 @@ func getSynopticPattern() []synopticPattern {
 				New().
 				AddArgument(
 					*argument.
-						New("foo", argument.IS_ARRAY),
+						New("foo", argument.List),
 				),
 			synoptic: "[<foo>...]",
 			message:  "uses an ellipsis for array arguments",
@@ -561,7 +561,7 @@ func getSynopticPattern() []synopticPattern {
 				New().
 				AddArgument(
 					*argument.
-						New("foo", argument.IS_ARRAY|argument.REQUIRED),
+						New("foo", argument.List|argument.Required),
 				),
 			synoptic: "<foo>...",
 			message:  "uses an ellipsis for required array arguments",
@@ -571,10 +571,10 @@ func getSynopticPattern() []synopticPattern {
 		{
 			definition: *definition.
 				New().
-				AddOption(*option.New("foo", option.NONE)).
+				AddOption(*option.New("foo", option.None)).
 				AddArgument(
 					*argument.
-						New("foo", argument.REQUIRED),
+						New("foo", argument.Required),
 				),
 			synoptic: "[--foo] [--] <foo>",
 			message:  "puts [--] between options and arguments",
