@@ -2,19 +2,6 @@ package table
 
 import "sort"
 
-type TableDataInterface interface {
-	SetRows(lines map[int]TableRowInterface) *TableData
-	GetRows() map[int]TableRowInterface
-
-	GetRowsSortedKeys() []int
-
-	SetRow(index int, row TableRowInterface) *TableData
-	GetRow(index int) TableRowInterface
-
-	GetColumnsAsList() []TableColumnInterface
-	GetCellsAsList() []TableCellInterface
-}
-
 type TableData struct {
 	rows map[int]TableRowInterface
 }
@@ -46,9 +33,7 @@ func MergeData(datas ...*TableData) *TableData {
 	return mergedData
 }
 
-var _ TableDataInterface = (*TableData)(nil)
-
-// Implements TableDataInterface.
+// Getters and setters.
 
 func (t *TableData) SetRows(lines map[int]TableRowInterface) *TableData {
 	t.rows = lines

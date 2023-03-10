@@ -25,10 +25,6 @@ const (
 	columnOutside columnType = 1
 )
 
-type TableRenderInterface interface {
-	GetColumnStyle(column int) TableStyleInterface
-}
-
 type TableRender struct {
 	content *Table
 
@@ -68,9 +64,7 @@ func NewRender(output output.OutputInterface) *TableRender {
 	return t
 }
 
-// Implement TableInterface
-
-var _ TableRenderInterface = (*TableRender)(nil)
+// Getter and setter for the table content
 
 func (t *TableRender) GetColumnStyle(column int) TableStyleInterface {
 	if t.columnsStyles[column] != nil {
