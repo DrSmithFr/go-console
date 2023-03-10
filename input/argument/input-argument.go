@@ -43,7 +43,7 @@ type InputArgument struct {
 }
 
 // Returns the argument name.
-func (a *InputArgument) GetName() string {
+func (a *InputArgument) Name() string {
 	return a.name
 }
 
@@ -87,25 +87,25 @@ func (a *InputArgument) SetDefaults(values []string) *InputArgument {
 }
 
 // Returns the default value.
-func (a *InputArgument) GetDefault() string {
+func (a *InputArgument) Default() string {
 	if a.IsList() {
-		panic(errors.New("cannot use GetDefaultAnswer() for InputArgument::List mode, use GetDefaults() instead"))
+		panic(errors.New("cannot use GetDefaultAnswer() for InputArgument::List mode, use Defaults() instead"))
 	}
 
 	return a.defaultValue
 }
 
 // Returns the defaults value.
-func (a *InputArgument) GetDefaults() []string {
+func (a *InputArgument) Defaults() []string {
 	if !a.IsList() {
-		panic(errors.New("cannot use GetDefaults() except for InputArgument::List, use GetDefaultAnswer() instead"))
+		panic(errors.New("cannot use Defaults() except for InputArgument::List, use GetDefaultAnswer() instead"))
 	}
 
 	return a.defaultValues
 }
 
 // Returns the description text
-func (a *InputArgument) GetDescription() string {
+func (a *InputArgument) Description() string {
 	return a.description
 }
 

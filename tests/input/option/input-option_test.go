@@ -8,10 +8,10 @@ import (
 
 func TestConstructor(t *testing.T) {
 	opt1 := option.New("foo", option.Optional)
-	assert.Equal(t, "foo", opt1.GetName())
+	assert.Equal(t, "foo", opt1.Name())
 
 	opt2 := option.New("--foo", option.Optional)
-	assert.Equal(t, "foo", opt2.GetName())
+	assert.Equal(t, "foo", opt2.Name())
 }
 
 func TestArrayModeWithoutValue(t *testing.T) {
@@ -25,33 +25,33 @@ func TestShortcut(t *testing.T) {
 	opt1 := option.New("foo", option.Optional).
 		SetShortcut("f")
 
-	assert.Equal(t, "f", opt1.GetShortcut())
+	assert.Equal(t, "f", opt1.Shortcut())
 
 	opt2 := option.New("foo", option.Optional).
 		SetShortcut("-f|-ff|fff")
 
-	assert.Equal(t, "f|ff|fff", opt2.GetShortcut())
+	assert.Equal(t, "f|ff|fff", opt2.Shortcut())
 
 	opt3 := option.New("foo", option.Optional)
-	assert.Equal(t, "", opt3.GetShortcut())
+	assert.Equal(t, "", opt3.Shortcut())
 }
 
 func TestModes(t *testing.T) {
 	opt2 := option.New("foo", option.None)
 
-	assert.False(t, opt2.AcceptValue())
+	assert.False(t, opt2.IsAcceptValue())
 	assert.False(t, opt2.IsValueRequired())
 	assert.False(t, opt2.IsValueOptional())
 
 	opt3 := option.New("foo", option.Required)
 
-	assert.True(t, opt3.AcceptValue())
+	assert.True(t, opt3.IsAcceptValue())
 	assert.True(t, opt3.IsValueRequired())
 	assert.False(t, opt3.IsValueOptional())
 
 	opt4 := option.New("foo", option.Optional)
 
-	assert.True(t, opt4.AcceptValue())
+	assert.True(t, opt4.IsAcceptValue())
 	assert.False(t, opt4.IsValueRequired())
 	assert.True(t, opt4.IsValueOptional())
 }
@@ -92,7 +92,7 @@ func TestIsList(t *testing.T) {
 func TestGetDescription(t *testing.T) {
 	opt1 := option.New("foo", option.Optional|option.List).
 		SetDescription("Some description")
-	assert.Equal(t, "Some description", opt1.GetDescription())
+	assert.Equal(t, "Some description", opt1.Description())
 
 }
 
@@ -100,18 +100,18 @@ func TestGetDefault(t *testing.T) {
 	opt1 := option.New("foo", option.Optional).
 		SetDefault("default")
 
-	assert.Equal(t, "default", opt1.GetDefault())
+	assert.Equal(t, "default", opt1.Default())
 
 	opt2 := option.New("foo", option.Required).
 		SetDefault("default")
 
-	assert.Equal(t, "default", opt2.GetDefault())
+	assert.Equal(t, "default", opt2.Default())
 
 	opt3 := option.New("foo", option.Required)
-	assert.Equal(t, "", opt3.GetDefault())
+	assert.Equal(t, "", opt3.Default())
 
 	opt4 := option.New("foo", option.None)
-	assert.Equal(t, "", opt4.GetDefault())
+	assert.Equal(t, "", opt4.Default())
 }
 
 func TestSetDefaultsOnNoneOption(t *testing.T) {

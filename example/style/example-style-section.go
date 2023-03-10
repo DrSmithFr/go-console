@@ -12,5 +12,5 @@ func main() {
 	io.SetMaxLineLength(80)
 
 	// use simple strings for short messages
-	io.Section("Lorem ipsum dolor sit amet")
+	io.PrintSection("Lorem ipsum dolor sit amet")
 }

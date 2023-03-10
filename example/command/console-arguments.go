@@ -30,41 +30,41 @@ func main() {
 		).
 		Build()
 
-	name := io.GetInput().GetArgument("name")
+	name := io.Input().Argument("name")
 
-	if option.Defined == io.GetInput().GetOption("foo") {
-		io.Success(fmt.Sprintf("Hello %s, foo option is set", name))
+	if option.Defined == io.Input().Option("foo") {
+		io.PrintSuccess(fmt.Sprintf("Hello %s, foo option is set", name))
 	} else {
-		io.Warning(fmt.Sprintf("Hello %s, foo option not set", name))
+		io.PrintWarning(fmt.Sprintf("Hello %s, foo option not set", name))
 	}
 
 	//
 	// Easy way to style your program
 	//
 
-	io.Title("Starting console")
+	io.PrintTitle("Starting console")
 
-	io.Note(
+	io.PrintNote(
 		fmt.Sprintf(
 			"name argument value '%s'",
-			io.GetInput().GetArgument("name"),
+			io.Input().Argument("name"),
 		),
 	)
 
-	io.Texts([]string{
+	io.PrintTexts([]string{
 		"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
 		"<comment>Lorem ipsum dolor sit amet</comment>, <info>consectetur adipiscing elit.</info>",
 		"<b>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b>",
 		"<b>Lorem ipsum dolor sit amet, <u>consectetur adipiscing elit</u>.</b>",
 	})
 
-	io.Caution("This is a caution")
+	io.PrintCaution("This is a caution")
 
 	//
 	// Easy User Interaction
 	//
 
-	qh := question.NewHelper(os.Stdin, io.GetOutput())
+	qh := question.NewHelper(os.Stdin, io.Output())
 
 	// Simple question with default answer
 	firstname := qh.Ask(
@@ -93,7 +93,7 @@ func main() {
 			}),
 	)
 
-	io.Texts([]string{
+	io.PrintTexts([]string{
 		" ",
 		" ",
 		" ",
@@ -205,7 +205,7 @@ func main() {
 			},
 		)
 
-	render := table.NewRender(io.GetOutput()).
+	render := table.NewRender(io.Output()).
 		SetContent(tab)
 
 	render.SetColumnsMinWidths(map[int]int{

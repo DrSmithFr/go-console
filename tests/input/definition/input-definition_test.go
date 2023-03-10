@@ -30,8 +30,8 @@ var options = map[string]option.InputOption{
 
 func TestConstructorArguments(t *testing.T) {
 	def1 := definition.New()
-	assert.Equal(t, map[string]argument.InputArgument{}, def1.GetArguments())
-	assert.Equal(t, map[string]option.InputOption{}, def1.GetOptions())
+	assert.Equal(t, map[string]argument.InputArgument{}, def1.Arguments())
+	assert.Equal(t, map[string]option.InputOption{}, def1.Options())
 }
 
 func TestSetArguments(t *testing.T) {
@@ -45,7 +45,7 @@ func TestSetArguments(t *testing.T) {
 		map[string]argument.InputArgument{
 			"foo": arguments["foo"],
 		},
-		def.GetArguments(),
+		def.Arguments(),
 	)
 
 	def.SetArguments([]argument.InputArgument{
@@ -57,7 +57,7 @@ func TestSetArguments(t *testing.T) {
 		map[string]argument.InputArgument{
 			"bar": arguments["bar"],
 		},
-		def.GetArguments(),
+		def.Arguments(),
 	)
 }
 
@@ -72,7 +72,7 @@ func TestAddArguments(t *testing.T) {
 		map[string]argument.InputArgument{
 			"foo": arguments["foo"],
 		},
-		def.GetArguments(),
+		def.Arguments(),
 	)
 
 	def.AddArguments([]argument.InputArgument{
@@ -85,7 +85,7 @@ func TestAddArguments(t *testing.T) {
 			"foo": arguments["foo"],
 			"bar": arguments["bar"],
 		},
-		def.GetArguments(),
+		def.Arguments(),
 	)
 }
 
@@ -98,7 +98,7 @@ func TestAddArgument(t *testing.T) {
 		map[string]argument.InputArgument{
 			"foo": arguments["foo"],
 		},
-		def.GetArguments(),
+		def.Arguments(),
 	)
 
 	def.AddArgument(arguments["bar"])
@@ -109,7 +109,7 @@ func TestAddArgument(t *testing.T) {
 			"foo": arguments["foo"],
 			"bar": arguments["bar"],
 		},
-		def.GetArguments(),
+		def.Arguments(),
 	)
 }
 
@@ -141,14 +141,14 @@ func TestGetArgument(t *testing.T) {
 	def := definition.New().
 		AddArgument(arguments["foo"])
 
-	assert.Equal(t, arguments["foo"], *def.GetArgument("foo"))
+	assert.Equal(t, arguments["foo"], *def.Argument("foo"))
 }
 
 func TestGetInvalidArgument(t *testing.T) {
 	assert.Panics(t, func() {
 		definition.New().
 			AddArgument(arguments["foo"]).
-			GetArgument("bar")
+			Argument("bar")
 	})
 }
 
@@ -164,22 +164,22 @@ func TestGetArgumentRequiredCount(t *testing.T) {
 	def := definition.New().
 		AddArgument(arguments["foo2"])
 
-	assert.Equal(t, 1, def.GetArgumentRequiredCount())
+	assert.Equal(t, 1, def.ArgumentRequiredCount())
 
 	def.AddArgument(arguments["foo"])
 
-	assert.Equal(t, 1, def.GetArgumentRequiredCount())
+	assert.Equal(t, 1, def.ArgumentRequiredCount())
 }
 
 func TestGetArgumentCount(t *testing.T) {
 	def := definition.New().
 		AddArgument(arguments["foo2"])
 
-	assert.Equal(t, 1, def.GetArgumentCount())
+	assert.Equal(t, 1, def.ArgumentCount())
 
 	def.AddArgument(arguments["foo"])
 
-	assert.Equal(t, 2, def.GetArgumentCount())
+	assert.Equal(t, 2, def.ArgumentCount())
 }
 
 func TestGetArgumentDefaults(t *testing.T) {
@@ -200,9 +200,9 @@ func TestGetArgumentDefaults(t *testing.T) {
 		"foo4": {"1", "2"},
 	}
 
-	assert.Equal(t, validation["foo1"], def.GetArgumentDefaults()["foo1"])
-	assert.Equal(t, validation["foo2"], def.GetArgumentDefaults()["foo2"])
-	assert.Equal(t, validation["foo3"], def.GetArgumentDefaults()["foo3"])
+	assert.Equal(t, validation["foo1"], def.ArgumentDefaults()["foo1"])
+	assert.Equal(t, validation["foo2"], def.ArgumentDefaults()["foo2"])
+	assert.Equal(t, validation["foo3"], def.ArgumentDefaults()["foo3"])
 
 	def2 := definition.New().
 		SetArguments([]argument.InputArgument{
@@ -210,7 +210,7 @@ func TestGetArgumentDefaults(t *testing.T) {
 				SetDefaults([]string{"1", "2"}),
 		})
 
-	assert.Equal(t, validation["foo4"], def2.GetArgumentDefaults()["foo4"])
+	assert.Equal(t, validation["foo4"], def2.ArgumentDefaults()["foo4"])
 }
 
 func TestSetOptions(t *testing.T) {
@@ -224,7 +224,7 @@ func TestSetOptions(t *testing.T) {
 		map[string]option.InputOption{
 			"foo": options["foo"],
 		},
-		def.GetOptions(),
+		def.Options(),
 	)
 
 	def.SetOptions([]option.InputOption{
@@ -236,7 +236,7 @@ func TestSetOptions(t *testing.T) {
 		map[string]option.InputOption{
 			"bar": options["bar"],
 		},
-		def.GetOptions(),
+		def.Options(),
 	)
 }
 
@@ -246,7 +246,7 @@ func TestSetOptionsClearsOptions(t *testing.T) {
 			SetOptions([]option.InputOption{
 				options["bar"],
 			}).
-			GetOptionForShortcut("f")
+			FindOptionForShortcut("f")
 	})
 }
 
@@ -261,7 +261,7 @@ func TestAddOptions(t *testing.T) {
 		map[string]option.InputOption{
 			"foo": options["foo"],
 		},
-		def.GetOptions(),
+		def.Options(),
 	)
 
 	def.AddOptions([]option.InputOption{
@@ -274,7 +274,7 @@ func TestAddOptions(t *testing.T) {
 			"foo": options["foo"],
 			"bar": options["bar"],
 		},
-		def.GetOptions(),
+		def.Options(),
 	)
 }
 
@@ -287,7 +287,7 @@ func TestAddOption(t *testing.T) {
 		map[string]option.InputOption{
 			"foo": options["foo"],
 		},
-		def.GetOptions(),
+		def.Options(),
 	)
 
 	def.AddOption(options["bar"])
@@ -298,7 +298,7 @@ func TestAddOption(t *testing.T) {
 			"foo": options["foo"],
 			"bar": options["bar"],
 		},
-		def.GetOptions(),
+		def.Options(),
 	)
 }
 
@@ -322,14 +322,14 @@ func TestGetOption(t *testing.T) {
 	def := definition.New().
 		AddOption(options["foo"])
 
-	assert.Equal(t, options["foo"], *def.GetOption("foo"))
+	assert.Equal(t, options["foo"], *def.Option("foo"))
 }
 
 func TestGetInvalidOption(t *testing.T) {
 	assert.Panics(t, func() {
 		definition.New().
 			AddOption(options["foo"]).
-			GetOption("bar")
+			Option("bar")
 	})
 }
 
@@ -353,22 +353,22 @@ func TestGetOptionForShortcut(t *testing.T) {
 	def := definition.New().
 		AddOption(options["foo"])
 
-	assert.Equal(t, options["foo"], *def.GetOptionForShortcut("f"))
+	assert.Equal(t, options["foo"], *def.FindOptionForShortcut("f"))
 }
 
 func TestGetOptionForMultiShortcut(t *testing.T) {
 	def := definition.New().
 		AddOption(options["multi"])
 
-	assert.Equal(t, options["multi"], *def.GetOptionForShortcut("m"))
-	assert.Equal(t, options["multi"], *def.GetOptionForShortcut("mm"))
-	assert.Equal(t, options["multi"], *def.GetOptionForShortcut("mmm"))
+	assert.Equal(t, options["multi"], *def.FindOptionForShortcut("m"))
+	assert.Equal(t, options["multi"], *def.FindOptionForShortcut("mm"))
+	assert.Equal(t, options["multi"], *def.FindOptionForShortcut("mmm"))
 }
 
 func TestGetOptionForInvalidShortcut(t *testing.T) {
 	assert.Panics(t, func() {
 		definition.New().
-			GetOptionForShortcut("l")
+			FindOptionForShortcut("l")
 	})
 }
 
@@ -403,18 +403,18 @@ func TestGetOptionDefaults(t *testing.T) {
 		"foo7": {"1", "2"},
 	}
 
-	assert.Equal(t, validation["foo1"], def.GetOptionDefaults()["foo1"])
-	assert.Equal(t, validation["foo2"], def.GetOptionDefaults()["foo2"])
-	assert.Equal(t, validation["foo3"], def.GetOptionDefaults()["foo3"])
-	assert.Equal(t, validation["foo4"], def.GetOptionDefaults()["foo4"])
-	assert.Equal(t, validation["foo5"], def.GetOptionDefaults()["foo5"])
-	assert.Equal(t, validation["foo6"], def.GetOptionDefaults()["foo6"])
-	assert.Equal(t, validation["foo7"], def.GetOptionDefaults()["foo7"])
+	assert.Equal(t, validation["foo1"], def.OptionDefaults()["foo1"])
+	assert.Equal(t, validation["foo2"], def.OptionDefaults()["foo2"])
+	assert.Equal(t, validation["foo3"], def.OptionDefaults()["foo3"])
+	assert.Equal(t, validation["foo4"], def.OptionDefaults()["foo4"])
+	assert.Equal(t, validation["foo5"], def.OptionDefaults()["foo5"])
+	assert.Equal(t, validation["foo6"], def.OptionDefaults()["foo6"])
+	assert.Equal(t, validation["foo7"], def.OptionDefaults()["foo7"])
 }
 
 func TestGetSynopsis(t *testing.T) {
 	for _, pattern := range getSynopticPattern() {
-		assert.Equalf(t, pattern.synoptic, pattern.definition.GetSynopsis(false), pattern.message)
+		assert.Equalf(t, pattern.synoptic, pattern.definition.Synopsis(false), pattern.message)
 	}
 }
 

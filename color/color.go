@@ -17,11 +17,11 @@ type Color struct {
 }
 
 // Get the setter color value
-func (c *Color) GetValue() int {
+func (c *Color) Value() int {
 	return c.set
 }
 
 // Get the default color value
-func (c *Color) GetUnset() int {
+func (c *Color) Unset() int {
 	return c.unset
 }

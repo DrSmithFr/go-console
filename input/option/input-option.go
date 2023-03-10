@@ -48,7 +48,7 @@ func New(
 		defaultValues: []string{},
 	}
 
-	if opt.IsList() && !opt.AcceptValue() {
+	if opt.IsList() && !opt.IsAcceptValue() {
 		panic(errors.New("impossible to have an option mode List if the option does not accept a value"))
 	}
 
@@ -66,7 +66,7 @@ type InputOption struct {
 }
 
 // Returns the option name.
-func (a *InputOption) GetName() string {
+func (a *InputOption) Name() string {
 	return a.name
 }
 
@@ -77,7 +77,7 @@ func (a *InputOption) SetDescription(desc string) *InputOption {
 }
 
 // Returns the description text.
-func (a *InputOption) GetDescription() string {
+func (a *InputOption) Description() string {
 	return a.description
 }
 
@@ -98,12 +98,12 @@ func (a *InputOption) SetShortcut(shortcut string) *InputOption {
 }
 
 // Returns the option shortcut.
-func (a *InputOption) GetShortcut() string {
+func (a *InputOption) Shortcut() string {
 	return a.shortcut
 }
 
 // Returns true if the option accepts a value.
-func (a *InputOption) AcceptValue() bool {
+func (a *InputOption) IsAcceptValue() bool {
 	return a.IsValueRequired() || a.IsValueOptional()
 }
 
@@ -129,7 +129,7 @@ func (a *InputOption) IsList() bool {
 
 // Sets the default value.
 func (a *InputOption) SetDefault(defaultValue string) *InputOption {
-	if !a.AcceptValue() && "" != defaultValue {
+	if !a.IsAcceptValue() && "" != defaultValue {
 		panic(errors.New("cannot set a default value when using InputOption::VALUE_NONE mode"))
 	}
 
@@ -157,18 +157,18 @@ func (a *InputOption) SetDefaults(values []string) *InputOption {
 }
 
 // Returns the default value.
-func (a *InputOption) GetDefault() string {
+func (a *InputOption) Default() string {
 	if a.IsList() {
-		panic(errors.New("cannot use GetDefaultAnswer() for InputOption::List mode, use GetDefaults() instead"))
+		panic(errors.New("cannot use GetDefaultAnswer() for InputOption::List mode, use Defaults() instead"))
 	}
 
 	return a.defaultValue
 }
 
 // Returns the defaults value.
-func (a *InputOption) GetDefaults() []string {
+func (a *InputOption) Defaults() []string {
 	if !a.IsList() {
-		panic(errors.New("cannot use GetDefaults() except for InputOption::List, use GetDefaultAnswer() instead"))
+		panic(errors.New("cannot use Defaults() except for InputOption::List, use GetDefaultAnswer() instead"))
 	}
 
 	return a.defaultValues
@@ -181,17 +181,17 @@ func (a *InputOption) Equals(b InputOption) bool {
 	}
 
 	if a.IsList() {
-		return b.GetName() == a.GetName() &&
-			b.GetShortcut() == a.GetShortcut() &&
+		return b.Name() == a.Name() &&
+			b.Shortcut() == a.Shortcut() &&
 			b.IsList() == a.IsList() &&
 			b.IsValueRequired() == a.IsValueRequired() &&
 			b.IsValueOptional() == a.IsValueOptional() &&
-			helper.IsStringSliceEqual(b.GetDefaults(), a.GetDefaults())
+			helper.IsStringSliceEqual(b.Defaults(), a.Defaults())
 	}
 
-	return b.GetName() == a.GetName() &&
-		b.GetShortcut() == a.GetShortcut() &&
-		b.GetDefault() == a.GetDefault() &&
+	return b.Name() == a.Name() &&
+		b.Shortcut() == a.Shortcut() &&
+		b.Default() == a.Default() &&
 		b.IsList() == a.IsList() &&
 		b.IsValueRequired() == a.IsValueRequired() &&
 		b.IsValueOptional() == a.IsValueOptional()

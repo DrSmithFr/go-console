@@ -7,68 +7,68 @@ import (
 
 type StylerInterface interface {
 	// retrieve OutputInterface
-	GetOutput() output.OutputInterface
+	Output() output.OutputInterface
 
 	SetMaxLineLength(length int)
 
-	GetMaxLineLength() int
+	MaxLineLength() int
 
 	// Formats a command title.
-	Title(message string)
+	PrintTitle(message string)
 
 	// Formats a section title.
-	Section(message string)
+	PrintSection(message string)
 
 	// Formats a list.
-	Listing(messages []string)
+	PrintListing(messages []string)
 
 	// Formats informational text.
-	Text(message string)
+	PrintText(message string)
 
 	// Formats informational text array.
-	Texts(message []string)
+	PrintTexts(message []string)
 
 	// Formats a comment bar.
-	Comment(message string)
+	PrintComment(message string)
 
 	// Formats a comment bar.
-	Comments(message []string)
+	PrintComments(message []string)
 
 	// Formats a success result bar.
-	Success(message string)
+	PrintSuccess(message string)
 
 	// Formats a success result bar.
-	Successes(message []string)
+	PrintSuccesses(message []string)
 
 	// Formats an error result bar.
-	Error(message string)
+	PrintError(message string)
 
 	// Formats an error result bar.
-	Errors(message []string)
+	PrintErrors(message []string)
 
 	// Formats an warning result bar.
-	Warning(message string)
+	PrintWarning(message string)
 
 	// Formats an warning result bar.
-	Warnings(message []string)
+	PrintWarnings(message []string)
 
 	// Formats a note admonition.
-	Note(message string)
+	PrintNote(message string)
 
 	// Formats a note admonition.
-	Notes(message []string)
+	PrintNotes(message []string)
 
 	// Formats a caution admonition.
-	Caution(message string)
+	PrintCaution(message string)
 
 	// Formats a caution admonition.
-	Cautions(message []string)
+	PrintCautions(message []string)
 
 	// Add newline(s).
-	NewLine(count int)
+	PrintNewLine(count int)
 
 	// Gets the current verbosity of the output.
-	GetVerbosity() verbosity.Level
+	Verbosity() verbosity.Level
 
 	// Returns whether verbosity is quiet (-q)
 	IsQuiet() bool

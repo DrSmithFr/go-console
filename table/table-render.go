@@ -488,7 +488,7 @@ func (t *TableRender) renderCell(row TableRowInterface, columnIndex int, cellFor
 		cellPad = style.GetPadType()
 	}
 
-	width += helper.Strlen(cell.GetValue()) - helper.StrlenWithoutDecoration(t.output.GetFormatter(), cell.GetValue())
+	width += helper.Strlen(cell.GetValue()) - helper.StrlenWithoutDecoration(t.output.Formatter(), cell.GetValue())
 	content := fmt.Sprintf(style.GetCellRowContentFormat(), cell.GetValue())
 
 	hasResetOpeningTag := false
@@ -584,7 +584,7 @@ func (t *TableRender) buildTableRows(data *TableData) *TableData {
 				}
 
 				cellValue := cell.GetValue()
-				cellRawValue := helper.RemoveDecoration(t.output.GetFormatter(), cellValue)
+				cellRawValue := helper.RemoveDecoration(t.output.Formatter(), cellValue)
 
 				cellRawWidth := utf8.RuneCountInString(cellRawValue)
 				if cellRawWidth > maxWidth {
@@ -594,7 +594,7 @@ func (t *TableRender) buildTableRows(data *TableData) *TableData {
 						newValue = helper.InsertNth(cellRawValue, maxWidth, '\n')
 					} else {
 						newRawValue := helper.InsertNth(cellRawValue, maxWidth, '\n')
-						tags := t.output.GetFormatter().FindTagsInString(cellValue)
+						tags := t.output.Formatter().FindTagsInString(cellValue)
 						newValue = helper.InsertTagsIgnoringNewLines(cellRawValue, newRawValue, tags)
 					}
 
@@ -862,7 +862,7 @@ func (t *TableRender) getCellWidth(rows TableRowInterface, columnIndex int) int 
 
 	cell := column.GetCell()
 
-	cellRawValue := helper.RemoveDecoration(t.output.GetFormatter(), cell.GetValue())
+	cellRawValue := helper.RemoveDecoration(t.output.Formatter(), cell.GetValue())
 	cellWidth = utf8.RuneCountInString(cellRawValue)
 
 	if -1 == strings.Index(cell.GetValue(), "\n") {

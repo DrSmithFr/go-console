@@ -55,7 +55,7 @@ func main() {
 		)
 
 	render := table.
-		NewRender(io.GetOutput()).
+		NewRender(io.Output()).
 		SetContent(tab)
 
 	render.SetColumnMinWidth(2, 13)

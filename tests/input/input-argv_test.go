@@ -18,7 +18,7 @@ func TestParseArguments(t *testing.T) {
 			AddArgument(*argument.New("name", argument.Optional)),
 	)
 
-	assert.Equal(t, map[string]string{"name": "foo"}, in.GetArguments())
+	assert.Equal(t, map[string]string{"name": "foo"}, in.Arguments())
 
 	// check if stateless
 	in.Bind(
@@ -26,7 +26,7 @@ func TestParseArguments(t *testing.T) {
 			AddArgument(*argument.New("name", argument.Optional)),
 	)
 
-	assert.Equal(t, map[string]string{"name": "foo"}, in.GetArguments())
+	assert.Equal(t, map[string]string{"name": "foo"}, in.Arguments())
 }
 
 func TestParsePatterns(t *testing.T) {
@@ -38,8 +38,8 @@ func TestParsePatterns(t *testing.T) {
 		in := input.NewArgvInput(pattern.Argv())
 		in.Bind(*pattern.Definition())
 
-		assert.Equalf(t, pattern.Options(), in.GetOptions(), pattern.Message())
-		assert.Equalf(t, pattern.OptionArrays(), in.GetOptionLists(), pattern.Message())
+		assert.Equalf(t, pattern.Options(), in.Options(), pattern.Message())
+		assert.Equalf(t, pattern.OptionArrays(), in.OptionLists(), pattern.Message())
 	}
 }
 

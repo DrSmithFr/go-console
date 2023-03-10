@@ -9,7 +9,7 @@ func main() {
 	// according to my terminal size (default: 120)
 	io.SetMaxLineLength(80)
 
-	io.Listing([]string{
+	io.PrintListing([]string{
 		"Lorem Ipsum Dolor Sit Amet",
 		"Lorem Ipsum Dolor Sit Amet",
 		"Lorem Ipsum Dolor Sit Amet",

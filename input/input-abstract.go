@@ -22,17 +22,17 @@ type abstractInput struct {
 }
 
 // get the input definition
-func (i *abstractInput) GetDefinition() *definition.InputDefinition {
+func (i *abstractInput) Definition() *definition.InputDefinition {
 	return &i.definition
 }
 
 // get all parsed arguments
-func (i *abstractInput) GetArguments() map[string]string {
+func (i *abstractInput) Arguments() map[string]string {
 	return i.arguments
 }
 
 // get all parsed arguments array
-func (i *abstractInput) GetArgumentArrays() map[string][]string {
+func (i *abstractInput) ArgumentArrays() map[string][]string {
 	return i.argumentArrays
 }
 
@@ -42,41 +42,41 @@ func (i *abstractInput) HasArgument(name string) bool {
 }
 
 // Returns the argument value for a given argument name
-func (i *abstractInput) GetArgument(name string) string {
+func (i *abstractInput) Argument(name string) string {
 	if !i.definition.HasArgument(name) {
 		panic(errors.New(fmt.Sprintf("the '%s' argument does not exist", name)))
 	}
 
-	arg := i.definition.GetArgument(name)
+	arg := i.definition.Argument(name)
 
 	if arg.IsList() {
-		panic(errors.New(fmt.Sprintf("the '%s' argument is an array, use GetArgumentList() instead", name)))
+		panic(errors.New(fmt.Sprintf("the '%s' argument is an array, use ArgumentList() instead", name)))
 	}
 
 	if val, ok := i.arguments[name]; ok {
 		return val
 	}
 
-	return arg.GetDefault()
+	return arg.Default()
 }
 
 // Returns the argument array value for a given argument name
-func (i *abstractInput) GetArgumentList(name string) []string {
+func (i *abstractInput) ArgumentList(name string) []string {
 	if !i.definition.HasArgument(name) {
 		panic(errors.New(fmt.Sprintf("the '%s' argument does not exist", name)))
 	}
 
-	arg := i.definition.GetArgument(name)
+	arg := i.definition.Argument(name)
 
 	if !arg.IsList() {
-		panic(errors.New(fmt.Sprintf("the '%s' argument is not an array, use GetArgument() instead", name)))
+		panic(errors.New(fmt.Sprintf("the '%s' argument is not an array, use Argument() instead", name)))
 	}
 
 	if val, ok := i.argumentArrays[name]; ok {
 		return val
 	}
 
-	return arg.GetDefaults()
+	return arg.Defaults()
 }
 
 // Sets an argument value by name
@@ -85,7 +85,7 @@ func (i *abstractInput) SetArgument(name string, value string) {
 		panic(errors.New(fmt.Sprintf("the '%s' argument does not exist", name)))
 	}
 
-	arg := i.definition.GetArgument(name)
+	arg := i.definition.Argument(name)
 
 	if arg.IsList() {
 		panic(errors.New(fmt.Sprintf("the '%s' argument is an array, use SetArgumentList() instead", name)))
@@ -100,7 +100,7 @@ func (i *abstractInput) SetArgumentList(name string, value []string) {
 		panic(errors.New(fmt.Sprintf("the '%s' argument does not exist", name)))
 	}
 
-	arg := i.definition.GetArgument(name)
+	arg := i.definition.Argument(name)
 
 	if !arg.IsList() {
 		panic(errors.New(fmt.Sprintf("the '%s' argument is not an array, use SetArgument() instead", name)))
@@ -110,12 +110,12 @@ func (i *abstractInput) SetArgumentList(name string, value []string) {
 }
 
 // Returns all the given options merged with the default values
-func (i *abstractInput) GetOptions() map[string]string {
+func (i *abstractInput) Options() map[string]string {
 	return i.options
 }
 
 // Returns all the given options array merged with the default values
-func (i *abstractInput) GetOptionLists() map[string][]string {
+func (i *abstractInput) OptionLists() map[string][]string {
 	return i.optionArrays
 }
 
@@ -125,15 +125,15 @@ func (i *abstractInput) HasOption(name string) bool {
 }
 
 // Returns the option value for a given option name
-func (i *abstractInput) GetOption(name string) string {
+func (i *abstractInput) Option(name string) string {
 	if !i.definition.HasOption(name) {
 		panic(errors.New(fmt.Sprintf("the '%s' option does not exist", name)))
 	}
 
-	opt := i.definition.GetOption(name)
+	opt := i.definition.Option(name)
 
 	if opt.IsList() {
-		panic(errors.New(fmt.Sprintf("the '%s' option is an array, use GetOptionList() instead", name)))
+		panic(errors.New(fmt.Sprintf("the '%s' option is an array, use OptionList() instead", name)))
 	}
 
 	if val, ok := i.options[name]; ok {
@@ -141,30 +141,30 @@ func (i *abstractInput) GetOption(name string) string {
 	}
 
 	// TODO find a better way to handle option.None
-	if !opt.AcceptValue() {
+	if !opt.IsAcceptValue() {
 		return option.Undefined
 	}
 
-	return opt.GetDefault()
+	return opt.Default()
 }
 
 // Returns the option array value for a given option name
-func (i *abstractInput) GetOptionList(name string) []string {
+func (i *abstractInput) OptionList(name string) []string {
 	if !i.definition.HasOption(name) {
 		panic(errors.New(fmt.Sprintf("the '%s' option does not exist", name)))
 	}
 
-	opt := i.definition.GetOption(name)
+	opt := i.definition.Option(name)
 
 	if !opt.IsList() {
-		panic(errors.New(fmt.Sprintf("the '%s' option is not an array, use GetOption() instead", name)))
+		panic(errors.New(fmt.Sprintf("the '%s' option is not an array, use Option() instead", name)))
 	}
 
 	if val, ok := i.optionArrays[name]; ok {
 		return val
 	}
 
-	return opt.GetDefaults()
+	return opt.Defaults()
 }
 
 // Sets an option value by name
@@ -173,7 +173,7 @@ func (i *abstractInput) SetOption(name string, value string) {
 		panic(errors.New(fmt.Sprintf("the '%s' option does not exist", name)))
 	}
 
-	opt := i.definition.GetOption(name)
+	opt := i.definition.Option(name)
 
 	if opt.IsList() {
 		panic(errors.New(fmt.Sprintf("the '%s' option is an array, use SetOptionList() instead", name)))
@@ -188,7 +188,7 @@ func (i *abstractInput) SetOptionList(name string, value []string) {
 		panic(errors.New(fmt.Sprintf("the '%s' option does not exist", name)))
 	}
 
-	opt := i.definition.GetOption(name)
+	opt := i.definition.Option(name)
 
 	if !opt.IsList() {
 		panic(errors.New(fmt.Sprintf("the '%s' option is not an array, use SetOption() instead", name)))

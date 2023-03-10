@@ -7,7 +7,7 @@ import (
 // InputInterface is the interface implemented by all input classes.
 type InputInterface interface {
 	// Returns the first argument from the raw parameters (not parsed).
-	GetFirstArgument() string
+	FirstArgument() string
 
 	// Returns true if the raw parameters (not parsed) contain a value.
 	//
@@ -23,7 +23,7 @@ type InputInterface interface {
 	// before they have been validated. It must be used carefully.
 	// Does not necessarily return the correct result for short options
 	// when multiple flags are combined in the same option.
-	GetParameterOption(values []string, defaultValue string, onlyParams bool)
+	ParameterOption(values []string, defaultValue string, onlyParams bool)
 
 	// Binds the current Input instance with the given arguments and options.
 	Bind(definition definition.InputDefinition)
@@ -35,16 +35,16 @@ type InputInterface interface {
 	Parse()
 
 	// Returns all the given arguments merged with the default values.
-	GetArguments() map[string]string
+	Arguments() map[string]string
 
 	// Returns all the given array arguments merged with the default values.
-	GetArgumentArrays() map[string][]string
+	ArgumentArrays() map[string][]string
 
 	// Returns the argument value for a given argument name.
-	GetArgument(name string) string
+	Argument(name string) string
 
 	// Returns the argument array value for a given array argument name.
-	GetArgumentList(name string) []string
+	ArgumentList(name string) []string
 
 	// Set the argument value for a given argument name.
 	SetArgument(name string, value string)
@@ -56,16 +56,16 @@ type InputInterface interface {
 	HasArgument(name string) bool
 
 	// Returns all the given options merged with the default values.
-	GetOptions() map[string]string
+	Options() map[string]string
 
 	// Returns all the given array options merged with the default values.
-	GetOptionLists() map[string][]string
+	OptionLists() map[string][]string
 
 	// Returns the option value for a given option name.
-	GetOption(name string) string
+	Option(name string) string
 
 	// Returns the option array value for a given array option name.
-	GetOptionList(name string) []string
+	OptionList(name string) []string
 
 	// Sets an option value by name.
 	SetOption(name string, value string)
@@ -83,5 +83,5 @@ type InputInterface interface {
 	SetInteractive(bool)
 
 	// Get the input definition
-	GetDefinition() *definition.InputDefinition
+	Definition() *definition.InputDefinition
 }

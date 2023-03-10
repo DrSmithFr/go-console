@@ -37,7 +37,7 @@ type ArgvInput struct {
 }
 
 // Returns the first argument from the raw parameters (not parsed)
-func (i *ArgvInput) GetFirstArgument() string {
+func (i *ArgvInput) FirstArgument() string {
 	for _, token := range i.tokens {
 		if "" != token && '-' == token[0] {
 			continue
@@ -55,7 +55,7 @@ func (i *ArgvInput) HasParameterOption(values []string, onlyParams bool) bool {
 }
 
 // Returns the value of a raw option (not parsed).
-func (i *ArgvInput) GetParameterOption(values []string, defaultValue string, onlyParams bool) {
+func (i *ArgvInput) ParameterOption(values []string, defaultValue string, onlyParams bool) {
 	panic("implement me")
 }
 
@@ -96,14 +96,14 @@ func (i *ArgvInput) parseShortOption(token string) {
 
 	if len(name) > 1 {
 		// allow long shortcut with None value
-		if i.definition.HasShortcut(name) && i.definition.GetOptionForShortcut(name).IsValueNone() {
+		if i.definition.HasShortcut(name) && i.definition.FindOptionForShortcut(name).IsValueNone() {
 			i.addShortOption(name, "")
 			return
 		}
 
 		shortcut := name[0:1]
 
-		if i.definition.HasShortcut(shortcut) && i.definition.GetOptionForShortcut(shortcut).AcceptValue() {
+		if i.definition.HasShortcut(shortcut) && i.definition.FindOptionForShortcut(shortcut).IsAcceptValue() {
 			// an option with a value (with no space)
 			i.addShortOption(shortcut, name[1:])
 		} else {
@@ -126,18 +126,18 @@ func (i *ArgvInput) parseShortOptionSet(name string) {
 			panic(errors.New(fmt.Sprintf("the '-%s' option does not exist", shortcut)))
 		}
 
-		opt := i.definition.GetOptionForShortcut(shortcut)
+		opt := i.definition.FindOptionForShortcut(shortcut)
 
-		if opt.AcceptValue() {
+		if opt.IsAcceptValue() {
 			if index == length-1 {
-				i.addLongOption(opt.GetName(), "")
+				i.addLongOption(opt.Name(), "")
 			} else {
-				i.addLongOption(opt.GetName(), name[index+1:])
+				i.addLongOption(opt.Name(), name[index+1:])
 			}
 
 			break
 		} else {
-			i.addLongOption(opt.GetName(), "")
+			i.addLongOption(opt.Name(), "")
 		}
 	}
 }
@@ -160,37 +160,37 @@ func (i *ArgvInput) parseLongOption(token string) {
 }
 
 func (i *ArgvInput) parseArgument(token string) {
-	keys := i.definition.GetArgumentsOrder()
+	keys := i.definition.ArgumentsOrder()
 
 	nbArgs := i.countArguments()
 
 	// if input is expecting another argument, add it
 	if nbArgs < len(keys) && i.definition.HasArgument(keys[nbArgs]) {
-		arg := i.definition.GetArgument(keys[nbArgs])
+		arg := i.definition.Argument(keys[nbArgs])
 
 		if arg.IsList() {
-			i.argumentArrays[arg.GetName()] = []string{token}
+			i.argumentArrays[arg.Name()] = []string{token}
 		} else {
-			i.arguments[arg.GetName()] = token
+			i.arguments[arg.Name()] = token
 		}
 
 		// if last argument isList(), append token to last argument
 	} else if nbArgs-1 <= len(keys) &&
 		i.definition.HasArgument(keys[nbArgs-1]) &&
-		i.definition.GetArgument(keys[nbArgs-1]).IsList() {
-		arg := i.definition.GetArgument(keys[nbArgs-1])
-		i.argumentArrays[arg.GetName()] = append(i.argumentArrays[arg.GetName()], token)
+		i.definition.Argument(keys[nbArgs-1]).IsList() {
+		arg := i.definition.Argument(keys[nbArgs-1])
+		i.argumentArrays[arg.Name()] = append(i.argumentArrays[arg.Name()], token)
 
 		// unexpected argument
 	} else {
-		all := i.GetDefinition().GetArguments()
+		all := i.Definition().Arguments()
 
 		if len(all) != 0 {
 			panic(
 				errors.New(
 					fmt.Sprintf(
 						"too many arguments, expected arguments '%s'",
-						helper.Implode(" ", getArgumentsMapKeys(all)),
+						helper.Implode(" ", ArgumentsMapKeys(all)),
 					),
 				),
 			)
@@ -205,9 +205,9 @@ func (i *ArgvInput) addShortOption(shortcut string, value string) {
 		panic(errors.New(fmt.Sprintf("the '-%s' option does not exist", shortcut)))
 	}
 
-	opt := i.definition.GetOptionForShortcut(shortcut)
+	opt := i.definition.FindOptionForShortcut(shortcut)
 
-	i.addLongOption(opt.GetName(), value)
+	i.addLongOption(opt.Name(), value)
 }
 
 func (i *ArgvInput) addLongOption(name string, value string) {
@@ -215,16 +215,16 @@ func (i *ArgvInput) addLongOption(name string, value string) {
 		panic(errors.New(fmt.Sprintf("the '--%s' option does not exist", name)))
 	}
 
-	opt := i.definition.GetOption(name)
+	opt := i.definition.Option(name)
 
-	if "" != value && !opt.AcceptValue() {
+	if "" != value && !opt.IsAcceptValue() {
 		panic(errors.New(fmt.Sprintf("the '--%s' option does not accept a value", name)))
-	} else if !opt.AcceptValue() {
+	} else if !opt.IsAcceptValue() {
 		// TODO find a better way to handle option.None
 		value = option.Defined
 	}
 
-	if "" == value && opt.AcceptValue() && len(i.parsed) > 0 {
+	if "" == value && opt.IsAcceptValue() && len(i.parsed) > 0 {
 		// if option accepts an optional or mandatory argument
 		// let's see if there is one provided
 		next := i.parsed[0]
@@ -258,7 +258,7 @@ func (i *ArgvInput) countArguments() int {
 	return len(i.arguments) + len(i.argumentArrays)
 }
 
-func getArgumentsMapKeys(inputs map[string]argument.InputArgument) []string {
+func ArgumentsMapKeys(inputs map[string]argument.InputArgument) []string {
 	var keys []string
 
 	for k := range inputs {

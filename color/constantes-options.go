@@ -11,7 +11,7 @@ var options = map[string]Color{
 }
 
 // get color from option const
-func GetOption(name string) Color {
+func Option(name string) Color {
 	if option, ok := options[name]; ok {
 		return option
 	}

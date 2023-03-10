@@ -30,7 +30,7 @@ type NullOutput struct {
 	verbosity verbosity.Level
 }
 
-func (o *NullOutput) format(message string) string {
+func (o *NullOutput) Format(message string) string {
 	if nil == o.formatter {
 		return message
 	}
@@ -47,7 +47,7 @@ func (o *NullOutput) Void(message string, level verbosity.Level) {
 }
 
 func (o *NullOutput) Write(message string) {
-	o.doWrite(o.format(message), verbosity.Normal)
+	o.doWrite(o.Format(message), verbosity.Normal)
 }
 
 // Writes a message to the output and adds a newline at the end
@@ -56,7 +56,7 @@ func (o *NullOutput) Writeln(message string) {
 }
 
 func (o *NullOutput) WriteOnVerbose(message string, level verbosity.Level) {
-	o.doWrite(o.format(message), level)
+	o.doWrite(o.Format(message), level)
 }
 
 // Writes a message to the output and adds a newline at the end
@@ -88,7 +88,7 @@ func (o *NullOutput) SetFormatter(formatter *formatter.OutputFormatter) {
 }
 
 // Returns current output formatter instance
-func (o *NullOutput) GetFormatter() *formatter.OutputFormatter {
+func (o *NullOutput) Formatter() *formatter.OutputFormatter {
 	return o.formatter
 }
 
@@ -96,26 +96,26 @@ func (o *NullOutput) SetVerbosity(verbosity verbosity.Level) {
 	o.verbosity = verbosity
 }
 
-func (o *NullOutput) GetVerbosity() verbosity.Level {
+func (o *NullOutput) Verbosity() verbosity.Level {
 	return o.verbosity
 }
 
 func (o *NullOutput) IsQuiet() bool {
-	return o.GetVerbosity() == verbosity.Quiet
+	return o.Verbosity() == verbosity.Quiet
 }
 
 func (o *NullOutput) IsVerbose() bool {
-	return o.GetVerbosity() == verbosity.Verbose
+	return o.Verbosity() == verbosity.Verbose
 }
 
 func (o *NullOutput) IsVeryVerbose() bool {
-	return o.GetVerbosity() == verbosity.VeryVerbose
+	return o.Verbosity() == verbosity.VeryVerbose
 }
 
 func (o *NullOutput) IsDebug() bool {
-	return o.GetVerbosity() == verbosity.Debug
+	return o.Verbosity() == verbosity.Debug
 }
 
 func (o *NullOutput) IsVerbosityAllowed(level verbosity.Level) bool {
-	return level <= o.GetVerbosity()
+	return level <= o.Verbosity()
 }

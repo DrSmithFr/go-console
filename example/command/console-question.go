@@ -17,14 +17,14 @@ import (
 
 func main() {
 	io := go_console.NewCli().Build()
-	qh := question.NewHelper(os.Stdin, io.GetOutput())
+	qh := question.NewHelper(os.Stdin, io.Output())
 
 	// Simple question with default answer
 	firstname := qh.Ask(
 		question.NewQuestion("What is your firstname?").
 			SetDefaultAnswer("Doe"),
 	)
-	io.Text("Hello " + firstname)
+	io.PrintText("Hello " + firstname)
 
 	// Simple question with normalizer
 	lastname := qh.Ask(
@@ -34,7 +34,7 @@ func main() {
 			}),
 	)
 
-	io.Text(fmt.Sprintf("Hello %s %s", firstname, lastname))
+	io.PrintText(fmt.Sprintf("Hello %s %s", firstname, lastname))
 
 	// Simple question with custom validator
 	nickname := qh.Ask(
@@ -48,14 +48,14 @@ func main() {
 				return nil
 			}),
 	)
-	io.Text("Hi " + nickname)
+	io.PrintText("Hi " + nickname)
 
 	// Simple question with hidden input
 	password := qh.Ask(
 		question.NewQuestion("What is your password?").
 			SetHidden(true),
 	)
-	io.Text("Password: " + password)
+	io.PrintText("Password: " + password)
 
 	// Simple confirmation question
 	answer := qh.Ask(
@@ -64,9 +64,9 @@ func main() {
 			SetMaxAttempts(2),
 	)
 	if answer == answers.Yes {
-		io.Text("Great!")
+		io.PrintText("Great!")
 	} else {
-		io.Text("... ok :(")
+		io.PrintText("... ok :(")
 	}
 
 	// Choice question with multiple answers allowed
@@ -80,7 +80,7 @@ func main() {
 	colors := strings.Split(answer, ",")
 
 	for _, color := range colors {
-		io.Text("One of your favorite color is " + color)
+		io.PrintText("One of your favorite color is " + color)
 	}
 
 	if len(colors) > 1 {
@@ -90,7 +90,7 @@ func main() {
 				SetMaxAttempts(3),
 		)
 
-		io.Text("Your overall favorite color is " + answer)
+		io.PrintText("Your overall favorite color is " + answer)
 	}
 
 	// simple chain normalizer example
@@ -105,7 +105,7 @@ func main() {
 				),
 			),
 	)
-	io.Text(answer)
+	io.PrintText(answer)
 
 	// chain normalizer example using including the default normalizer
 	q1 := question.NewChoices("What is your favorite color?", []string{"red", "blue", "yellow"}).
@@ -120,7 +120,7 @@ func main() {
 	data := qh.Ask(
 		q1.SetNormalizer(customNormalizer),
 	)
-	io.Text(data)
+	io.PrintText(data)
 
 	// chain validator example
 	answer = qh.Ask(
@@ -144,5 +144,5 @@ func main() {
 				),
 			),
 	)
-	io.Text(answer)
+	io.PrintText(answer)
 }

@@ -15,7 +15,7 @@ var backgroundColors = map[string]Color{
 }
 
 // get color from background const
-func GetBackgroundColor(name string) Color {
+func BackgroundColor(name string) Color {
 	if color, ok := backgroundColors[name]; ok {
 		return color
 	}

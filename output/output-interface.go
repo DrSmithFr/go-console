@@ -8,7 +8,7 @@ import (
 // OutputInterface is the interface implemented by all Output classes
 type OutputInterface interface {
 	// Formats a message according to the current formatter styles.
-	format(message string) string
+	Format(message string) string
 
 	// Writes a message to the output.
 	Write(message string)
@@ -32,13 +32,13 @@ type OutputInterface interface {
 	SetFormatter(formatter *formatter.OutputFormatter)
 
 	// Gets current output formatter instance.
-	GetFormatter() *formatter.OutputFormatter
+	Formatter() *formatter.OutputFormatter
 
 	// Sets the verbosity of the output.
 	SetVerbosity(verbosity verbosity.Level)
 
 	// Gets the current verbosity of the output.
-	GetVerbosity() verbosity.Level
+	Verbosity() verbosity.Level
 
 	// Returns whether verbosity is quiet (-q)
 	IsQuiet() bool

@@ -48,7 +48,7 @@ func CustomCli(in input.InputInterface, out output.OutputInterface) *Cli {
 	}
 
 	// clone the formatter to retrieve styles and avoid state change
-	format := *out.GetFormatter()
+	format := *out.Formatter()
 
 	g.in = in
 	g.out = out
@@ -70,7 +70,7 @@ func (g *Cli) AddInputOption(opt *option.InputOption) *Cli {
 		panic(errors.New("cannot add option on parsed input"))
 	}
 
-	g.in.GetDefinition().AddOption(*opt)
+	g.in.Definition().AddOption(*opt)
 
 	return g
 }
@@ -81,7 +81,7 @@ func (g *Cli) AddInputArgument(arg *argument.InputArgument) *Cli {
 		panic(errors.New("cannot add argument on parsed input"))
 	}
 
-	g.in.GetDefinition().AddArgument(*arg)
+	g.in.Definition().AddArgument(*arg)
 
 	return g
 }
@@ -122,13 +122,13 @@ func (g *Cli) validateInput() *Cli {
 func (g *Cli) findOutputVerbosity() *Cli {
 	level := verbosity.Normal
 
-	if g.in.GetOption("quiet") == option.Defined {
+	if g.in.Option("quiet") == option.Defined {
 		level = verbosity.Quiet
-	} else if g.in.GetOption("verbose") == option.Defined {
+	} else if g.in.Option("verbose") == option.Defined {
 		level = verbosity.Verbose
-	} else if g.in.GetOption("very-verbose") == option.Defined {
+	} else if g.in.Option("very-verbose") == option.Defined {
 		level = verbosity.VeryVerbose
-	} else if g.in.GetOption("debug") == option.Defined {
+	} else if g.in.Option("debug") == option.Defined {
 		level = verbosity.Debug
 	}
 
@@ -145,10 +145,10 @@ func (g *Cli) handleParsingException() {
 		return
 	}
 
-	g.Error(fmt.Sprintf("%s", err))
+	g.PrintError(fmt.Sprintf("%s", err))
 
 	cmd := os.Args[0]
-	synopsis := g.in.GetDefinition().GetSynopsis(false)
+	synopsis := g.in.Definition().Synopsis(false)
 
 	usage := fmt.Sprintf(
 		"<info>Usage:</info> <comment>%s %s</comment>",
@@ -175,7 +175,7 @@ func (g *Cli) HandleRuntimeException() {
 	traces := strings.TrimPrefix(full, msg)
 	traces = strings.Replace(traces, "\n\t", "() at ", -1)
 
-	g.Error(msg)
+	g.PrintError(msg)
 
 	g.out.Write("<comment>Exception trace:</comment>")
 	for _, trace := range strings.Split(traces, "\n") {

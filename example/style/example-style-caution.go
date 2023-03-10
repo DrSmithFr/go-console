@@ -12,10 +12,10 @@ func main() {
 	io.SetMaxLineLength(80)
 
 	// use simple strings for short messages
-	io.Caution("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam nec nisl nec mi blandit malesuada. Nunc augue risus, posuere vitae feugiat quis, pulvinar non ligula.")
+	io.PrintCaution("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam nec nisl nec mi blandit malesuada. Nunc augue risus, posuere vitae feugiat quis, pulvinar non ligula.")
 
 	// consider using arrays when displaying long messages
-	io.Cautions([]string{
+	io.PrintCautions([]string{
 		"Lorem Ipsum Dolor Sit Amet",
 		"Lorem Ipsum Dolor Sit Amet",
 		"Lorem Ipsum Dolor Sit Amet",

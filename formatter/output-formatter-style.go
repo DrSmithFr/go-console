@@ -42,7 +42,7 @@ func (style *OutputFormatterStyle) SetForeground(name string) {
 		return
 	}
 
-	foreground := color.GetForegroundColor(name)
+	foreground := color.ForegroundColor(name)
 	style.foreground = &foreground
 }
 
@@ -53,7 +53,7 @@ func (style *OutputFormatterStyle) SetBackground(name string) {
 		return
 	}
 
-	background := color.GetBackgroundColor(name)
+	background := color.BackgroundColor(name)
 	style.background = &background
 }
 
@@ -68,7 +68,7 @@ func (style *OutputFormatterStyle) SetOptions(options []string) {
 
 // Sets some specific style option.
 func (style *OutputFormatterStyle) SetOption(name string) {
-	(*style.options)[name] = color.GetOption(name)
+	(*style.options)[name] = color.Option(name)
 }
 
 // Unsets some specific style option.
@@ -86,21 +86,21 @@ func (style *OutputFormatterStyle) Apply(text string) string {
 	var setCode, unsetCode []int
 
 	if nil != style.foreground {
-		setCode = append(setCode, style.foreground.GetValue())
-		unsetCode = append(unsetCode, style.foreground.GetUnset())
+		setCode = append(setCode, style.foreground.Value())
+		unsetCode = append(unsetCode, style.foreground.Unset())
 	}
 
 	if nil != style.background {
-		setCode = append(setCode, style.background.GetValue())
-		unsetCode = append(unsetCode, style.background.GetUnset())
+		setCode = append(setCode, style.background.Value())
+		unsetCode = append(unsetCode, style.background.Unset())
 	}
 
 	if 0 != len(*style.options) {
 		sortedOptions := sortOptionsMapByStringKey(*style.options)
 
 		for _, option := range sortedOptions {
-			setCode = append(setCode, option.GetValue())
-			unsetCode = append(unsetCode, option.GetUnset())
+			setCode = append(setCode, option.Value())
+			unsetCode = append(unsetCode, option.Unset())
 		}
 	}
 

@@ -7,9 +7,9 @@ import (
 
 func main() {
 	io := go_console.NewCli().Build()
-	out := io.GetOutput()
+	out := io.Output()
 
-	io.Title("Generating a table")
+	io.PrintTitle("Generating a table")
 
 	tab := table.NewTable().
 		SetHeaderTitle("Books").
@@ -31,7 +31,7 @@ func main() {
 		AddHeadersFromString(
 			[][]string{
 				{"==="},
-				{"ISBN-LONG-TITLE", "Title", "Author"},
+				{"ISBN-LONG-TITLE", "PrintTitle", "Author"},
 			},
 		)
 

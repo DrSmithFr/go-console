@@ -14,7 +14,7 @@ func main() {
 	s := formatter.NewOutputFormatterStyle(color.Red, color.Yellow, []string{color.Bold, color.Blink})
 
 	// add style to formatter
-	out.GetFormatter().SetStyle("fire", *s)
+	out.Formatter().SetStyle("fire", *s)
 
 	// use the new style
 	out.Writeln("<fire>foo</>")

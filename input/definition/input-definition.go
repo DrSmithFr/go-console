@@ -65,8 +65,8 @@ func (i *InputDefinition) AddArguments(arguments []argument.InputArgument) *Inpu
 
 // panic when incorrect argument is given
 func (i *InputDefinition) AddArgument(arg argument.InputArgument) *InputDefinition {
-	if _, ok := i.arguments[arg.GetName()]; ok {
-		panic(errors.New(fmt.Sprintf("an argument with name '%s' already exists", arg.GetName())))
+	if _, ok := i.arguments[arg.Name()]; ok {
+		panic(errors.New(fmt.Sprintf("an argument with name '%s' already exists", arg.Name())))
 	}
 
 	if i.hasAnArrayArgument {
@@ -87,8 +87,8 @@ func (i *InputDefinition) AddArgument(arg argument.InputArgument) *InputDefiniti
 		i.hasOptional = true
 	}
 
-	i.arguments[arg.GetName()] = arg
-	i.argumentKeysOrdered = append(i.argumentKeysOrdered, arg.GetName())
+	i.arguments[arg.Name()] = arg
+	i.argumentKeysOrdered = append(i.argumentKeysOrdered, arg.Name())
 
 	return i
 }
@@ -100,7 +100,7 @@ func (i *InputDefinition) HasArgument(name string) bool {
 }
 
 // Returns an InputArgument by name or by position
-func (i *InputDefinition) GetArgument(name string) *argument.InputArgument {
+func (i *InputDefinition) Argument(name string) *argument.InputArgument {
 	if !i.HasArgument(name) {
 		panic(errors.New(fmt.Sprintf("the '%s' argument does not exist", name)))
 	}
@@ -113,39 +113,39 @@ func (i *InputDefinition) GetArgument(name string) *argument.InputArgument {
 }
 
 // Gets the array of InputArgument objects
-func (i *InputDefinition) GetArguments() map[string]argument.InputArgument {
+func (i *InputDefinition) Arguments() map[string]argument.InputArgument {
 	return i.arguments
 }
 
 // Gets the array of InputArgument keys ordered
-func (i *InputDefinition) GetArgumentsOrder() []string {
+func (i *InputDefinition) ArgumentsOrder() []string {
 	return i.argumentKeysOrdered
 }
 
 // Returns the number of InputArguments.
-func (i *InputDefinition) GetArgumentCount() int {
+func (i *InputDefinition) ArgumentCount() int {
 	return len(i.arguments)
 }
 
 // Returns the number of required InputArguments.
-func (i *InputDefinition) GetArgumentRequiredCount() int {
+func (i *InputDefinition) ArgumentRequiredCount() int {
 	return i.requiredCount
 }
 
 // Gets the default values.
-func (i *InputDefinition) GetArgumentDefaults() map[string][]string {
+func (i *InputDefinition) ArgumentDefaults() map[string][]string {
 	values := make(map[string][]string)
 
 	for _, key := range i.argumentKeysOrdered {
-		arg := i.GetArgument(key)
+		arg := i.Argument(key)
 
 		if arg.IsList() {
-			values[arg.GetName()] = arg.GetDefaults()
+			values[arg.Name()] = arg.Defaults()
 		} else {
-			if "" != arg.GetDefault() {
-				values[arg.GetName()] = []string{arg.GetDefault()}
+			if "" != arg.Default() {
+				values[arg.Name()] = []string{arg.Default()}
 			} else {
-				values[arg.GetName()] = nil
+				values[arg.Name()] = nil
 			}
 		}
 	}
@@ -172,24 +172,24 @@ func (i *InputDefinition) AddOptions(options []option.InputOption) *InputDefinit
 
 // panic when option given already exist
 func (i *InputDefinition) AddOption(opt option.InputOption) *InputDefinition {
-	if _, ok := i.options[opt.GetName()]; ok {
-		panic(errors.New(fmt.Sprintf("an option named '%s' already exists", opt.GetName())))
+	if _, ok := i.options[opt.Name()]; ok {
+		panic(errors.New(fmt.Sprintf("an option named '%s' already exists", opt.Name())))
 	}
 
-	if "" != opt.GetShortcut() {
-		for _, shortcut := range strings.Split(opt.GetShortcut(), "|") {
-			if i.HasShortcut(shortcut) && !opt.Equals(*i.GetOptionForShortcut(shortcut)) {
+	if "" != opt.Shortcut() {
+		for _, shortcut := range strings.Split(opt.Shortcut(), "|") {
+			if i.HasShortcut(shortcut) && !opt.Equals(*i.FindOptionForShortcut(shortcut)) {
 				panic(errors.New(fmt.Sprintf("An option with shortcut '%s' already exists", shortcut)))
 			}
 		}
 	}
 
-	i.options[opt.GetName()] = opt
-	i.optionKeysOrdered = append(i.optionKeysOrdered, opt.GetName())
+	i.options[opt.Name()] = opt
+	i.optionKeysOrdered = append(i.optionKeysOrdered, opt.Name())
 
-	if "" != opt.GetShortcut() {
-		for _, shortcut := range strings.Split(opt.GetShortcut(), "|") {
-			i.shortcuts[shortcut] = opt.GetName()
+	if "" != opt.Shortcut() {
+		for _, shortcut := range strings.Split(opt.Shortcut(), "|") {
+			i.shortcuts[shortcut] = opt.Name()
 		}
 	}
 
@@ -203,7 +203,7 @@ func (i *InputDefinition) HasOption(name string) bool {
 }
 
 // Returns an InputOption by name
-func (i *InputDefinition) GetOption(name string) *option.InputOption {
+func (i *InputDefinition) Option(name string) *option.InputOption {
 	if !i.HasOption(name) {
 		panic(errors.New(fmt.Sprintf("the '%s' argument does not exist", name)))
 	}
@@ -216,12 +216,12 @@ func (i *InputDefinition) GetOption(name string) *option.InputOption {
 }
 
 // Gets the array of InputOption objects
-func (i *InputDefinition) GetOptions() map[string]option.InputOption {
+func (i *InputDefinition) Options() map[string]option.InputOption {
 	return i.options
 }
 
 // Gets the array of InputOption keys ordered
-func (i *InputDefinition) GetOptionsOrder() []string {
+func (i *InputDefinition) OptionsOrder() []string {
 	return i.optionKeysOrdered
 }
 
@@ -232,24 +232,24 @@ func (i *InputDefinition) HasShortcut(s string) bool {
 }
 
 // Gets an InputOption by shortcut.
-func (i *InputDefinition) GetOptionForShortcut(s string) *option.InputOption {
-	return i.GetOption(i.ShortcutToName(s))
+func (i *InputDefinition) FindOptionForShortcut(s string) *option.InputOption {
+	return i.Option(i.ShortcutToName(s))
 }
 
 // Gets the default values.
-func (i *InputDefinition) GetOptionDefaults() map[string][]string {
+func (i *InputDefinition) OptionDefaults() map[string][]string {
 	values := make(map[string][]string)
 
 	for _, key := range i.optionKeysOrdered {
-		opt := i.GetOption(key)
+		opt := i.Option(key)
 
 		if opt.IsList() {
-			values[opt.GetName()] = opt.GetDefaults()
+			values[opt.Name()] = opt.Defaults()
 		} else {
-			if "" != opt.GetDefault() {
-				values[opt.GetName()] = []string{opt.GetDefault()}
+			if "" != opt.Default() {
+				values[opt.Name()] = []string{opt.Default()}
 			} else {
-				values[opt.GetName()] = []string{}
+				values[opt.Name()] = []string{}
 			}
 		}
 	}
@@ -269,14 +269,14 @@ func (i *InputDefinition) ShortcutToName(s string) string {
 }
 
 // Returns the InputOption name given a shortcut.
-func (i *InputDefinition) GetSynopsis(short bool) string {
+func (i *InputDefinition) Synopsis(short bool) string {
 	var elements []string
 
-	if short && 0 != len(i.GetOptions()) {
+	if short && 0 != len(i.Options()) {
 		elements = append(elements, "[options]")
 	} else if !short {
 		for _, key := range i.optionKeysOrdered {
-			opt := i.GetOption(key)
+			opt := i.Option(key)
 			value := ""
 			start := ""
 			end := ""
@@ -286,19 +286,19 @@ func (i *InputDefinition) GetSynopsis(short bool) string {
 				end = "]"
 			}
 
-			if opt.AcceptValue() {
+			if opt.IsAcceptValue() {
 				value = fmt.Sprintf(
 					" %s%s%s",
 					start,
-					strings.ToUpper(opt.GetName()),
+					strings.ToUpper(opt.Name()),
 					end,
 				)
 			}
 
 			shortcut := ""
 
-			if "" != opt.GetShortcut() {
-				shortcut = fmt.Sprintf("-%s|", opt.GetShortcut())
+			if "" != opt.Shortcut() {
+				shortcut = fmt.Sprintf("-%s|", opt.Shortcut())
 			}
 
 			elements = append(
@@ -306,22 +306,22 @@ func (i *InputDefinition) GetSynopsis(short bool) string {
 				fmt.Sprintf(
 					"[%s--%s%s]",
 					shortcut,
-					opt.GetName(),
+					opt.Name(),
 					value,
 				),
 			)
 		}
 	}
 
-	if 0 != len(elements) && 0 != len(i.GetArguments()) {
+	if 0 != len(elements) && 0 != len(i.Arguments()) {
 		elements = append(elements, "[--]")
 	}
 
 	tail := ""
 
 	for _, key := range i.argumentKeysOrdered {
-		arg := i.GetArgument(key)
-		element := fmt.Sprintf("<%s>", arg.GetName())
+		arg := i.Argument(key)
+		element := fmt.Sprintf("<%s>", arg.Name())
 
 		if arg.IsList() {
 			element = fmt.Sprintf("%s...", element)

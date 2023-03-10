@@ -15,7 +15,7 @@ var foregroundColors = map[string]Color{
 }
 
 // get color from foreground const
-func GetForegroundColor(name string) Color {
+func ForegroundColor(name string) Color {
 	if color, ok := foregroundColors[name]; ok {
 		return color
 	}

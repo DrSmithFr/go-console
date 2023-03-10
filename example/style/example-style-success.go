@@ -10,10 +10,10 @@ func main() {
 	io.SetMaxLineLength(80)
 
 	// use simple strings for short messages
-	io.Success("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam nec nisl nec mi blandit malesuada. Nunc augue risus, posuere vitae feugiat quis, pulvinar non ligula.")
+	io.PrintSuccess("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam nec nisl nec mi blandit malesuada. Nunc augue risus, posuere vitae feugiat quis, pulvinar non ligula.")
 
 	// consider using arrays when displaying long messages
-	io.Successes([]string{
+	io.PrintSuccesses([]string{
 		"Lorem Ipsum Dolor Sit Amet",
 		"Lorem Ipsum Dolor Sit Amet",
 		"Lorem Ipsum Dolor Sit Amet",

@@ -9,6 +9,6 @@ import (
 func TestConstructor(t *testing.T) {
 	c := color.NewColor(1, 2)
 
-	assert.Equal(t, 1, c.GetValue())
-	assert.Equal(t, 2, c.GetUnset())
+	assert.Equal(t, 1, c.Value())
+	assert.Equal(t, 2, c.Unset())
 }
