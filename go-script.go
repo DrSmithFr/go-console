@@ -117,7 +117,7 @@ func (s *Script) addDefaultOptions() {
 		AddInputOption(
 			option.
 				New("help", option.None).
-				SetShortcut("p").
+				SetShortcut("h").
 				SetDescription("Display help for the given command."),
 		).
 		// add help option
