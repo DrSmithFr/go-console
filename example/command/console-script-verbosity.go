@@ -8,7 +8,7 @@ import (
 
 func main() {
 	cmd := go_console.NewScript().Build()
-	out := cmd.output()
+	out := cmd.Output
 
 	// this message is always displayed when the command is displayCommandName without --quiet
 	cmd.PrintTitle("Example of console verbosity")

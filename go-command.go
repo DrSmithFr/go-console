@@ -20,8 +20,14 @@ type CommandRunner func(cmd *Script) ExitCode
 
 // NewCommand create a new console script
 func NewCommand() *Command {
+	argv := os.Args
+
+	if len(argv) > 2 {
+		argv = argv[0:2]
+	}
+
 	script := newCommandCustom(
-		input.NewArgvInput(nil),
+		input.NewArgvInput(argv),
 		output.NewCliOutput(true, nil),
 		true,
 	)
@@ -289,11 +295,17 @@ func (c *Command) registerCommands() {
 }
 
 func (c *Command) parseDefinition() {
+	argv := os.Args
+
+	if len(argv) > 2 {
+		argv = argv[0:2]
+	}
+
 	var in input.InputInterface
 	var out output.OutputInterface
 
 	if c.Input == nil {
-		in = input.NewArgvInput(os.Args)
+		in = input.NewArgvInput(argv)
 	} else {
 		in = c.Input
 	}

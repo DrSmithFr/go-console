@@ -3,17 +3,26 @@ package main
 import (
 	"fmt"
 	"github.com/DrSmithFr/go-console"
+	"github.com/DrSmithFr/go-console/input/argument"
 )
 
 func main() {
 
 	script := go_console.Command{
-		Description: "This Command act as a group of command.",
+		UseNamespace: true,
+		Description:  "This Command act as a group of command.",
 		Scripts: []*go_console.Script{
 			{
 				Name:        "app:user:create",
 				Description: "Print hello world form an external runner.",
-				Runner:      displayCommandName,
+				Arguments: []go_console.Argument{
+					{
+						Name:        "email",
+						Description: "The email of the user.",
+						Value:       argument.Required,
+					},
+				},
+				Runner: displayCommandName,
 			},
 			{
 				Name:        "app:user:promote",
@@ -31,7 +40,7 @@ func main() {
 				Runner:      displayCommandName,
 			},
 			{
-				Name:        "cache:clear",
+				Name:        "cache:warmup",
 				Description: "Print hello world form an external runner.",
 				Runner:      displayCommandName,
 			},

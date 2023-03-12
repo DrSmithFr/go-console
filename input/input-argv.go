@@ -165,9 +165,7 @@ func (i *ArgvInput) parseArgument(token string) {
 	nbArgs := i.countArguments()
 
 	// if input is expecting another argument, add it
-	if nbArgs == 0 && len(keys) == 0 {
-		// no argument was defined, nor received
-	} else if nbArgs < len(keys) && i.definition.HasArgument(keys[nbArgs]) {
+	if nbArgs < len(keys) && i.definition.HasArgument(keys[nbArgs]) {
 		arg := i.definition.Argument(keys[nbArgs])
 
 		if arg.IsList() {
