@@ -25,7 +25,7 @@ type InputInterface interface {
 	// when multiple flags are combined in the same option.
 	ParameterOption(values []string, defaultValue string, onlyParams bool)
 
-	// Binds the current Input instance with the given arguments and options.
+	// Binds the current input instance with the given arguments and options.
 	Bind(definition definition.InputDefinition)
 
 	// Validates the input.

@@ -14,78 +14,85 @@ import (
 	"strings"
 )
 
+type ExitCode int
+
 const (
-	ExitSuccess = iota
-	ExitError
-	ExitInvalid
+	ExitSuccess ExitCode = iota
+	ExitError   ExitCode = iota
+	ExitInvalid ExitCode = iota
 )
 
-// simple constructor
-func NewCli() *Cli {
-	out := output.NewCliOutput(true, nil)
-	in := input.NewArgvInput(nil)
-
+// NewScript simple console CLi constructor
+func NewScript() *Script {
 	// manage verbosity
-	cmd := CustomCli(in, out)
-	cmd.addDefaultOptions()
+	cmd := NewScriptCustom(
+		input.NewArgvInput(nil),
+		output.NewCliOutput(true, nil),
+		true,
+	)
 
 	return cmd
 }
 
-// custom constructor
-func CustomCli(in input.InputInterface, out output.OutputInterface) *Cli {
-	cmd := &Cli{
-		alreadyParsed:    false,
+// NewScriptCustom create a new Script with custom input/output with or without default options
+func NewScriptCustom(in input.InputInterface, out output.OutputInterface, AddDefaultOptions bool) *Script {
+	cmd := &Script{
+		inputParsed:      false,
 		definitionParsed: true,
 	}
 
-	cmd.addDefaultOptions()
+	// accessors
+	cmd.Input = in
+	cmd.Output = out
 
 	// clone the formatter to retrieve styles and avoid state change
 	format := *out.Formatter()
 
-	cmd.in = in
-	cmd.out = out
-	cmd.lineLength = MAX_LINE_LENGTH
+	// enable style within the script
+	cmd.input = in
+	cmd.output = out
+	cmd.maxLineLength = MaxLineLength
 	cmd.bufferedOutput = *output.NewBufferedOutput(false, &format)
 
+	if AddDefaultOptions {
+		cmd.addDefaultOptions()
+	}
+
 	return cmd
 }
 
-// Output decorator helpers for the Style Guide
-type Cli struct {
-	abstractStyler
-	alreadyParsed bool
-
-	caller      string
-	description string
+// Script is the base class for all scripts.
+type Script struct {
+	Styler
 
 	// Short definition
+	Input  input.InputInterface
+	Output output.OutputInterface
+
+	AddDefaultOpts bool
+
+	Name        string
+	Description string
+
+	Arguments []Argument
+	Options   []Option
+
+	Runner CommandRunner
+
+	// internal
+	inputParsed      bool
 	definitionParsed bool
-	DefaultOpts      bool
-
-	Name string
-	Desc string
-
-	In  input.InputInterface
-	Out output.OutputInterface
-
-	Args []Arg
-	Opts []Opt
+	parentScriptName string
 }
 
-func (cmd *Cli) Description() string {
-	return cmd.description
+func (s *Script) SetDescription(description string) *Script {
+	s.Description = description
+	return s
 }
 
-func (cmd *Cli) SetDescription(description string) *Cli {
-	cmd.description = description
-	return cmd
-}
-
-type Arg struct {
-	Name string
-	Mode int
+type Argument struct {
+	Name  string
+	Value int
 
 	Description string
 
@@ -93,10 +100,10 @@ type Arg struct {
 	DefaultValues []string
 }
 
-type Opt struct {
+type Option struct {
 	Name     string
 	Shortcut string
-	Mode     int
+	Value    int
 
 	Description string
 
@@ -104,8 +111,8 @@ type Opt struct {
 	DefaultValues []string
 }
 
-func (cmd *Cli) addDefaultOptions() {
-	cmd.
+func (s *Script) addDefaultOptions() {
+	s.
 		// add help option
 		AddInputOption(
 			option.
@@ -135,84 +142,78 @@ func (cmd *Cli) addDefaultOptions() {
 }
 
 // Implements io.Writer
-func (cmd *Cli) Write(p []byte) (n int, err error) {
-	return cmd.out.Write(p)
+func (s *Script) Write(p []byte) (n int, err error) {
+	return s.output.Write(p)
 }
 
-// (helper) add option to input definition
-func (cmd *Cli) AddInputOption(opt *option.InputOption) *Cli {
-	if cmd.alreadyParsed {
+// AddInputOption add option to input definition (fluent)
+func (s *Script) AddInputOption(opt *option.InputOption) *Script {
+	if s.inputParsed {
 		panic(errors.New("cannot add option on parsed input"))
 	}
 
-	cmd.in.Definition().AddOption(*opt)
+	s.input.Definition().AddOption(*opt)
 
-	return cmd
+	return s
 }
 
-// (helper) add argument to input definition
-func (cmd *Cli) AddInputArgument(arg *argument.InputArgument) *Cli {
-	if cmd.alreadyParsed {
+// AddInputArgument add argument to input definition (fluent)
+func (s *Script) AddInputArgument(arg *argument.InputArgument) *Script {
+	if s.inputParsed {
 		panic(errors.New("cannot add argument on parsed input"))
 	}
 
-	cmd.in.Definition().AddArgument(*arg)
+	s.input.Definition().AddArgument(*arg)
 
-	return cmd
+	return s
 }
 
-func (cmd *Cli) Build() *Cli {
-	if cmd.definitionParsed == false {
-		cmd = cmd.parseDefinition()
-		cmd.definitionParsed = true
+func (s *Script) Build() *Script {
+	if !s.definitionParsed {
+		s.parseDefinition()
+		s.definitionParsed = true
 	}
 
-	cmd.parseInput()
-	cmd.validateInput()
-	cmd.findOutputVerbosity()
+	s.parseInput()
+	s.validateInput()
+	s.findOutputVerbosity()
 
-	cmd.handleHelpCall()
+	s.handleHelpCall()
 
-	return cmd
+	if s.Runner != nil {
+		os.Exit(int(s.Runner(s)))
+	}
+
+	return s
 }
 
-func (cmd *Cli) parseDefinition() *Cli {
+func (s *Script) parseDefinition() *Script {
 	var in input.InputInterface
-	if cmd.In != nil {
-		in = cmd.In
+	var out output.OutputInterface
+
+	if s.Input != nil {
+		in = s.Input
 	} else {
 		in = input.NewArgvInput(nil)
 	}
 
-	var out output.OutputInterface
-	if cmd.Out != nil {
-		out = cmd.Out
+	if s.Output != nil {
+		out = s.Output
 	} else {
 		out = output.NewCliOutput(true, nil)
 	}
 
-	if cmd.Name != "" {
-		cmd.caller = cmd.Name
-	}
-
-	if cmd.Desc != "" {
-		cmd.description = cmd.Desc
-	}
-
-	cmd.in = in
-	cmd.out = out
-
 	// clone the formatter to retrieve styles and avoid state change
 	format := *out.Formatter()
 
-	cmd.alreadyParsed = false
+	s.input = in
+	s.output = out
+	s.maxLineLength = MaxLineLength
+	s.bufferedOutput = *output.NewBufferedOutput(false, &format)
 
-	cmd.lineLength = MAX_LINE_LENGTH
-	cmd.bufferedOutput = *output.NewBufferedOutput(false, &format)
-
-	if len(cmd.Args) > 0 {
-		for _, arg := range cmd.Args {
-			newArg := argument.New(arg.Name, arg.Mode).
+	if len(s.Arguments) > 0 {
+		for _, arg := range s.Arguments {
+			newArg := argument.New(arg.Name, arg.Value).
 				SetDescription(arg.Description)
 
 			if arg.DefaultValue != "" {
@@ -223,13 +224,13 @@ func (cmd *Cli) parseDefinition() *Cli {
 				newArg.SetDefaults(arg.DefaultValues)
 			}
 
-			cmd.AddInputArgument(newArg)
+			s.AddInputArgument(newArg)
 		}
 	}
 
-	if len(cmd.Opts) > 0 {
-		for _, opt := range cmd.Opts {
-			newOpt := option.New(opt.Name, opt.Mode)
+	if len(s.Options) > 0 {
+		for _, opt := range s.Options {
+			newOpt := option.New(opt.Name, opt.Value)
 
 			if opt.Shortcut != "" {
 				newOpt.SetShortcut(opt.Shortcut)
@@ -247,49 +248,49 @@ func (cmd *Cli) parseDefinition() *Cli {
 				newOpt.SetDefaults(opt.DefaultValues)
 			}
 
-			cmd.AddInputOption(newOpt)
+			s.AddInputOption(newOpt)
 		}
 	}
 
-	if !cmd.DefaultOpts {
-		cmd.addDefaultOptions()
+	if !s.AddDefaultOpts {
+		s.addDefaultOptions()
 	}
 
-	return cmd
+	return s
 }
 
-func (cmd *Cli) parseInput() *Cli {
-	if cmd.alreadyParsed {
+func (s *Script) parseInput() *Script {
+	if s.inputParsed {
 		panic(errors.New("argv is already parsed"))
 	}
 
-	defer cmd.handleParsingException()
+	defer s.handleParsingException()
 
-	cmd.in.Parse()
-	cmd.alreadyParsed = true
+	s.input.Parse()
+	s.inputParsed = true
 
-	return cmd
+	return s
 }
 
-func (cmd *Cli) validateInput() *Cli {
-	if !cmd.alreadyParsed {
+func (s *Script) validateInput() *Script {
+	if !s.inputParsed {
 		panic(errors.New("cannot validate unparsed input"))
 	}
 
-	defer cmd.handleParsingException()
+	defer s.handleParsingException()
 
-	cmd.in.Validate()
+	s.input.Validate()
 
-	return cmd
+	return s
 }
 
-func (cmd *Cli) findOutputVerbosity() *Cli {
+func (s *Script) findOutputVerbosity() *Script {
 	level := verbosity.Normal
 
-	if cmd.in.Option("quiet") == option.Defined {
+	if s.input.Option("quiet") == option.Defined {
 		level = verbosity.Quiet
-	} else if cmd.in.Option("verbose") == option.Defined {
-		lvl := cmd.in.Option("verbose")
+	} else if s.input.Option("verbose") == option.Defined {
+		lvl := s.input.Option("verbose")
 		if lvl == "vv" {
 			level = verbosity.Debug
 		} else if lvl == "v" {
@@ -297,12 +298,12 @@ func (cmd *Cli) findOutputVerbosity() *Cli {
 		}
 	}
 
-	cmd.out.SetVerbosity(level)
+	s.output.SetVerbosity(level)
 
-	return cmd
+	return s
 }
 
-func (cmd *Cli) handleParsingException() {
+func (s *Script) handleParsingException() {
 	err := recover()
 
 	if err == nil {
@@ -310,10 +311,10 @@ func (cmd *Cli) handleParsingException() {
 		return
 	}
 
-	cmd.PrintError(fmt.Sprintf("%s", err))
+	s.PrintError(fmt.Sprintf("%s", err))
 
 	args := os.Args[0]
-	synopsis := cmd.in.Definition().Synopsis(false)
+	synopsis := s.input.Definition().Synopsis(false)
 
 	usage := fmt.Sprintf(
 		"<info>Usage:</info> <comment>%s %s</comment>",
@@ -321,12 +322,12 @@ func (cmd *Cli) handleParsingException() {
 		formatter.Escape(synopsis),
 	)
 
-	cmd.out.Println(usage)
+	s.output.Println(usage)
 
 	os.Exit(2)
 }
 
-func (cmd *Cli) HandleRuntimeException() {
+func (s *Script) HandleRuntimeException() {
 	err := recover()
 
 	if err == nil {
@@ -340,11 +341,11 @@ func (cmd *Cli) HandleRuntimeException() {
 	traces := strings.TrimPrefix(full, msg)
 	traces = strings.Replace(traces, "\n\t", "() at ", -1)
 
-	cmd.PrintError(msg)
+	s.PrintError(msg)
 
-	cmd.out.Print("<comment>Exception trace:</comment>")
+	s.output.Print("<comment>Exception trace:</comment>")
 	for _, trace := range strings.Split(traces, "\n") {
-		cmd.out.Println(
+		s.output.Println(
 			fmt.Sprintf(
 				" %s",
 				formatter.Escape(trace),
@@ -355,63 +356,62 @@ func (cmd *Cli) HandleRuntimeException() {
 	os.Exit(2)
 }
 
-func (cmd *Cli) handleHelpCall() {
-	if cmd.in.Option("help") == option.Undefined {
+func (s *Script) handleHelpCall() {
+	if s.input.Option("help") == option.Undefined {
 		return
 	}
 
-	if cmd.Description() != "" {
-		cmd.PrintText("<comment>Description:</comment>")
-		cmd.PrintText(cmd.Description())
-		cmd.PrintNewLine(1)
+	if s.Description != "" {
+		s.PrintText("<comment>Description:</comment>")
+		s.PrintText(s.Description)
+		s.PrintNewLine(1)
 	}
 
-	cmd.PrintText("<comment>Usage:</comment>")
+	s.PrintText("<comment>Usage:</comment>")
 
-	synopsis := cmd.in.Definition().Synopsis(false)
+	synopsis := s.input.Definition().Synopsis(false)
 	synopsis = strings.ReplaceAll(synopsis, "<", "\\<")
 
-	var cmdName string
-	if cmd.caller != "" {
-		cmdName = cmd.caller
-	} else {
-		cmdName = os.Args[0]
+	cmdName := os.Args[0]
+
+	if s.parentScriptName != "" {
+		cmdName = s.parentScriptName + " " + cmdName
 	}
 
-	cmd.out.SetDecorated(false)
-	cmd.PrintText(fmt.Sprintf(" %s <info>%s</info>", cmdName, synopsis))
-	cmd.out.SetDecorated(true)
+	s.output.SetDecorated(false)
+	s.PrintText(fmt.Sprintf(" %s <info>%s</info>", cmdName, synopsis))
+	s.output.SetDecorated(true)
 
 	render := table.
-		NewRender(cmd.out).
+		NewRender(s.output).
 		SetStyleFromName("compact")
 
-	if len(cmd.in.Definition().Arguments()) > 0 {
-		cmd.PrintNewLine(1)
-		cmd.PrintText("<comment>Arguments:</comment>")
+	if len(s.input.Definition().Arguments()) > 0 {
+		s.PrintNewLine(1)
+		s.PrintText("<comment>Arguments:</comment>")
 
 		render.
-			SetContent(cmd.createArgsTable()).
+			SetContent(s.createArgsTable()).
 			Render()
 	}
 
-	if len(cmd.in.Definition().Options()) > 0 {
-		cmd.PrintNewLine(1)
-		cmd.PrintText("<comment>Options:</comment>")
+	if len(s.input.Definition().Options()) > 0 {
+		s.PrintNewLine(1)
+		s.PrintText("<comment>Options:</comment>")
 
 		render.
-			SetContent(cmd.createOptsTable()).
+			SetContent(s.createOptsTable()).
 			Render()
 	}
 
-	os.Exit(ExitSuccess)
+	os.Exit(int(ExitSuccess))
 }
 
-func (cmd *Cli) createArgsTable() *table.Table {
+func (s *Script) createArgsTable() *table.Table {
 	argTab := table.NewTable()
 
-	for _, argKey := range cmd.in.Definition().ArgumentsOrder() {
-		arg := cmd.in.Definition().Argument(argKey)
+	for _, argKey := range s.input.Definition().ArgumentsOrder() {
+		arg := s.input.Definition().Argument(argKey)
 
 		name := fmt.Sprintf(
 			" <info>%s</info>",
@@ -440,10 +440,9 @@ func (cmd *Cli) createArgsTable() *table.Table {
 			)
 		}
 
-		if arg.IsList() && arg.Defaults() != nil {
+		if arg.IsList() && arg.Defaults() != nil && len(arg.Defaults()) > 0 {
 			desc += fmt.Sprintf(
 				" <comment>[defaults: \"%s\"]</comment>",
-				desc,
 				strings.Join(arg.Defaults(), "\", \""),
 			)
 		}
@@ -457,11 +456,11 @@ func (cmd *Cli) createArgsTable() *table.Table {
 	return argTab
 }
 
-func (cmd *Cli) createOptsTable() *table.Table {
+func (s *Script) createOptsTable() *table.Table {
 	optTab := table.NewTable()
 
-	for _, optKey := range cmd.in.Definition().OptionsOrder() {
-		opt := cmd.in.Definition().Option(optKey)
+	for _, optKey := range s.input.Definition().OptionsOrder() {
+		opt := s.input.Definition().Option(optKey)
 		shortcut := ""
 
 		if opt.Shortcut() != "" {
@@ -488,7 +487,6 @@ func (cmd *Cli) createOptsTable() *table.Table {
 		if opt.IsList() && opt.Defaults() != nil {
 			desc += fmt.Sprintf(
 				" <comment>[defaults: [[\"%s\"]]</comment>",
-				desc,
 				strings.Join(opt.Defaults(), "\", \""),
 			)
 		}
@@ -500,4 +498,8 @@ func (cmd *Cli) createOptsTable() *table.Table {
 	}
 
 	return optTab
+}
+
+func (s *Script) SetParentScriptName(name string) {
+	s.parentScriptName = name
 }

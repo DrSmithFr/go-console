@@ -6,8 +6,8 @@ import (
 )
 
 func main() {
-	cmd := go_console.NewCli().Build()
-	out := cmd.Output()
+	cmd := go_console.NewScript().Build()
+	out := cmd.Output
 
 	cmd.PrintTitle("Generating a table")
 

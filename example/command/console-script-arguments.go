@@ -12,26 +12,25 @@ func main() {
 	// Easy way to create a command with arguments and options
 	//
 
-	cmd := go_console.Cli{
-		Name: "app:command",
-		Desc: "The app:command command.",
-		Args: []go_console.Arg{
+	cmd := go_console.Script{
+		Name:        "app:command",
+		Description: "The app:command command.",
+		Arguments: []go_console.Argument{
 			{
 				Name:        "name",
-				Mode:        argument.Required,
+				Value:       argument.Required | argument.List,
 				Description: "The name of the user.",
 			},
 		},
-		Opts: []go_console.Opt{
+		Options: []go_console.Option{
 			{
 				Name:        "foo",
 				Shortcut:    "f",
-				Mode:        option.None,
+				Value:       option.None,
 				Description: "The foo option.",
 			},
 		},
 	}
 
 	cmd.Build()
-
 }

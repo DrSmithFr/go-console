@@ -7,7 +7,7 @@
 [![CircleCI](https://circleci.com/gh/DrSmithFr/go-console.svg?style=shield)](https://circleci.com/gh/github.com/DrSmithFr/go-console)
 [![Go Report Card](https://goreportcard.com/badge/github.com/DrSmithFr/go-console)](https://goreportcard.com/report/github.com/github.com/DrSmithFr/go-console)
 
-> The Console component eases the creation of beautiful and testable command line interfaces.
+> The Console component eases the creation of beautiful and command line interfaces.
 
 GoConsole component allows you to create command-line commands. Your console commands can be used for any recurring
 task, such as cronjobs, imports, or other batch jobs.
@@ -18,6 +18,13 @@ GoConsole is a lightweight equivalent in Go to the [Console Component 3.4](https
 of Symfony PHP framework.
 
 ## Tables of Contents
+* [go_console.Command](#goconsolecommand)
+  * [Defined an entry point for multiples scripts](#defined-an-entry-point-for-multiples-scripts)
+  * [Power of namespaces](#defined-an-entry-point-for-multiples-scripts-using-namespaces)
+* [go_console.Script](#goconsolescript)
+  * [Script help](#script-help)
+  * [Script input](#script-input)
+---
 * [How to use input options and arguments](#how-to-use-input-options-and-arguments)
   * [Console Input (Arguments & Options)](#console-input)
   * [Using Command Arguments](#using-command-arguments)
@@ -52,18 +59,274 @@ of Symfony PHP framework.
   * [Padding management](#padding-management)
 ---
 
-# How to use input options and arguments
+# go_console.Command
 
-## Console Input
+## Defined an entry point for multiples scripts
+
+`go_console.Command` Provides an entry point for multiple scripts.
+It allows you to define easily a group of scripts, but you MUST define Name and Runner for each `go_console.Script`.
+
+> **Note:** The `go_console.Command` will automatically call the `go_console.Script.Build()` method when the script get invoked.
+
+```go
+package main
+
+import (
+  "fmt"
+  "github.com/DrSmithFr/go-console"
+  "github.com/DrSmithFr/go-console/input/argument"
+  "github.com/DrSmithFr/go-console/input/option"
+)
+
+func main() {
+
+  script := go_console.Command{
+    Description: "This Command act as a group of command.",
+    Scripts: []*go_console.Script{
+      {
+        Name:        "external",
+        Description: "Print hello world form an external runner.",
+        Arguments: []go_console.Argument{
+          {
+            Name:        "name",
+            Value:       argument.Required | argument.List,
+            Description: "The name of the user.",
+          },
+        },
+        Runner: externalRunner,
+      },
+      {
+        Name:        "internal",
+        Description: "Print hello world form an internal runner.",
+        Options: []go_console.Option{
+          {
+            Name:        "foo",
+            Shortcut:    "f",
+            Value:       option.None,
+            Description: "The foo option.",
+          },
+        },
+        Runner: func(cmd *go_console.Script) go_console.ExitCode {
+          cmd.PrintTitle("Hello world! (internal runner)")
+          cmd.PrintText("Hello world!")
+
+          if option.Defined == cmd.Input.Option("foo") {
+            cmd.PrintText("foo option is defined")
+          }
+
+          return go_console.ExitSuccess
+        },
+      },
+    },
+  }
+
+  // This start the command logic.
+  script.Run()
+  // There must have no code after this line as script.run() call os.Exit() on completion.
+}
+
+func externalRunner(cmd *go_console.Script) go_console.ExitCode {
+  cmd.PrintTitle("Hello world! (external runner)")
+
+  name := cmd.Input.Argument("name")
+
+  _, err := fmt.Fprintf(cmd, "Hello %s!", name)
+
+  if err != nil {
+    panic(err)
+  }
+
+  cmd.PrintText("Hello world!")
+
+  return go_console.ExitSuccess
+}
+```
+
+Calling a command without arguments (or with only --help) will display the help
+
+<p align="center">
+    <img src="docs/assets/command/command.png">
+</p>
+
+## Defined an entry point for multiples scripts using namespaces
+
+Sometimes, you want to group your scripts by namespace because you have a lots of them and/or you want to avoid name collision.
+You can do it by using the `go_console.Script.UseNamespace` property.
+
+```go
+package main
+
+import (
+  "fmt"
+  "github.com/DrSmithFr/go-console"
+)
+
+func main() {
+
+  script := go_console.Command{
+    UseNamespace: true, // Enable namespace
+    Description: "This Command act as a group of command.",
+    Scripts: []*go_console.Script{
+      {
+        Name:        "app:user:create",
+        Description: "Print hello world form an external runner.",
+        Runner:      displayCommandName,
+      },
+      {
+        Name:        "app:user:promote",
+        Description: "Print hello world form an external runner.",
+        Runner:      displayCommandName,
+      },
+      {
+        Name:        "app:user:revoke",
+        Description: "Print hello world form an external runner.",
+        Runner:      displayCommandName,
+      },
+      {
+        Name:        "cache:clear",
+        Description: "Print hello world form an external runner.",
+        Runner:      displayCommandName,
+      },
+      {
+        Name:        "cache:warmup",
+        Description: "Print hello world form an external runner.",
+        Runner:      displayCommandName,
+      },
+      {
+        Name:        "database:create",
+        Description: "Print hello world form an external runner.",
+        Runner:      displayCommandName,
+      },
+      {
+        Name:        "database:drop",
+        Description: "Print hello world form an external runner.",
+        Runner:      displayCommandName,
+      },
+      {
+        Name:        "database:migration:migrate",
+        Description: "Print hello world form an external runner.",
+        Runner:      displayCommandName,
+      },
+      {
+        Name:        "server:start",
+        Description: "Print hello world form an external runner.",
+        Runner:      displayCommandName,
+      },
+      {
+        Name:        "server:stop",
+        Description: "Print hello world form an external runner.",
+        Runner:      displayCommandName,
+      },
+    },
+  }
+
+  // This start the command logic.
+  script.Run()
+  // There must have no code after this line as script.run() call os.Exit() on completion.
+}
+
+func displayCommandName(cmd *go_console.Script) go_console.ExitCode {
+  cmd.PrintTitle(fmt.Sprintf("Command %s", cmd.Name))
+  return go_console.ExitSuccess
+}
+```
+
+Calling the command without arguments (or with only --help) will display the help, sorted by namespace
+
+<p align="center">
+    <img src="docs/assets/command/command-namespace.png">
+</p>
+
+### Autocompletion when using namespaces
+
+When using namespaces, the autocompletion feature is enable by default.
+If autocomplete detect multiple possibilities, it will display them.
+
+<p align="center">
+    <img src="docs/assets/command/command-namespace-autocomplete.png">
+</p>
+
+Autocomplete works with namespaces, so it will autocomplete every part separated by `:`.
+So, all the following commands are equivalents:
+
+```bash
+./command app:user:create
+./command app:user:cr
+./command app:us:cr
+./command ap:us:cr
+./command a:u:c
+```
+
+As long as the autocomplete can find a unique command, it will execute it.
+
+---
+
+[Return to Table of content](#tables-of-contents)
+
+---
+
+# go_console.Script
+
+When you want to create a simple command, you must create a `go_console.Script` object.
+In this case, can get rid of `go_console.Script.Name` and `go_console.Script.Runner`.
+
+> **Note:** `go_console.Script.Runner` will be executed when `.Build()` is called. (if defined)
+```go
+package main
+
+import (
+  "github.com/DrSmithFr/go-console"
+  "github.com/DrSmithFr/go-console/input/argument"
+  "github.com/DrSmithFr/go-console/input/option"
+)
+
+func main() {
+
+  //
+  // Easy way to create a command with arguments and options
+  //
+
+  cmd := go_console.Script{
+    Description: "The app:command command.",
+    Arguments: []go_console.Argument{
+      {
+        Name:        "name",
+        Value:       argument.Required | argument.List,
+        Description: "The name of the user.",
+      },
+    },
+    Options: []go_console.Option{
+      {
+        Name:        "foo",
+        Shortcut:    "f",
+        Value:       option.None,
+        Description: "The foo option.",
+      },
+    },
+  }
+
+  cmd.Build()
+}
+```
+
+## Script Help
+
+We strongly recommend that you define a description for your command, arguments and options. This will be displayed when the user runs
+`./command --help`
+
+<p align="center">
+    <img src="docs/assets/command/script-help.png">
+</p>
+
+## Script Input
 
 The most interesting part of the commands are the arguments and options that you can make available. These arguments and
 options allow you to pass dynamic information from the terminal to the command.
 
-### Using Command Arguments
+### Using Arguments
 
 Arguments are the strings - separated by spaces - that come after the command name itself. They are ordered, and can be
-optional or required. For example, to add an optional `last_name` argument to the command and make the `name` argument
-required:
+optional or required and/or list. 
 
 ```go
 package main
@@ -78,52 +341,48 @@ import (
 func main() {
 
   // Declare the command with a struct
-  cmd1 := go_console.Cli{
-    Args: []go_console.Arg{
+  cmd := go_console.Script{
+    Description: "This is a test command",
+    Arguments: []go_console.Argument{
       {
-        Name: "name",
-        Mode: argument.Required,
+        Description: "The last name of the user",
+        Name:        "name",
+        Value:       argument.Required,
       },
     },
-    Opts: []go_console.Opt{
+    Options: []go_console.Option{
       {
-        Name:     "foo",
-        Shortcut: "f",
-        Mode:     option.None,
+        Description: "The last name of the user",
+        Name:        "foo",
+        Shortcut:    "f",
+        Value:       option.None,
       },
     },
   }
   // Build the command before using it
-  cmd1.Build()
-
-  // Declare the command with fluent interface
-  cmd2 := go_console.
-    NewCli().
-    AddInputArgument(
-      argument.
-        New("name", argument.Required).
-        SetDescription("Who do you want to greet?"),
-    ).
-    AddInputArgument(
-      argument.
-        New("last_name", argument.Optional).
-        SetDescription("Your last name?"),
-    ).Build()
+  cmd.Build()
 
   //
   // You now have access to a last_name argument in your command:
   //
 
-  text := fmt.Sprintf("Hi %s", cmd1.Input().Argument("name"))
+  text := fmt.Sprintf("Hi %s", cmd.Input.Argument("name"))
 
-  lastName := cmd2.Input().Argument("last_name")
+  lastName := cmd.Input.Argument("last_name")
 
   if lastName != "" {
     text = fmt.Sprintf("%s %s", text, lastName)
   }
 
-  cmd1.Output().Write(text)
-  cmd2.Output().Writeln("!")
+  // Using the Output as an io.Writer
+  _, err := fmt.Fprintf(cmd.Output, "%s", text)
+
+  if err != nil {
+    panic(err)
+  }
+
+  // Using the Output Methode
+  cmd.Output.Print("!")
 }
 ```
 
@@ -153,7 +412,7 @@ import (
 
 func main() {
   cmd := go_console.
-    NewCli().
+    NewScript().
     AddInputArgument(
       argument.
         New("names", argument.List | argument.Required).
@@ -165,7 +424,7 @@ func main() {
   // You can access the names argument as an array:
   //
 
-  names := cmd.Input().ArgumentList("names")
+  names := cmd.Input.ArgumentList("names")
 
   for _, name := range names {
     cmd.PrintText(fmt.Sprintf("Hi %s!", name))
@@ -196,7 +455,7 @@ You can combine `List` with `Required` and `Optional` like this:
 
 ```go
 cmd := go_console.
-  NewCli().
+  NewScript().
   AddInputArgument(
     argument.
       New("names", argument.List | argument.Required),
@@ -226,7 +485,7 @@ import (
 
 func main() {
   cmd := go_console.
-    NewCli().
+    NewScript().
     AddInputArgument(
       argument.
         New("name", argument.Required).
@@ -244,11 +503,11 @@ func main() {
   // Next, use this in the command to print the message multiple times:
   //
 
-  iterations, _ := strconv.Atoi(cmd.Input().Option("iterations"))
+  iterations, _ := strconv.Atoi(cmd.Input.Option("iterations"))
 
   for i := 0; i < iterations; i++ {
     cmd.PrintText(
-      fmt.Sprintf("Hi %s!", cmd.Input().Argument("name")),
+      fmt.Sprintf("Hi %s!", cmd.Input.Argument("name")),
     )
   }
 }
@@ -280,7 +539,7 @@ You can also declare a one-letter shortcut that you can call with a single dash,
 
 ```go
 cmd := go_console.
-  NewCli().
+  NewScript().
   AddInputOption(
     option.
       New("iterations", option.Required).
@@ -341,27 +600,26 @@ library provide several helper for that.
 package main
 
 import (
+  "github.com/DrSmithFr/go-console"
   "github.com/DrSmithFr/go-console/input"
   "github.com/DrSmithFr/go-console/output"
-  "github.com/DrSmithFr/go-console"
 )
 
 func main() {
   // create default console styler
-  cmd := go_console.NewCli()
+  cmd := go_console.NewScript()
 
   // or create styler with custom OutputInterface
   in := input.NewArgvInput(nil)
   out := output.NewCliOutput(true, nil)
-  
-  
-  io = go_console.CustomCli(in, out)
+
+  cmd2 := go_console.NewScriptCustom(in, out, true)
 
   // add title
   cmd.PrintTitle("Lorem Ipsum Dolor Sit Amet")
 
   // you still access the OutputInterface
-  cmd.Output().Write("<info>some info</>")
+  cmd2.Output.Println("<info>some info</>")
 }
 ```
 
@@ -373,21 +631,21 @@ func main() {
 package main
 
 import (
-	"fmt"
+  "fmt"
   "github.com/DrSmithFr/go-console"
 )
 
 func main() {
-	cmd := go_console.NewCli().Build()
-	out := cmd.Output()
+  cmd := go_console.NewScript().Build()
+  out := cmd.Output
 
   // Using OutputInterface or go_console.Cli helper to display styled text
-	out.Println("<info>This message has displayed by <b>Output.Println()</b>")
-	cmd.PrintText("<info>This message has displayed by <b>go_console.PrintText()</b>")
-	
-	// Or using fmt.Fprint() with OutputInterface or go_console.Cli as io.Writer
-	fmt.Fprintln(out, "<info>This message</info> using <b>Fprintln with Output</b>")
-	fmt.Fprintln(cmd, "<info>This message</info> using <b>Fprintln with go_console</b>")
+  out.Println("<info>This message has displayed by <b>Output.Println()</b>")
+  cmd.PrintText("<info>This message has displayed by <b>go_console.PrintText()</b>")
+  
+  // Or using fmt.Fprint() with OutputInterface or go_console.Cli as io.Writer
+  fmt.Fprintln(out, "<info>This message</info> using <b>Fprintln with Output</b>")
+  fmt.Fprintln(cmd, "<info>This message</info> using <b>Fprintln with go_console</b>")
 }
 ```
 
@@ -602,22 +860,22 @@ func main() {
   out := output.NewCliOutput(true, nil)
 
   // white text on a red background
-  out.Writeln("<error>An error</error>")
+  out.Println("<error>An error</error>")
 
   // green text
-  out.Writeln("<info>An information</info>")
+  out.Println("<info>An information</info>")
 
   // yellow text
-  out.Writeln("<comment>An comment</comment>")
+  out.Println("<comment>An comment</comment>")
 
   // black text on a cyan background
-  out.Writeln("<question>A question</question>")
+  out.Println("<question>A question</question>")
 
   // underscore text
-  out.Writeln("<u>Some underscore text</u>")
+  out.Println("<u>Some underscore text</u>")
 
   // bold text
-  out.Writeln("<b>Some bold text</b>")
+  out.Println("<b>Some bold text</b>")
 }
 ```
 
@@ -643,16 +901,16 @@ func main() {
   out := output.NewCliOutput(true, nil)
 
   // black text on a cyan background
-  out.Writeln("<fg=green>foo</>")
+  out.Println("<fg=green>foo</>")
 
   // green text
-  out.Writeln("<fg=black;bg=cyan>foo</>")
+  out.Println("<fg=black;bg=cyan>foo</>")
 
   // bold text on a yellow background
-  out.Writeln("<bg=yellow;options=bold>foo</>")
+  out.Println("<bg=yellow;options=bold>foo</>")
 
   // bold text with underscore
-  out.Writeln("<options=bold,underscore>foo</>")
+  out.Println("<options=bold,underscore>foo</>")
 }
 ```
 
@@ -689,7 +947,7 @@ func main() {
   out.Formatter().SetStyle("fire", *s)
 
   // use the new style
-  out.Writeln("<fire>foo</fire>")
+  out.Println("<fire>foo</fire>")
 }
 ```
 
@@ -775,7 +1033,7 @@ import (
 )
 
 func main() {
-  cmd := go_console.NewCli()
+  cmd := go_console.NewScript()
 
   if cmd.Verbosity() == verbosity.Verbose {
     cmd.PrintText("Lorem Ipsum Dolor Sit Amet")
@@ -787,15 +1045,15 @@ func main() {
   }
 
   // or using directly the output instance
-  out := cmd.Output()
+  out := cmd.Output
 
   if out.Verbosity() == verbosity.Verbose {
-    out.Writeln("Lorem Ipsum Dolor Sit Amet")
+    out.Println("Lorem Ipsum Dolor Sit Amet")
   }
 
   // available methods: .IsQuiet(), .IsVerbose(), .IsVeryVerbose(), .IsDebug()
   if out.IsVeryVerbose() {
-    out.Writeln("Lorem Ipsum Dolor Sit Amet")
+    out.Println("Lorem Ipsum Dolor Sit Amet")
   }
 }
 ```
@@ -828,8 +1086,8 @@ import (
 )
 
 func main() {
-  cmd := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, cmd.Output())
+  cmd := go_console.NewScript().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output)
 }
 ```
 
@@ -848,8 +1106,8 @@ import (
 )
 
 func main() {
-  cmd := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, cmd.Output())
+  cmd := go_console.NewScript().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output)
 
   // Simple question with default answer
   name := qh.Ask(
@@ -889,8 +1147,8 @@ import (
 )
 
 func main() {
-  cmd := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, cmd.Output())
+  cmd := go_console.NewScript().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output)
 
   // Simple question with hidden answer
   pass := qh.Ask(
@@ -922,8 +1180,8 @@ import (
 )
 
 func main() {
-  cmd := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, cmd.Output())
+  cmd := go_console.NewScript().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output)
 
   // Simple confirmation question
   answer := qh.Ask(
@@ -975,8 +1233,8 @@ import (
 )
 
 func main() {
-  cmd := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, cmd.Output())
+  cmd := go_console.NewScript().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output)
 
   colors := []string{"red", "green", "blue", "yellow", "black", "white"}
 
@@ -1025,8 +1283,8 @@ import (
 )
 
 func main() {
-  cmd := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, cmd.Output())
+  cmd := go_console.NewScript().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output)
 
   colorList := []string{"red", "green", "blue", "yellow", "black", "white"}
 
@@ -1071,8 +1329,8 @@ import (
 )
 
 func main() {
-  cmd := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, cmd.Output())
+  cmd := go_console.NewScript().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output)
 
   // Simple question with normalizer
   firstname := qh.Ask(
@@ -1116,8 +1374,8 @@ import (
 )
 
 func main() {
-  cmd := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, cmd.Output())
+  cmd := go_console.NewScript().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output)
 
   // Simple question with normalizer
   firstname := qh.Ask(
@@ -1195,8 +1453,8 @@ import (
 )
 
 func main() {
-  cmd := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, cmd.Output())
+  cmd := go_console.NewScript().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output)
 
   // Simple question with custom validator
   nickname := qh.Ask(
@@ -1245,8 +1503,8 @@ import (
 )
 
 func main() {
-  cmd := go_console.NewCli().Build()
-  qh := question.NewHelper(os.Stdin, cmd.Output())
+  cmd := go_console.NewScript().Build()
+  qh := question.NewHelper(os.Stdin, cmd.Output)
 
   // chain validator example
   answer := qh.Ask(
@@ -1307,7 +1565,7 @@ import (
 )
 
 func main() {
-  cmd := go_console.NewCli().Build()
+  cmd := go_console.NewScript().Build()
 
   tab := table.
     NewTable().
@@ -1328,7 +1586,7 @@ func main() {
     )
 
   render := table.
-    NewRender(cmd.Output()).
+    NewRender(cmd.Output).
     SetContent(tab)
 
   render.Render()
@@ -1510,7 +1768,7 @@ import (
 )
 
 func main() {
-  cmd := go_console.NewCli().Build()
+  cmd := go_console.NewScript().Build()
 
   tab := table.
     NewTable().
@@ -1546,7 +1804,7 @@ func main() {
     )
 
   render := table.
-    NewRender(cmd.Output()).
+    NewRender(cmd.Output).
     SetContent(tab)
 
   render.SetStyleFromName("box-double")
@@ -1588,7 +1846,7 @@ import (
 )
 
 func main() {
-  cmd := go_console.NewCli().Build()
+  cmd := go_console.NewScript().Build()
 
   tab := table.
     NewTable().
@@ -1637,7 +1895,7 @@ func main() {
     )
 
   render := table.
-    NewRender(cmd.Output()).
+    NewRender(cmd.Output).
     SetContent(tab)
 
   render.SetColumnMinWidth(2, 13)

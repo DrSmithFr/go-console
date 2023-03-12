@@ -6,7 +6,7 @@ import (
 
 func main() {
 	// creating default console styler
-	cmd := go_console.NewCli()
+	cmd := go_console.NewScript()
 
 	// according to my terminal size (default: 120)
 	cmd.SetMaxLineLength(80)

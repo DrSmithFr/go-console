@@ -16,8 +16,8 @@ import (
 )
 
 func main() {
-	cmd := go_console.NewCli().Build()
-	qh := question.NewHelper(os.Stdin, cmd.Output())
+	cmd := go_console.NewScript().Build()
+	qh := question.NewHelper(os.Stdin, cmd.Output)
 
 	// Simple question with default answer
 	firstname := qh.Ask(

@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	cmd := go_console.NewCli().
+	cmd := go_console.NewScript().
 		AddInputArgument(
 			argument.New("name", argument.Required),
 		).

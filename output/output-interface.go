@@ -5,7 +5,7 @@ import (
 	"github.com/DrSmithFr/go-console/verbosity"
 )
 
-// OutputInterface is the interface implemented by all Output classes
+// OutputInterface is the interface implemented by all output classes
 type OutputInterface interface {
 	// Formats a message according to the current formatter styles.
 	Format(message string) string

@@ -215,7 +215,7 @@ func (i *abstractInput) initialize() {
 	i.argumentArrays = make(map[string][]string)
 }
 
-// Binds the current Input instance with the given arguments and options
+// Binds the current input instance with the given arguments and options
 func (i *abstractInput) Bind(def definition.InputDefinition) {
 	i.initialize()
 
