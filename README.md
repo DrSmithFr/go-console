@@ -145,7 +145,7 @@ func externalRunner(cmd *go_console.Script) go_console.ExitCode {
 Calling a command without arguments (or with only --help) will display the help
 
 <p align="center">
-    <img src="docs/assets/command/command.png">
+    <img src="docs/assets/command/command-help.png">
 </p>
 
 ## Defined an entry point for multiples scripts using namespaces
@@ -234,7 +234,7 @@ func displayCommandName(cmd *go_console.Script) go_console.ExitCode {
 Calling the command without arguments (or with only --help) will display the help, sorted by namespace
 
 <p align="center">
-    <img src="docs/assets/command/command-namespace.png">
+    <img src="docs/assets/command/command-with-namespace.png">
 </p>
 
 ### Autocompletion when using namespaces
@@ -243,7 +243,7 @@ When using namespaces, the autocompletion feature is enable by default.
 If autocomplete detect multiple possibilities, it will display them.
 
 <p align="center">
-    <img src="docs/assets/command/command-namespace-autocomplete.png">
+    <img src="docs/assets/command/command-with-namespace-and-autocomplete.png">
 </p>
 
 Autocomplete works with namespaces, so it will autocomplete every part separated by `:`.
@@ -291,7 +291,7 @@ func main() {
     Arguments: []go_console.Argument{
       {
         Name:        "name",
-        Value:       argument.Required | argument.List,
+        Value:       argument.Optional | argument.List,
         Description: "The name of the user.",
       },
     },
@@ -315,7 +315,7 @@ We strongly recommend that you define a description for your command, arguments 
 `./command --help`
 
 <p align="center">
-    <img src="docs/assets/command/script-help.png">
+    <img src="docs/assets/command/script-show-help.png">
 </p>
 
 ## Script Input
