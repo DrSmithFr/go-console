@@ -23,6 +23,7 @@ func NewArgvInput(argv []string) *ArgvInput {
 	}
 
 	input.doParse = input.ParseArgv
+	input.doValidate = input.ValidateArgv
 	input.initialize()
 	input.definition = *definition.New()
 
@@ -266,4 +267,26 @@ func ArgumentsMapKeys(inputs map[string]argument.InputArgument) []string {
 	}
 
 	return keys
+}
+
+func (i *ArgvInput) ValidateArgv() {
+	for _, arg := range i.definition.Arguments() {
+		if arg.IsRequired() && !arg.IsList() && i.Argument(arg.Name()) == "" {
+			panic(errors.New(fmt.Sprintf("Argument '%s' is required", arg.Name())))
+		}
+
+		if arg.IsRequired() && arg.IsList() && len(i.ArgumentList(arg.Name())) == 0 {
+			panic(errors.New(fmt.Sprintf("Argument '%s' is required", arg.Name())))
+		}
+	}
+
+	for _, opt := range i.definition.Options() {
+		if opt.IsValueRequired() && !opt.IsList() && i.Option(opt.Name()) == "" {
+			panic(errors.New(fmt.Sprintf("Option '%s' is required", opt.Name())))
+		}
+
+		if opt.IsValueRequired() && opt.IsList() && len(i.OptionList(opt.Name())) == 0 {
+			panic(errors.New(fmt.Sprintf("Option '%s' is required", opt.Name())))
+		}
+	}
 }

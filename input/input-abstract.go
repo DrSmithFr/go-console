@@ -18,7 +18,8 @@ type abstractInput struct {
 	options      map[string]string
 	optionArrays map[string][]string
 
-	doParse func()
+	doParse    func()
+	doValidate func()
 }
 
 // get the input definition
@@ -231,5 +232,5 @@ func (i *abstractInput) Parse() {
 
 // Validates the input
 func (i *abstractInput) Validate() {
-	// TODO add input validation
+	i.doValidate()
 }
