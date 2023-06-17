@@ -1,3 +1,19 @@
+GoConsole: New Update! thanks all of you for your advice and your help. I have updated the library to be more flexible and more powerful. I have also added a lot of new features.
+
+
+Hello Go community,
+I wanted to share an update on my Go project, GoConsole. Yesterday, I introduced this lightweight module that simplifies the creation of stylish command-line script, and I was thrilled to receive feedback from the community.
+Thanks to your suggestions, I've made several key improvements to GoConsole, including:
+- Adding a wrapper called go_console.Command to manage multiple go_console.Scripts
+- Automated generation of help messages for both the wrapper and scripts
+- Adding better validation of user input
+- Constantes are now all in Pascal case
+- go_console.Script now implements the io.Writer interface
+- Capability to configure via Type or fluent setter
+  I'm particularly excited about the new wrapper, which provides more flexibility for managing multiple scripts. Additionally, the automated help message generation will make it easier for developers to understand how to use GoConsole.
+  I'm grateful for the feedback and support of the Go community, and I hope these changes make GoConsole an even more useful tool for everyone. You can find the updated code on the project's GitHub repository: https://github.com/DrSmithFr/go-console.
+  Thank you again for your help and support!"
+
 <p align="center">
     <img src="docs/assets/icon.png">
 </p>
