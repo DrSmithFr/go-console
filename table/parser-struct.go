@@ -127,6 +127,11 @@ func extractHeadersFromStruct(typ reflect.Type, tagsOnly bool) (headers []Struct
 
 	for i, n := 0, typ.NumField(); i < n; i++ {
 		f := typ.Field(i)
+
+		if f.Type.Kind() == reflect.Ptr {
+			f.Type = f.Type.Elem()
+		}
+
 		if f.Type.Kind() == reflect.Struct && f.Tag.Get(HeaderTag) == InlineHeaderTag {
 			hs := extractHeadersFromStruct(f.Type, tagsOnly)
 			headers = append(headers, hs...)
@@ -270,8 +275,18 @@ func getRowFromStruct(v reflect.Value, tagsOnly bool) (cells []string, rightCell
 	for i, n := 0, typ.NumField(); i < n; i++ {
 
 		f := typ.Field(i)
+
+		if f.Type.Kind() == reflect.Ptr {
+			f.Type = f.Type.Elem()
+		}
+
 		header, ok := extractHeaderFromStructField(f, j, tagsOnly)
+
 		if !ok {
+			if f.Type.Kind() == reflect.Ptr {
+				f.Type = f.Type.Elem()
+			}
+
 			if f.Type.Kind() == reflect.Struct && f.Tag.Get(HeaderTag) == InlineHeaderTag {
 				fieldValue := indirectValue(v.Field(i))
 				c, rc := getRowFromStruct(fieldValue, tagsOnly)
