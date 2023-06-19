@@ -95,7 +95,9 @@ func extractHeaderFromStructField(f reflect.StructField, pos int, tagsOnly bool,
 	}
 
 	// embedded structs are acting like headers appended to the existing(s).
-	if headerTag != "" {
+	if headerTag == InlineHeaderTag {
+		return emptyHeader, false
+	} else if headerTag != "" {
 		if header, ok := extractHeaderFromTag(f, headerTag); ok {
 			header.Position = pos
 
