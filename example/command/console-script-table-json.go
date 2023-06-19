@@ -6,7 +6,7 @@ import (
 )
 
 type Author struct {
-	Name string `header:"Author"`
+	Name string
 	Age  int
 }
 

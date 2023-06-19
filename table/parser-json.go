@@ -9,7 +9,7 @@ type jsonParser struct{}
 
 var byteTyp = reflect.TypeOf([]byte{0x00}[0])
 
-func (p *jsonParser) Parse(v reflect.Value, filters []RowFilter) (headers []string, rows [][]string, nums []int) {
+func (p *jsonParser) Parse(v reflect.Value, filters []RowFilter) (headers [][]string, rows [][]string, nums []int) {
 	var b []byte
 
 	if kind := v.Kind(); kind == reflect.Slice {

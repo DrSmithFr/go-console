@@ -11,7 +11,7 @@ type mapParser struct {
 	TagsOnly bool
 }
 
-func (p *mapParser) Parse(v reflect.Value, filters []RowFilter) ([]string, [][]string, []int) {
+func (p *mapParser) Parse(v reflect.Value, filters []RowFilter) ([][]string, [][]string, []int) {
 	keys := p.Keys(v)
 	if len(keys) == 0 {
 		return nil, nil, nil
@@ -109,7 +109,7 @@ func (p *mapParser) ParseRows(v reflect.Value, keys []reflect.Value, filters []R
 	return rows, numbers
 }
 
-func (p *mapParser) ParseHeaders(v reflect.Value, keys []reflect.Value) (headers []string) {
+func (p *mapParser) ParseHeaders(v reflect.Value, keys []reflect.Value) (headers [][]string) {
 	if len(keys) == 0 {
 		return nil
 	}
@@ -122,7 +122,7 @@ func (p *mapParser) ParseHeaders(v reflect.Value, keys []reflect.Value) (headers
 		}
 
 		if header := stringValue(key); header != "" {
-			headers = append(headers, header)
+			headers[0] = append(headers[0], header)
 		}
 	}
 
