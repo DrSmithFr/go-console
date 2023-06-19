@@ -114,6 +114,8 @@ func (p *mapParser) ParseHeaders(v reflect.Value, keys []reflect.Value) (headers
 		return nil
 	}
 
+	headers = make([][]string, 1)
+
 	for _, key := range keys {
 		// support any type, even if it's declared as "interface{}" or pointer to something, we care about this "something"'s value.
 		key = indirectValue(key)

@@ -33,18 +33,13 @@ func (p *structParser) Parse(v reflect.Value, filters []RowFilter) ([][]string, 
 }
 
 func (p *structParser) ParseHeaders(v reflect.Value) [][]string {
-	hs := extractHeadersFromStruct(v.Type(), true, 0)
+	hs := extractHeadersFromStruct(v.Type(), false, 0)
+
 	if len(hs) == 0 {
 		return nil
 	}
 
-	headers := make([][]string, 1)
-	headers[0] = make([]string, len(hs))
-	for idx := range hs {
-		headers[0][idx] = hs[idx].Name
-	}
-
-	return headers
+	return makeHeadersCellsFromStructHeaders(hs)
 }
 
 func (p *structParser) ParseRow(v reflect.Value) ([]string, []int) {
@@ -65,7 +60,8 @@ type TimestampHeaderTagValue struct {
 
 // StructHeader contains the name of the header extracted from the struct's `HeaderTag` field tag.
 type StructHeader struct {
-	Name string
+	Name        string
+	DefaultName bool
 
 	InlineStruct bool
 
@@ -114,13 +110,15 @@ func extractHeaderFromStructField(f reflect.StructField, pos int, tagsOnly bool,
 				ColSpan:      len(headers),
 				InlineStruct: true,
 				Name:         f.Name,
+				DefaultName:  true,
 			}, true
 		}
 
 		return StructHeader{
-			Position: pos,
-			Depth:    depth,
-			Name:     f.Name,
+			Position:    pos,
+			Depth:       depth,
+			Name:        f.Name,
+			DefaultName: true,
 		}, true
 	}
 
@@ -153,6 +151,10 @@ func extractHeadersFromStruct(typ reflect.Type, tagsOnly bool, depth int) (heade
 
 			for idx := range hs {
 				hs[idx].Position += i
+
+				if hs[idx].DefaultName {
+					hs[idx].Name = f.Name + " " + hs[idx].Name
+				}
 			}
 
 			headers = append(headers, hs...)
@@ -278,6 +280,7 @@ func extractHeaderFromTag(f reflect.StructField, headerTag string) (header Struc
 
 	if len(parts) == 0 {
 		header.Name = f.Name
+		header.DefaultName = true
 	} else {
 		// header name is the first part.
 		header.Name = parts[0]
@@ -345,7 +348,7 @@ func getRowFromStruct(v reflect.Value, tagsOnly bool) (cells []string, rightCell
 			continue
 		}
 
-		if header.InlineStruct {
+		if f.Type.Kind() == reflect.Struct {
 			fieldValue := indirectValue(v.Field(i))
 			c, rc := getRowFromStruct(fieldValue, tagsOnly)
 			for _, rcc := range rc {
