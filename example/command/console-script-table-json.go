@@ -7,12 +7,12 @@ import (
 
 type Author struct {
 	Name string `header:"Author"`
-	Age  int    `header:"Age,number"`
+	Age  int
 }
 
 type Book struct {
-	ISBN   *string `header:"ISBN"`
-	Title  *string `header:"Title"`
+	ISBN   *string
+	Title  *string
 	Author *Author `header:"inline"`
 }
 

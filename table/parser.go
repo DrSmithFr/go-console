@@ -17,8 +17,8 @@ type Parser interface {
 
 // The built'n type parsers, all except `JSONParser` are directly linked to the `Print/PrintHeadList` functions.
 var (
-	StructParser = &structParser{TagsOnly: true}
-	SliceParser  = &sliceParser{TagsOnly: true}
+	StructParser = &structParser{TagsOnly: false}
+	SliceParser  = &sliceParser{TagsOnly: false}
 	MapParser    = &mapParser{TagsOnly: false}
 	JSONParser   = new(jsonParser)
 )
