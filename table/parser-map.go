@@ -115,7 +115,9 @@ func (p *mapParser) ParseHeaders(v reflect.Value, keys []reflect.Value) (headers
 	}
 
 	headers = make([]TableRowInterface, 1)
+	headers[0] = NewTableRow()
 
+	index := 0
 	for _, key := range keys {
 		// support any type, even if it's declared as "interface{}" or pointer to something, we care about this "something"'s value.
 		key = indirectValue(key)
@@ -124,16 +126,14 @@ func (p *mapParser) ParseHeaders(v reflect.Value, keys []reflect.Value) (headers
 		}
 
 		if header := stringValue(key); header != "" {
-			headers[0] = &TableRow{
-				Columns: map[int]TableColumnInterface{
-					0: &TableColumn{
-						Cell: &TableCell{
-							Value: header,
-						},
-					},
+			headers[0].SetColumn(index, &TableColumn{
+				Cell: &TableCell{
+					Value: header,
 				},
-			}
+			})
 		}
+
+		index++
 	}
 
 	return
