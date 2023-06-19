@@ -13,7 +13,7 @@ type Author struct {
 type Book struct {
 	ISBN   *string
 	Title  *string
-	Author *Author `header:"Author"`
+	Author *Author `header:"inline"`
 }
 
 func (b Book) String() string {

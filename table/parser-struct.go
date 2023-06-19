@@ -98,6 +98,12 @@ func extractHeaderFromStructField(f reflect.StructField, pos int, tagsOnly bool,
 	if headerTag != "" {
 		if header, ok := extractHeaderFromTag(f, headerTag); ok {
 			header.Position = pos
+
+			if f.Type.Kind() == reflect.Struct {
+				headers := extractHeadersFromStruct(f.Type, tagsOnly, depth+1)
+				header.ColSpan = len(headers)
+			}
+
 			return header, true
 		}
 
