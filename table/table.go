@@ -244,7 +244,7 @@ func (t *Table) ParseHeader(in interface{}, filters ...interface{}) *Table {
 
 	headers, _, _ := parser.Parse(v, f)
 
-	t.AddHeadersFromString(headers)
+	t.AddHeaders(headers)
 
 	return t
 }
@@ -276,7 +276,7 @@ func (t *Table) ParseData(in interface{}, filters ...interface{}) *Table {
 
 	headers, rows, _ := parser.Parse(v, f)
 
-	t.AddHeadersFromString(headers)
+	t.AddHeaders(headers)
 	t.AddRowsFromString(rows)
 
 	return t
@@ -294,7 +294,7 @@ func (t *Table) ParseJSON(in []byte, filters ...interface{}) *Table {
 
 	headers, rows, _ := JSONParser.Parse(v, f)
 
-	t.AddHeadersFromString(headers)
+	t.AddHeaders(headers)
 	t.AddRowsFromString(rows)
 
 	return t

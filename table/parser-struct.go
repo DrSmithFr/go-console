@@ -22,7 +22,7 @@ type structParser struct {
 	TagsOnly bool
 }
 
-func (p *structParser) Parse(v reflect.Value, filters []RowFilter) ([][]string, [][]string, []int) {
+func (p *structParser) Parse(v reflect.Value, filters []RowFilter) (headers []TableRowInterface, rows [][]string, number []int) {
 	if !CanAcceptRow(v, filters) {
 		return nil, nil, nil
 	}
@@ -32,7 +32,7 @@ func (p *structParser) Parse(v reflect.Value, filters []RowFilter) ([][]string, 
 	return p.ParseHeaders(v), [][]string{row}, nums
 }
 
-func (p *structParser) ParseHeaders(v reflect.Value) [][]string {
+func (p *structParser) ParseHeaders(v reflect.Value) []TableRowInterface {
 	hs := extractHeadersFromStruct(v.Type(), false, 0)
 
 	if len(hs) == 0 {

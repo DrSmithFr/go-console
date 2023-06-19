@@ -11,16 +11,16 @@ type mapParser struct {
 	TagsOnly bool
 }
 
-func (p *mapParser) Parse(v reflect.Value, filters []RowFilter) ([][]string, [][]string, []int) {
+func (p *mapParser) Parse(v reflect.Value, filters []RowFilter) (headers []TableRowInterface, rows [][]string, numbers []int) {
 	keys := p.Keys(v)
 	if len(keys) == 0 {
 		return nil, nil, nil
 	}
 
-	headers := p.ParseHeaders(v, keys)
-	rows, numbers := p.ParseRows(v, keys, filters)
+	headers = p.ParseHeaders(v, keys)
+	rows, numbers = p.ParseRows(v, keys, filters)
 
-	return headers, rows, numbers
+	return
 }
 
 func (p *mapParser) Keys(v reflect.Value) []reflect.Value {
@@ -109,12 +109,12 @@ func (p *mapParser) ParseRows(v reflect.Value, keys []reflect.Value, filters []R
 	return rows, numbers
 }
 
-func (p *mapParser) ParseHeaders(v reflect.Value, keys []reflect.Value) (headers [][]string) {
+func (p *mapParser) ParseHeaders(v reflect.Value, keys []reflect.Value) (headers []TableRowInterface) {
 	if len(keys) == 0 {
 		return nil
 	}
 
-	headers = make([][]string, 1)
+	headers = make([]TableRowInterface, 1)
 
 	for _, key := range keys {
 		// support any type, even if it's declared as "interface{}" or pointer to something, we care about this "something"'s value.
@@ -124,7 +124,15 @@ func (p *mapParser) ParseHeaders(v reflect.Value, keys []reflect.Value) (headers
 		}
 
 		if header := stringValue(key); header != "" {
-			headers[0] = append(headers[0], header)
+			headers[0] = &TableRow{
+				Columns: map[int]TableColumnInterface{
+					0: &TableColumn{
+						Cell: &TableCell{
+							Value: header,
+						},
+					},
+				},
+			}
 		}
 	}
 

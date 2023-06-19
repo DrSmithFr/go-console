@@ -1,14 +1,27 @@
 package table
 
-func makeHeadersCellsFromStructHeaders(hs []StructHeader) (headers [][]string) {
+func makeHeadersCellsFromStructHeaders(hs []StructHeader) (headers []TableRowInterface) {
 	length, depth := headersLengthAndDepth(hs)
 
 	for d := 0; d <= depth; d++ {
-		headers = append(headers, []string{})
+		headers = append(headers, NewTableRow())
 
 		for l := 0; l <= length; {
-			h := getHeaderAt(hs, d, l)
-			headers[d] = append(headers[d], h.Name)
+			h, _ := getHeaderAt(hs, d, l)
+
+			padding := PadDefault
+
+			if h.ColSpan > 1 {
+				padding = PadToCenter
+			}
+
+			headers[d].SetColumn(l, &TableColumn{
+				Cell: &TableCell{
+					Value:   h.Name,
+					Colspan: h.ColSpan,
+					PadType: padding,
+				},
+			})
 
 			if h.ColSpan == 0 {
 				l++
@@ -35,12 +48,12 @@ func headersLengthAndDepth(headers []StructHeader) (length int, depth int) {
 	return
 }
 
-func getHeaderAt(headers []StructHeader, depth int, length int) (header StructHeader) {
+func getHeaderAt(headers []StructHeader, depth int, length int) (header StructHeader, found bool) {
 	for _, h := range headers {
 		if h.Depth == depth && h.Position == length {
-			return h
+			return h, true
 		}
 	}
 
-	return emptyHeader
+	return emptyHeader, false
 }

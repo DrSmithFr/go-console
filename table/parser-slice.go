@@ -10,7 +10,7 @@ type sliceParser struct {
 
 var emptyStruct = struct{}{}
 
-func (p *sliceParser) Parse(v reflect.Value, filters []RowFilter) ([][]string, [][]string, []int) {
+func (p *sliceParser) Parse(v reflect.Value, filters []RowFilter) ([]TableRowInterface, [][]string, []int) {
 	headers := p.ParseHeaders(v)
 	rows, nums := p.ParseRows(v, filters)
 	return headers, rows, nums
@@ -40,7 +40,7 @@ func (p *sliceParser) ParseRows(v reflect.Value, filters []RowFilter) (rows [][]
 	return
 }
 
-func (p *sliceParser) ParseHeaders(v reflect.Value) (headers [][]string) {
+func (p *sliceParser) ParseHeaders(v reflect.Value) (headers []TableRowInterface) {
 	tmp := make(map[reflect.Type]struct{})
 
 	for i, n := 0, v.Len(); i < n; i++ {

@@ -12,7 +12,7 @@ type Parser interface {
 	// Why not `ParseRows` and `ParseHeaders`?
 	// Because type map has not a specific order, order can change at different runtimes,
 	// so we must keep record on the keys order the first time we fetche them (=> see `MapParser#ParseRows`, `MapParser#ParseHeaders`).
-	Parse(v reflect.Value, filters []RowFilter) (headers [][]string, rows [][]string, numbers []int)
+	Parse(v reflect.Value, filters []RowFilter) (headers []TableRowInterface, rows [][]string, numbers []int)
 }
 
 // The built'n type parsers, all except `JSONParser` are directly linked to the `Print/PrintHeadList` functions.
