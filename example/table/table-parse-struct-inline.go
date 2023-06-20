@@ -5,36 +5,29 @@ import (
 	"github.com/DrSmithFr/go-console/table"
 )
 
-type Author struct {
-	Name string
-	Age  int
-}
-
-type Book struct {
-	ISBN   *string
-	Title  *string
-	Author *Author `header:"inline"`
-}
-
-func (b Book) String() string {
-	return *b.ISBN
-}
-
-func ptrStr(str string) *string {
-	return &str
-}
-
 func main() {
-	cmd := go_console.NewScript().Build()
+
+	type Author struct {
+		Name string
+		Age  int
+	}
+
+	type Book struct {
+		ISBN   string
+		Title  string
+		Author *Author `header:"inline"`
+	}
 
 	book := Book{
-		ISBN:  ptrStr("99921-58-10-7"),
-		Title: ptrStr("The Divine Comedy"),
+		ISBN:  "99921-58-10-7",
+		Title: "The Divine Comedy",
 		Author: &Author{
 			Name: "Dante Alighieri",
 			Age:  56,
 		},
 	}
+
+	cmd := go_console.NewScript().Build()
 
 	tab := table.
 		NewTable().

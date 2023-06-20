@@ -15,8 +15,6 @@ func (b Book) String() string {
 }
 
 func main() {
-	cmd := go_console.NewScript().Build()
-
 	books := map[string][]Book{
 		"bookshelves 1": {
 			{ISBN: "99921-58-10-7", Title: "The Divine Comedy"},
@@ -27,6 +25,8 @@ func main() {
 			{ISBN: "80-902734-1-6", Title: "And Then There Were None"},
 		},
 	}
+
+	cmd := go_console.NewScript().Build()
 
 	tab := table.
 		NewTable().

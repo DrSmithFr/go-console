@@ -7,27 +7,33 @@ import (
 
 func main() {
 
+	type Address struct {
+		city    string
+		country string
+	}
+
 	type Author struct {
-		Name string
-		Age  int
+		Name    string
+		Age     int
+		Address *Address
 	}
 
 	type Book struct {
-		ISBN   *string
+		ISBN   string
 		Title  string
 		Author *Author
 	}
 
-	ptrStr := func(str string) *string {
-		return &str
-	}
-
 	book := Book{
-		ISBN:  ptrStr("99921-58-10-7"),
+		ISBN:  "99921-58-10-7",
 		Title: "The Divine Comedy",
 		Author: &Author{
 			Name: "Dante Alighieri",
 			Age:  56,
+			Address: &Address{
+				city:    "Florence",
+				country: "Italy",
+			},
 		},
 	}
 
