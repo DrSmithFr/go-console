@@ -19,7 +19,11 @@ var (
 )
 
 type structParser struct {
-	TagsOnly bool
+	Config *ParserConfig
+}
+
+func (p *structParser) SetConfig(config *ParserConfig) {
+	p.Config = config
 }
 
 func (p *structParser) Parse(v reflect.Value, filters []RowFilter) (headers []TableRowInterface, rows [][]string, number []int) {
@@ -33,7 +37,7 @@ func (p *structParser) Parse(v reflect.Value, filters []RowFilter) (headers []Ta
 }
 
 func (p *structParser) ParseHeaders(v reflect.Value) []TableRowInterface {
-	hs := extractHeadersFromStruct(v.Type(), false, 0)
+	hs := extractHeadersFromStruct(v.Type(), *p.Config, 0)
 
 	if len(hs) == 0 {
 		return nil
@@ -43,7 +47,7 @@ func (p *structParser) ParseHeaders(v reflect.Value) []TableRowInterface {
 }
 
 func (p *structParser) ParseRow(v reflect.Value) ([]string, []int) {
-	return getRowFromStruct(v, p.TagsOnly, 0)
+	return getRowFromStruct(v, *p.Config, 0)
 }
 
 // TimestampHeaderTagValue the header's value of a "timestamp" header tag functionality.
@@ -84,13 +88,13 @@ type StructHeader struct {
 // Variable helpers.
 var emptyHeader StructHeader
 
-func extractHeaderFromStructField(f reflect.StructField, pos int, tagsOnly bool, depth int) (header StructHeader, ok bool) {
-	if f.PkgPath != "" {
+func extractHeaderFromStructField(f reflect.StructField, pos int, config ParserConfig, depth int) (header StructHeader, ok bool) {
+	if !config.UnexportedFields && f.PkgPath != "" {
 		return // ignore unexported fields.
 	}
 
 	headerTag := f.Tag.Get(HeaderTag)
-	if headerTag == "" && tagsOnly {
+	if headerTag == "" && config.TagsFieldsOnly {
 		return emptyHeader, false
 	}
 
@@ -102,16 +106,16 @@ func extractHeaderFromStructField(f reflect.StructField, pos int, tagsOnly bool,
 			header.Position = pos
 
 			if f.Type.Kind() == reflect.Struct {
-				headers := extractHeadersFromStruct(f.Type, tagsOnly, depth+1)
+				headers := extractHeadersFromStruct(f.Type, config, depth+1)
 				header.ColSpan = len(headers)
 			}
 
 			return header, true
 		}
 
-	} else if !tagsOnly {
+	} else if !config.TagsFieldsOnly {
 		if f.Type.Kind() == reflect.Struct {
-			headers := extractHeadersFromStruct(f.Type, tagsOnly, depth+1)
+			headers := extractHeadersFromStruct(f.Type, config, depth+1)
 			return StructHeader{
 				Position:     pos,
 				Depth:        depth,
@@ -133,7 +137,7 @@ func extractHeaderFromStructField(f reflect.StructField, pos int, tagsOnly bool,
 	return emptyHeader, false
 }
 
-func extractHeadersFromStruct(typ reflect.Type, tagsOnly bool, depth int) (headers []StructHeader) {
+func extractHeadersFromStruct(typ reflect.Type, config ParserConfig, depth int) (headers []StructHeader) {
 	typ = indirectType(typ)
 	if typ.Kind() != reflect.Struct {
 		return
@@ -155,7 +159,7 @@ func extractHeadersFromStruct(typ reflect.Type, tagsOnly bool, depth int) (heade
 		}
 
 		if f.Type.Kind() == reflect.Struct && f.Tag.Get(HeaderTag) == InlineHeaderTag {
-			hs := extractHeadersFromStruct(f.Type, tagsOnly, depth)
+			hs := extractHeadersFromStruct(f.Type, config, depth)
 
 			for idx := range hs {
 				hs[idx].Position += i
@@ -170,10 +174,10 @@ func extractHeadersFromStruct(typ reflect.Type, tagsOnly bool, depth int) (heade
 		}
 
 		if f.Type.Kind() == reflect.Struct {
-			header, _ := extractHeaderFromStructField(f, i, tagsOnly, depth)
+			header, _ := extractHeaderFromStructField(f, i, config, depth)
 			headers = append(headers, header)
 
-			hs := extractHeadersFromStruct(f.Type, tagsOnly, depth+1)
+			hs := extractHeadersFromStruct(f.Type, config, depth+1)
 
 			for idx := range hs {
 				hs[idx].Position += i
@@ -183,7 +187,7 @@ func extractHeadersFromStruct(typ reflect.Type, tagsOnly bool, depth int) (heade
 			continue
 		}
 
-		header, _ := extractHeaderFromStructField(f, i, tagsOnly, depth)
+		header, _ := extractHeaderFromStructField(f, i, config, depth)
 		if header.Name != "" {
 			headers = append(headers, header)
 		}
@@ -324,7 +328,7 @@ func extractHeaderFromTag(f reflect.StructField, headerTag string) (header Struc
 
 // getRowFromStruct returns the positions of the cells that should be aligned to the right
 // and the list of cells(= the values based on the cell's description) based on the "in" value.
-func getRowFromStruct(v reflect.Value, tagsOnly bool, depth int) (cells []string, rightCells []int) {
+func getRowFromStruct(v reflect.Value, config ParserConfig, depth int) (cells []string, rightCells []int) {
 	typ := v.Type()
 	j := 0
 
@@ -336,7 +340,7 @@ func getRowFromStruct(v reflect.Value, tagsOnly bool, depth int) (cells []string
 			f.Type = f.Type.Elem()
 		}
 
-		header, ok := extractHeaderFromStructField(f, j, tagsOnly, 0)
+		header, ok := extractHeaderFromStructField(f, j, config, 0)
 
 		if !ok {
 			if f.Type.Kind() == reflect.Ptr {
@@ -345,7 +349,7 @@ func getRowFromStruct(v reflect.Value, tagsOnly bool, depth int) (cells []string
 
 			if f.Type.Kind() == reflect.Struct && f.Tag.Get(HeaderTag) == InlineHeaderTag {
 				fieldValue := indirectValue(v.Field(i))
-				c, rc := getRowFromStruct(fieldValue, tagsOnly, depth)
+				c, rc := getRowFromStruct(fieldValue, config, depth)
 				for _, rcc := range rc {
 					rightCells = append(rightCells, rcc+j)
 				}
@@ -358,7 +362,7 @@ func getRowFromStruct(v reflect.Value, tagsOnly bool, depth int) (cells []string
 
 		if f.Type.Kind() == reflect.Struct {
 			fieldValue := indirectValue(v.Field(i))
-			c, rc := getRowFromStruct(fieldValue, tagsOnly, depth+1)
+			c, rc := getRowFromStruct(fieldValue, config, depth+1)
 			for _, rcc := range rc {
 				rightCells = append(rightCells, rcc+j)
 			}
@@ -369,7 +373,7 @@ func getRowFromStruct(v reflect.Value, tagsOnly bool, depth int) (cells []string
 		}
 
 		fieldValue := indirectValue(v.Field(i))
-		c, r := extractCells(j, header, fieldValue, tagsOnly)
+		c, r := extractCells(j, header, fieldValue, config)
 		rightCells = append(rightCells, c...)
 		cells = append(cells, r...)
 		j++

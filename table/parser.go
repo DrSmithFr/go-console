@@ -4,28 +4,40 @@ import (
 	"reflect"
 )
 
+type ParserConfig struct {
+	TagsFieldsOnly   bool // if true, only tagged fields will be parsed.
+	UnexportedFields bool // if true, unexported fields will be parsed too.
+}
+
 // Parser should be implemented by all available reflect-based parsers.
 //
 // See `StructParser`(struct{} type), `SliceParser`(slice[] type), `MapParser`(map type) and `JSONParser`(any type).
 // Manually registering of a parser is a valid option (although not a recommendation), see `RegisterParser` for more.
 type Parser interface {
-	// Why not `ParseRows` and `ParseHeaders`?
+	// Parse Why not `ParseRows` and `ParseHeaders`?
 	// Because type map has not a specific order, order can change at different runtimes,
 	// so we must keep record on the keys order the first time we fetche them (=> see `MapParser#ParseRows`, `MapParser#ParseHeaders`).
 	Parse(v reflect.Value, filters []RowFilter) (headers []TableRowInterface, rows [][]string, numbers []int)
+
+	// SetConfig sets the parser's configuration.
+	SetConfig(config *ParserConfig)
 }
 
 // The built'n type parsers, all except `JSONParser` are directly linked to the `Print/PrintHeadList` functions.
 var (
-	StructParser = &structParser{TagsOnly: false}
-	SliceParser  = &sliceParser{TagsOnly: false}
-	MapParser    = &mapParser{TagsOnly: false}
+	DefaultConfig = ParserConfig{
+		TagsFieldsOnly: false,
+	}
+	StructParser = &structParser{Config: &DefaultConfig}
+	SliceParser  = &sliceParser{Config: &DefaultConfig}
+	MapParser    = &mapParser{Config: &DefaultConfig}
 	JSONParser   = new(jsonParser)
 )
 
 // WhichParser returns the available `Parser` for the "typ" type; Slice, Map, Struct...
-func WhichParser(typ reflect.Type) Parser {
+func WhichParser(typ reflect.Type, config *ParserConfig) Parser {
 	if p, ok := availableParsers[typ.Kind()]; ok {
+		p.SetConfig(config)
 		return p
 	}
 	return nil // it can return nil.

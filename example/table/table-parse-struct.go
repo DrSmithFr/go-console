@@ -9,7 +9,7 @@ func main() {
 
 	type Author struct {
 		Name string
-		Age  int
+		age  int
 	}
 
 	type Book struct {
@@ -27,7 +27,7 @@ func main() {
 		Title: "The Divine Comedy",
 		Author: &Author{
 			Name: "Dante Alighieri",
-			Age:  56,
+			age:  56,
 		},
 	}
 
@@ -35,7 +35,11 @@ func main() {
 
 	tab := table.
 		NewTable().
-		ParseData(book)
+		SetParseConfig(table.ParserConfig{
+			TagsFieldsOnly:   false,
+			UnexportedFields: true,
+		}).
+		Parse(book)
 
 	render := table.
 		NewRender(cmd.Output).

@@ -28,6 +28,8 @@ type Table struct {
 	footerTitle string
 
 	columnsPadding map[int]PaddingType
+
+	parsingConfig *ParserConfig
 }
 
 // Table constructors
@@ -37,6 +39,10 @@ func NewTable() *Table {
 		headers:        NewTableData(),
 		rows:           NewTableData(),
 		columnsPadding: map[int]PaddingType{},
+		parsingConfig: &ParserConfig{
+			TagsFieldsOnly:   false,
+			UnexportedFields: false,
+		},
 	}
 }
 
@@ -233,11 +239,16 @@ func (t *Table) GetColumnPadding(column int) PaddingType {
 
 // Data parse Helpers for Structs
 
-func (t *Table) ParseHeader(in interface{}, filters ...interface{}) *Table {
+func (t *Table) SetParseConfig(config ParserConfig) *Table {
+	t.parsingConfig = &config
+	return t
+}
+
+func (t *Table) ParseHeaders(in interface{}, filters ...interface{}) *Table {
 	v := indirectValue(reflect.ValueOf(in))
 	f := MakeFilters(v, filters...)
 
-	parser := WhichParser(v.Type())
+	parser := WhichParser(v.Type(), t.parsingConfig)
 	if parser == nil {
 		panic("Invalid data type")
 	}
@@ -253,7 +264,7 @@ func (t *Table) ParseRows(in interface{}, filters ...interface{}) *Table {
 	v := indirectValue(reflect.ValueOf(in))
 	f := MakeFilters(v, filters...)
 
-	parser := WhichParser(v.Type())
+	parser := WhichParser(v.Type(), t.parsingConfig)
 	if parser == nil {
 		panic("Invalid data type")
 	}
@@ -265,11 +276,11 @@ func (t *Table) ParseRows(in interface{}, filters ...interface{}) *Table {
 	return t
 }
 
-func (t *Table) ParseData(in interface{}, filters ...interface{}) *Table {
+func (t *Table) Parse(in interface{}, filters ...interface{}) *Table {
 	v := indirectValue(reflect.ValueOf(in))
 	f := MakeFilters(v, filters...)
 
-	parser := WhichParser(v.Type())
+	parser := WhichParser(v.Type(), t.parsingConfig)
 	if parser == nil {
 		panic("Invalid data type")
 	}
@@ -292,7 +303,7 @@ func (t *Table) ParseJSON(in []byte, filters ...interface{}) *Table {
 		panic("Invalid JSON data")
 	}
 
-	headers, rows, _ := JSONParser.Parse(v, f)
+	headers, rows, _ := JSONParser.Parse(v, f, t.parsingConfig)
 
 	t.AddHeaders(headers)
 	t.AddRowsFromString(rows)

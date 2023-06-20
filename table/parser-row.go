@@ -9,6 +9,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"unsafe"
 
 	"github.com/dustin/go-humanize"
 )
@@ -150,242 +151,253 @@ func MakeFilters(in reflect.Value, genericFilters ...interface{}) (f []RowFilter
 	return
 }
 
-func extractCells(pos int, header StructHeader, v reflect.Value, whenStructTagsOnly bool) (rightCells []int, cells []string) {
-	if v.IsValid() && v.CanInterface() {
-		s := ""
-		vi := v.Interface()
+func extractCells(pos int, header StructHeader, v reflect.Value, config ParserConfig) (rightCells []int, cells []string) {
+	if !v.IsValid() {
+		return
+	}
 
-		switch v.Kind() {
-		case reflect.Int64:
-			if header.ValueAsTimestamp {
-				n := vi.(int64)
-				if n <= 0 {
-					break
-				}
+	s := ""
+	var vi any
 
-				if header.TimestampValue.FromMilliseconds { // to seconds.
-					n = n / 1000
-				}
+	if v.CanInterface() {
+		// if the value is exported, then we can use the interface{} directly.
+		vi = v.Interface()
+	} else {
+		// if the value is unexported, then we need to use unsafe to get its value.
+		uv := reflect.NewAt(v.Type(), unsafe.Pointer(v.UnsafeAddr())).Elem()
+		vi = uv.Interface()
+	}
 
-				t := time.Unix(n, 0)
-				if t.IsZero() {
-					break
-				}
-
-				if header.TimestampValue.UTC {
-					t = t.UTC()
-				} else if header.TimestampValue.Local {
-					t = t.Local()
-				}
-
-				if header.TimestampValue.Human {
-					s = humanize.Time(t)
-				} else {
-					s = t.Format(header.TimestampValue.Format)
-				}
-
-				// if !header.ValueAsText {
-				// 	rightCells = append(rightCells, pos)
-				// }
-
+	switch v.Kind() {
+	case reflect.Int64:
+		if header.ValueAsTimestamp {
+			n := vi.(int64)
+			if n <= 0 {
 				break
 			}
 
-			if header.ValueAsDuration {
-				got := vi.(int64)
-				if got <= 0 {
-					break
-				}
+			if header.TimestampValue.FromMilliseconds { // to seconds.
+				n = n / 1000
+			}
 
-				dif := time.Now().Unix() - got/1000
-				t := time.Unix(dif, 0)
-				dur := time.Since(t)
-				if dur <= 0 {
-					break
-				}
-
-				dur += (100 * time.Millisecond) / 2
-				days := (dur / (24 * time.Hour))
-				dur = dur % (24 * time.Hour)
-				hours := dur / time.Hour
-				dur = dur % time.Hour
-				minutes := dur / time.Minute
-				dur = dur % time.Minute
-				seconds := dur / time.Second
-
-				if days == 1 {
-					s = fmt.Sprintf("%d day", days)
-				} else if days > 1 {
-					s = fmt.Sprintf("%d days", days)
-				}
-
-				if hours == 1 {
-					s += fmt.Sprintf(" %d hour", hours)
-				} else if hours > 1 {
-					s += fmt.Sprintf(" %d hours", hours)
-				}
-
-				if minutes == 1 {
-					s += fmt.Sprintf(" %d minute", minutes)
-				} else if minutes > 1 {
-					s += fmt.Sprintf(" %d minutes", minutes)
-				}
-
-				if seconds >= 30 {
-					s += fmt.Sprintf(" %d seconds", seconds)
-				} else if s == "" && seconds > 0 {
-					s = "few seconds"
-				}
-
-				// remove first space if any.
-				if s != "" && s[0] == ' ' {
-					s = s[1:]
-				}
-
+			t := time.Unix(n, 0)
+			if t.IsZero() {
 				break
 			}
 
-			if !header.ValueAsText {
-				header.ValueAsNumber = true
-				rightCells = append(rightCells, pos)
+			if header.TimestampValue.UTC {
+				t = t.UTC()
+			} else if header.TimestampValue.Local {
+				t = t.Local()
 			}
 
-			s = fmt.Sprintf("%d", vi)
-		// 	fallthrough
-		case reflect.Int, reflect.Int16, reflect.Int32:
-			if !header.ValueAsText {
-				header.ValueAsNumber = true
-				rightCells = append(rightCells, pos)
-			}
-
-			s = fmt.Sprintf("%d", vi)
-		case reflect.Float32, reflect.Float64:
-			s = fmt.Sprintf("%.2f", vi)
-			rightCells = append(rightCells, pos)
-		case reflect.Bool:
-			if vi.(bool) {
-				s = "Yes"
+			if header.TimestampValue.Human {
+				s = humanize.Time(t)
 			} else {
-				s = "No"
-			}
-		case reflect.Slice, reflect.Array:
-			n := v.Len()
-			if header.ValueAsCountable {
-				s = strconv.Itoa(n)
-				header.ValueAsNumber = true
-			} else if n == 0 && header.AlternativeValue != "" {
-				s = header.AlternativeValue
-			} else {
-				for fieldSliceIdx, fieldSliceLen := 0, v.Len(); fieldSliceIdx < fieldSliceLen; fieldSliceIdx++ {
-					vf := v.Index(fieldSliceIdx)
-					if vf.CanInterface() {
-						s += fmt.Sprintf("%v", vf.Interface())
-						if hasMore := fieldSliceIdx+1 < fieldSliceLen; hasMore {
-							s += ", "
-						}
-					}
-				}
-			}
-		case reflect.Map:
-			keys := v.MapKeys()
-
-			// it's map but has a ",count" header filter, allow the zeros.
-			if header.ValueAsCountable {
-				vi = len(keys)
-				return extractCells(pos, header, reflect.ValueOf(vi), whenStructTagsOnly)
+				s = t.Format(header.TimestampValue.Format)
 			}
 
-			if len(keys) == 0 {
-				return
-			}
+			// if !header.ValueAsText {
+			// 	rightCells = append(rightCells, pos)
+			// }
 
-			// if keys are string and value can be represented as string without taking too much space,
-			// then show as key = value\nkey = value... otherwise as show as indented json.
-			for i, key := range keys {
-				val := v.MapIndex(key)
-				if keyK := key.Kind(); keyK == reflect.String {
-					valK := val.Kind()
-					if valK == reflect.Interface || valK == reflect.Ptr {
-						val = val.Elem()
-						valK = val.Kind()
-					}
-
-					if valK == reflect.Struct || valK == reflect.Slice || valK == reflect.Map || valK == reflect.Array {
-						continue
-					}
-
-					valStr := strings.TrimSpace(fmt.Sprintf("%v", val.Interface()))
-					if valStr == "" {
-						continue
-					}
-
-					//  strconv.Quote(valStr)
-					s += key.Interface().(string) + " = " + cellText(valStr, 20)
-					if i < len(keys)-1 {
-						s += "\n"
-					}
-				}
-			}
-
-			if s == "" {
-				b, err := json.MarshalIndent(vi, " ", "  ")
-				if err != nil {
-					s = fmt.Sprintf("%v", vi)
-				} else {
-					b = bytes.Replace(b, []byte("\\u003c"), []byte("<"), -1)
-					b = bytes.Replace(b, []byte("\\u003e"), []byte(">"), -1)
-					b = bytes.Replace(b, []byte("\\u0026"), []byte("&"), -1)
-					s = string(b)
-				}
-			}
-
-		default:
-			switch t := vi.(type) {
-			// Give priority to String() string functions inside the struct, if it's there then it's the whole cell string,
-			// otherwise if it's struct it's the fields if TagsOnly == false, useful for dynamic maps.
-			case fmt.Stringer:
-				s = t.String()
-			case struct{}:
-				rr, rightEmbeddedSlices := getRowFromStruct(reflect.ValueOf(vi), whenStructTagsOnly, 0)
-				if len(rr) > 0 {
-					cells = append(cells, rr...)
-					for range rightEmbeddedSlices {
-						rightCells = append(rightCells, pos)
-						pos++
-					}
-
-					return
-				}
-			default:
-				s = fmt.Sprintf("%v", vi)
-			}
+			break
 		}
 
-		if header.ValueAsNumber {
-			sInt64, err := strconv.ParseInt(s, 10, 64)
-			if err != nil || sInt64 == 0 {
-				s = header.AlternativeValue
-				if s == "" {
-					s = "0"
-				}
-			} else {
-				s = nearestThousandFormat(float64(sInt64))
+		if header.ValueAsDuration {
+			got := vi.(int64)
+			if got <= 0 {
+				break
 			}
 
+			dif := time.Now().Unix() - got/1000
+			t := time.Unix(dif, 0)
+			dur := time.Since(t)
+			if dur <= 0 {
+				break
+			}
+
+			dur += (100 * time.Millisecond) / 2
+			days := (dur / (24 * time.Hour))
+			dur = dur % (24 * time.Hour)
+			hours := dur / time.Hour
+			dur = dur % time.Hour
+			minutes := dur / time.Minute
+			dur = dur % time.Minute
+			seconds := dur / time.Second
+
+			if days == 1 {
+				s = fmt.Sprintf("%d day", days)
+			} else if days > 1 {
+				s = fmt.Sprintf("%d days", days)
+			}
+
+			if hours == 1 {
+				s += fmt.Sprintf(" %d hour", hours)
+			} else if hours > 1 {
+				s += fmt.Sprintf(" %d hours", hours)
+			}
+
+			if minutes == 1 {
+				s += fmt.Sprintf(" %d minute", minutes)
+			} else if minutes > 1 {
+				s += fmt.Sprintf(" %d minutes", minutes)
+			}
+
+			if seconds >= 30 {
+				s += fmt.Sprintf(" %d seconds", seconds)
+			} else if s == "" && seconds > 0 {
+				s = "few seconds"
+			}
+
+			// remove first space if any.
+			if s != "" && s[0] == ' ' {
+				s = s[1:]
+			}
+
+			break
+		}
+
+		if !header.ValueAsText {
+			header.ValueAsNumber = true
 			rightCells = append(rightCells, pos)
-		} else if header.ValueAsDate {
-			t, err := time.Parse(time.RFC3339, s)
-			if err == nil {
-				s = t.Format("2006-01-02 15:04:05")
+		}
+
+		s = fmt.Sprintf("%d", vi)
+	// 	fallthrough
+	case reflect.Int, reflect.Int16, reflect.Int32:
+		if !header.ValueAsText {
+			header.ValueAsNumber = true
+			rightCells = append(rightCells, pos)
+		}
+
+		s = fmt.Sprintf("%d", vi)
+	case reflect.Float32, reflect.Float64:
+		s = fmt.Sprintf("%.2f", vi)
+		rightCells = append(rightCells, pos)
+	case reflect.Bool:
+		if vi.(bool) {
+			s = "Yes"
+		} else {
+			s = "No"
+		}
+	case reflect.Slice, reflect.Array:
+		n := v.Len()
+		if header.ValueAsCountable {
+			s = strconv.Itoa(n)
+			header.ValueAsNumber = true
+		} else if n == 0 && header.AlternativeValue != "" {
+			s = header.AlternativeValue
+		} else {
+			for fieldSliceIdx, fieldSliceLen := 0, v.Len(); fieldSliceIdx < fieldSliceLen; fieldSliceIdx++ {
+				vf := v.Index(fieldSliceIdx)
+				if vf.CanInterface() {
+					s += fmt.Sprintf("%v", vf.Interface())
+					if hasMore := fieldSliceIdx+1 < fieldSliceLen; hasMore {
+						s += ", "
+					}
+				}
+			}
+		}
+	case reflect.Map:
+		keys := v.MapKeys()
+
+		// it's map but has a ",count" header filter, allow the zeros.
+		if header.ValueAsCountable {
+			vi = len(keys)
+			return extractCells(pos, header, reflect.ValueOf(vi), config)
+		}
+
+		if len(keys) == 0 {
+			return
+		}
+
+		// if keys are string and value can be represented as string without taking too much space,
+		// then show as key = value\nkey = value... otherwise as show as indented json.
+		for i, key := range keys {
+			val := v.MapIndex(key)
+			if keyK := key.Kind(); keyK == reflect.String {
+				valK := val.Kind()
+				if valK == reflect.Interface || valK == reflect.Ptr {
+					val = val.Elem()
+					valK = val.Kind()
+				}
+
+				if valK == reflect.Struct || valK == reflect.Slice || valK == reflect.Map || valK == reflect.Array {
+					continue
+				}
+
+				valStr := strings.TrimSpace(fmt.Sprintf("%v", val.Interface()))
+				if valStr == "" {
+					continue
+				}
+
+				//  strconv.Quote(valStr)
+				s += key.Interface().(string) + " = " + cellText(valStr, 20)
+				if i < len(keys)-1 {
+					s += "\n"
+				}
 			}
 		}
 
 		if s == "" {
-			s = header.AlternativeValue
+			b, err := json.MarshalIndent(vi, " ", "  ")
+			if err != nil {
+				s = fmt.Sprintf("%v", vi)
+			} else {
+				b = bytes.Replace(b, []byte("\\u003c"), []byte("<"), -1)
+				b = bytes.Replace(b, []byte("\\u003e"), []byte(">"), -1)
+				b = bytes.Replace(b, []byte("\\u0026"), []byte("&"), -1)
+				s = string(b)
+			}
 		}
 
-		cells = append(cells, s)
+	default:
+		switch t := vi.(type) {
+		// Give priority to String() string functions inside the struct, if it's there then it's the whole cell string,
+		// otherwise if it's struct it's the fields if TagsFieldsOnly == false, useful for dynamic maps.
+		case fmt.Stringer:
+			s = t.String()
+		case struct{}:
+			rr, rightEmbeddedSlices := getRowFromStruct(reflect.ValueOf(vi), config, 0)
+			if len(rr) > 0 {
+				cells = append(cells, rr...)
+				for range rightEmbeddedSlices {
+					rightCells = append(rightCells, pos)
+					pos++
+				}
+
+				return
+			}
+		default:
+			s = fmt.Sprintf("%v", vi)
+		}
 	}
+
+	if header.ValueAsNumber {
+		sInt64, err := strconv.ParseInt(s, 10, 64)
+		if err != nil || sInt64 == 0 {
+			s = header.AlternativeValue
+			if s == "" {
+				s = "0"
+			}
+		} else {
+			s = nearestThousandFormat(float64(sInt64))
+		}
+
+		rightCells = append(rightCells, pos)
+	} else if header.ValueAsDate {
+		t, err := time.Parse(time.RFC3339, s)
+		if err == nil {
+			s = t.Format("2006-01-02 15:04:05")
+		}
+	}
+
+	if s == "" {
+		s = header.AlternativeValue
+	}
+
+	cells = append(cells, s)
 
 	return
 }

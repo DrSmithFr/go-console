@@ -30,7 +30,7 @@ func main() {
 
 	tab := table.
 		NewTable().
-		ParseData(books)
+		Parse(books)
 
 	render := table.
 		NewRender(cmd.Output).
