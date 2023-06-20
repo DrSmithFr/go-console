@@ -15,7 +15,7 @@ func main() {
 	type Author struct {
 		Name    string
 		Age     int
-		Address *Address
+		Address *Address `table-display:"inline"`
 	}
 
 	type Book struct {
@@ -42,7 +42,7 @@ func main() {
 	tab := table.
 		NewTable().
 		SetParseConfig(table.ParserConfig{
-			MaxDepth: 0,
+			MaxDepth: 1,
 		}).
 		Parse(book)
 

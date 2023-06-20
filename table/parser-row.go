@@ -15,51 +15,55 @@ import (
 )
 
 const (
-	// HeaderTag usage: Field string `header:"Name"`
-	HeaderTag = "header"
-	// InlineHeaderTag usage: Embedded Struct `header:"inline"`
-	InlineHeaderTag = "inline"
-	// NumberHeaderTag usage: NumberButString string `header:"Age,number"`
+	DisplayTag = "table-display"
+	// InlineDisplayTag usage: Embedded Struct `table-display:"inline"`
+	InlineDisplayTag = "inline"
+	// HiddenDisplayTag usage: Embedded Struct `table-display:"hidden"`
+	HiddenDisplayTag = "hidden"
+
+	// HeaderTag usage: Field string `table-header:"Name"`
+	HeaderTag = "table-header"
+	// NumberHeaderTag usage: NumberButString string `table-header:"Age,number"`
 	NumberHeaderTag = "number"
-	// CountHeaderTag usage: List []any `header:"MyList,count"`
+	// CountHeaderTag usage: List []any `table-header:"MyList,count"`
 	CountHeaderTag = "count"
-	// ForceTextHeaderTag usage: ID int `header:"ID,text"`
+	// ForceTextHeaderTag usage: ID int `table-header:"ID,text"`
 	ForceTextHeaderTag = "text"
 
-	// TimestampHeaderTag usage: Timestamp int64 `json:"timestamp" yaml:"Timestamp" header:"At,timestamp(ms|utc|02 Jan 2006 15:04)"`
+	// TimestampHeaderTag usage: Timestamp int64 `json:"timestamp" yaml:"Timestamp" table-header:"At,timestamp(ms|utc|02 Jan 2006 15:04)"`
 	TimestampHeaderTag = "timestamp"
-	// TimestampFromMillisecondsHeaderTag usage: Timestamp int64 `header:"Start,timestamp(ms)"`
+	// TimestampFromMillisecondsHeaderTag usage: Timestamp int64 `table-header:"Start,timestamp(ms)"`
 	TimestampFromMillisecondsHeaderTag = "ms"
-	// TimestampAsUTCHeaderTag usage: Timestamp int64 `header:"Start,timestamp(ms|utc)"`
+	// TimestampAsUTCHeaderTag usage: Timestamp int64 `table-header:"Start,timestamp(ms|utc)"`
 	TimestampAsUTCHeaderTag = "utc"
-	// TimestampAsLocalHeaderTag usage: Timestamp int64 `header:"Start,timestamp(ms|local)"`
+	// TimestampAsLocalHeaderTag usage: Timestamp int64 `table-header:"Start,timestamp(ms|local)"`
 	TimestampAsLocalHeaderTag = "local"
-	// TimestampFormatHumanHeaderTag usage: Timestamp int64 `header:"Start,timestamp(ms|utc|human)"`
+	// TimestampFormatHumanHeaderTag usage: Timestamp int64 `table-header:"Start,timestamp(ms|utc|human)"`
 	TimestampFormatHumanHeaderTag = "human"
-	// TimestampFormatANSICHeaderTag usage: Timestamp int64 `header:"Start,timestamp(ms|utc|ANSIC)"`
+	// TimestampFormatANSICHeaderTag usage: Timestamp int64 `table-header:"Start,timestamp(ms|utc|ANSIC)"`
 	TimestampFormatANSICHeaderTag = "ANSIC"
-	// TimestampFormatUnixDateCHeaderTag usage: Timestamp int64 `header:"Start,timestamp(ms|utc|UnixDate)"`
+	// TimestampFormatUnixDateCHeaderTag usage: Timestamp int64 `table-header:"Start,timestamp(ms|utc|UnixDate)"`
 	TimestampFormatUnixDateCHeaderTag = "UnixDate"
-	// TimestampFormatRubyDateHeaderTag usage: Timestamp int64 `header:"Start,timestamp(ms|utc|RubyDate)"`
+	// TimestampFormatRubyDateHeaderTag usage: Timestamp int64 `table-header:"Start,timestamp(ms|utc|RubyDate)"`
 	TimestampFormatRubyDateHeaderTag = "RubyDate"
-	// TimestampFormatRFC822HeaderTag usage: Timestamp int64 `header:"Start,timestamp(ms|utc|RFC822)"`
+	// TimestampFormatRFC822HeaderTag usage: Timestamp int64 `table-header:"Start,timestamp(ms|utc|RFC822)"`
 	TimestampFormatRFC822HeaderTag = "RFC822"
-	// TimestampFormatRFC822ZHeaderTag usage: Timestamp int64 `header:"Start,timestamp(ms|utc|RFC822Z)"`
+	// TimestampFormatRFC822ZHeaderTag usage: Timestamp int64 `table-header:"Start,timestamp(ms|utc|RFC822Z)"`
 	TimestampFormatRFC822ZHeaderTag = "RFC822Z"
-	// TimestampFormatRFC850HeaderTag usage: Timestamp int64 `header:"Start,timestamp(ms|utc|RFC850)"`
+	// TimestampFormatRFC850HeaderTag usage: Timestamp int64 `table-header:"Start,timestamp(ms|utc|RFC850)"`
 	TimestampFormatRFC850HeaderTag = "RFC850"
-	// TimestampFormatRFC1123HeaderTag usage: Timestamp int64 `header:"Start,timestamp(ms|utc|RFC1123)"`
+	// TimestampFormatRFC1123HeaderTag usage: Timestamp int64 `table-header:"Start,timestamp(ms|utc|RFC1123)"`
 	TimestampFormatRFC1123HeaderTag = "RFC1123"
-	// TimestampFormatRFC1123ZHeaderTag usage: Timestamp int64 `header:"Start,timestamp(ms|utc|RFC1123Z)"`
+	// TimestampFormatRFC1123ZHeaderTag usage: Timestamp int64 `table-header:"Start,timestamp(ms|utc|RFC1123Z)"`
 	TimestampFormatRFC1123ZHeaderTag = "RFC1123Z" // default one.
-	// TimestampFormatRFC3339HeaderTag usage: Timestamp int64 `header:"Start,timestamp(ms|utc|RFC3339)"`
+	// TimestampFormatRFC3339HeaderTag usage: Timestamp int64 `table-header:"Start,timestamp(ms|utc|RFC3339)"`
 	TimestampFormatRFC3339HeaderTag = "RFC3339"
-	// TimestampFormatARFC3339NanoHeaderTag usage: Timestamp int64 `header:"Start,timestamp(ms|utc|RFC3339Nano)"`
+	// TimestampFormatARFC3339NanoHeaderTag usage: Timestamp int64 `table-header:"Start,timestamp(ms|utc|RFC3339Nano)"`
 	TimestampFormatARFC3339NanoHeaderTag = "RFC3339Nano"
 
-	// DurationHeaderTag usage: Uptime int64 `header:"Uptime,unixduration"`
+	// DurationHeaderTag usage: Uptime int64 `table-header:"Uptime,unixduration"`
 	DurationHeaderTag = "unixduration"
-	// DateHeaderTag usage: Start string `header:"Start,date"`, the field's value should be formatted as time.RFC3339
+	// DateHeaderTag usage: Start string `table-header:"Start,date"`, the field's value should be formatted as time.RFC3339
 	DateHeaderTag = "date"
 )
 

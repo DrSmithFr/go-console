@@ -99,7 +99,7 @@ func extractHeaderFromStructField(f reflect.StructField, pos int, config ParserC
 	}
 
 	// embedded structs are acting like headers appended to the existing(s).
-	if headerTag == InlineHeaderTag {
+	if f.Tag.Get(DisplayTag) == InlineDisplayTag {
 		return emptyHeader, false
 	} else if headerTag != "" {
 		if header, ok := extractHeaderFromTag(f, headerTag); ok {
@@ -158,7 +158,11 @@ func extractHeadersFromStruct(typ reflect.Type, config ParserConfig, depth int) 
 			f.Type = f.Type.Elem()
 		}
 
-		if f.Type.Kind() == reflect.Struct && f.Tag.Get(HeaderTag) == InlineHeaderTag {
+		if f.Tag.Get(DisplayTag) == HiddenDisplayTag {
+			continue
+		}
+
+		if f.Type.Kind() == reflect.Struct && f.Tag.Get(DisplayTag) == InlineDisplayTag {
 			hs := extractHeadersFromStruct(f.Type, config, depth)
 
 			for idx := range hs {
@@ -284,12 +288,6 @@ func extractHeaderFromTag(f reflect.StructField, headerTag string) (header Struc
 
 	parts := strings.Split(headerTag, ",")
 
-	// check if it's inline struct.
-	if parts[0] == InlineHeaderTag {
-		header.InlineStruct = true
-		parts = parts[1:]
-	}
-
 	if len(parts) == 0 {
 		header.Name = f.Name
 		header.DefaultName = true
@@ -340,6 +338,11 @@ func getRowFromStruct(v reflect.Value, config ParserConfig, depth int) (cells []
 			f.Type = f.Type.Elem()
 		}
 
+		if f.Tag.Get(DisplayTag) == HiddenDisplayTag {
+			j++
+			continue
+		}
+
 		header, ok := extractHeaderFromStructField(f, j, config, depth)
 
 		if !ok {
@@ -347,7 +350,7 @@ func getRowFromStruct(v reflect.Value, config ParserConfig, depth int) (cells []
 				f.Type = f.Type.Elem()
 			}
 
-			if f.Type.Kind() == reflect.Struct && f.Tag.Get(HeaderTag) == InlineHeaderTag {
+			if f.Type.Kind() == reflect.Struct && f.Tag.Get(DisplayTag) == InlineDisplayTag {
 				fieldValue := indirectValue(v.Field(i))
 				c, rc := getRowFromStruct(fieldValue, config, depth)
 				for _, rcc := range rc {

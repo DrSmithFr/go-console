@@ -15,7 +15,7 @@ func main() {
 	type Book struct {
 		ISBN   string
 		Title  string
-		Author *Author `header:"inline"`
+		Author *Author
 	}
 
 	book := Book{
