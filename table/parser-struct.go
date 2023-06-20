@@ -119,7 +119,7 @@ func extractHeaderFromStructField(f reflect.StructField, pos int, config ParserC
 			return StructHeader{
 				Position:     pos,
 				Depth:        depth,
-				ColSpan:      calculateHeaderColspanFormSubHeader(headers, depth),
+				ColSpan:      calculateHeaderColspanFormSubHeader(headers, config, depth),
 				InlineStruct: true,
 				Name:         f.Name,
 				DefaultName:  true,
@@ -173,7 +173,7 @@ func extractHeadersFromStruct(typ reflect.Type, config ParserConfig, depth int) 
 			continue
 		}
 
-		if f.Type.Kind() == reflect.Struct {
+		if canGoDeeper(config, depth) && f.Type.Kind() == reflect.Struct {
 			header, _ := extractHeaderFromStructField(f, i, config, depth)
 			headers = append(headers, header)
 
@@ -340,7 +340,7 @@ func getRowFromStruct(v reflect.Value, config ParserConfig, depth int) (cells []
 			f.Type = f.Type.Elem()
 		}
 
-		header, ok := extractHeaderFromStructField(f, j, config, 0)
+		header, ok := extractHeaderFromStructField(f, j, config, depth)
 
 		if !ok {
 			if f.Type.Kind() == reflect.Ptr {
@@ -360,7 +360,7 @@ func getRowFromStruct(v reflect.Value, config ParserConfig, depth int) (cells []
 			continue
 		}
 
-		if f.Type.Kind() == reflect.Struct {
+		if canGoDeeper(config, depth) && f.Type.Kind() == reflect.Struct {
 			fieldValue := indirectValue(v.Field(i))
 			c, rc := getRowFromStruct(fieldValue, config, depth+1)
 			for _, rcc := range rc {
@@ -510,7 +510,11 @@ func SetStructHeader(original interface{}, fieldName string, newHeaderValue stri
 	// return indirectValue(reflect.ValueOf(original)).Convert(withoutHeaderTyp).Interface()
 }
 
-func calculateHeaderColspanFormSubHeader(subHeaders []StructHeader, depth int) int {
+func calculateHeaderColspanFormSubHeader(subHeaders []StructHeader, config ParserConfig, depth int) int {
+	if !canGoDeeper(config, depth) {
+		return 0
+	}
+
 	if len(subHeaders) == 0 {
 		return 0
 	}
@@ -528,4 +532,8 @@ func calculateHeaderColspanFormSubHeader(subHeaders []StructHeader, depth int) i
 	}
 
 	return colSpan
+}
+
+func canGoDeeper(config ParserConfig, depth int) bool {
+	return config.MaxDepth == -1 || depth < config.MaxDepth
 }

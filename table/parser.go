@@ -7,6 +7,7 @@ import (
 type ParserConfig struct {
 	TagsFieldsOnly   bool // if true, only tagged fields will be parsed.
 	UnexportedFields bool // if true, unexported fields will be parsed too.
+	MaxDepth         int  // max depth of the struct, -1 means no limit.
 }
 
 // Parser should be implemented by all available reflect-based parsers.
@@ -26,7 +27,9 @@ type Parser interface {
 // The built'n type parsers, all except `JSONParser` are directly linked to the `Print/PrintHeadList` functions.
 var (
 	DefaultConfig = ParserConfig{
-		TagsFieldsOnly: false,
+		TagsFieldsOnly:   false,
+		UnexportedFields: false,
+		MaxDepth:         -1,
 	}
 	StructParser = &structParser{Config: &DefaultConfig}
 	SliceParser  = &sliceParser{Config: &DefaultConfig}

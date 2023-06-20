@@ -41,6 +41,9 @@ func main() {
 
 	tab := table.
 		NewTable().
+		SetParseConfig(table.ParserConfig{
+			MaxDepth: 0,
+		}).
 		Parse(book)
 
 	render := table.
