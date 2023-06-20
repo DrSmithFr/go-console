@@ -43,7 +43,7 @@ func (p *structParser) ParseHeaders(v reflect.Value) []TableRowInterface {
 }
 
 func (p *structParser) ParseRow(v reflect.Value) ([]string, []int) {
-	return getRowFromStruct(v, p.TagsOnly)
+	return getRowFromStruct(v, p.TagsOnly, 0)
 }
 
 // TimestampHeaderTagValue the header's value of a "timestamp" header tag functionality.
@@ -115,7 +115,7 @@ func extractHeaderFromStructField(f reflect.StructField, pos int, tagsOnly bool,
 			return StructHeader{
 				Position:     pos,
 				Depth:        depth,
-				ColSpan:      len(headers),
+				ColSpan:      calculateHeaderColspanFormSubHeader(headers, depth),
 				InlineStruct: true,
 				Name:         f.Name,
 				DefaultName:  true,
@@ -324,7 +324,7 @@ func extractHeaderFromTag(f reflect.StructField, headerTag string) (header Struc
 
 // getRowFromStruct returns the positions of the cells that should be aligned to the right
 // and the list of cells(= the values based on the cell's description) based on the "in" value.
-func getRowFromStruct(v reflect.Value, tagsOnly bool) (cells []string, rightCells []int) {
+func getRowFromStruct(v reflect.Value, tagsOnly bool, depth int) (cells []string, rightCells []int) {
 	typ := v.Type()
 	j := 0
 
@@ -345,7 +345,7 @@ func getRowFromStruct(v reflect.Value, tagsOnly bool) (cells []string, rightCell
 
 			if f.Type.Kind() == reflect.Struct && f.Tag.Get(HeaderTag) == InlineHeaderTag {
 				fieldValue := indirectValue(v.Field(i))
-				c, rc := getRowFromStruct(fieldValue, tagsOnly)
+				c, rc := getRowFromStruct(fieldValue, tagsOnly, depth)
 				for _, rcc := range rc {
 					rightCells = append(rightCells, rcc+j)
 				}
@@ -358,7 +358,7 @@ func getRowFromStruct(v reflect.Value, tagsOnly bool) (cells []string, rightCell
 
 		if f.Type.Kind() == reflect.Struct {
 			fieldValue := indirectValue(v.Field(i))
-			c, rc := getRowFromStruct(fieldValue, tagsOnly)
+			c, rc := getRowFromStruct(fieldValue, tagsOnly, depth+1)
 			for _, rcc := range rc {
 				rightCells = append(rightCells, rcc+j)
 			}
@@ -504,4 +504,24 @@ func SetStructHeader(original interface{}, fieldName string, newHeaderValue stri
 
 	return tmp.Interface()
 	// return indirectValue(reflect.ValueOf(original)).Convert(withoutHeaderTyp).Interface()
+}
+
+func calculateHeaderColspanFormSubHeader(subHeaders []StructHeader, depth int) int {
+	if len(subHeaders) == 0 {
+		return 0
+	}
+
+	colSpan := 0
+
+	for _, h := range subHeaders {
+		if h.Depth == depth+1 {
+			colSpan++
+		}
+
+		if h.ColSpan > 1 {
+			colSpan += h.ColSpan - 1
+		}
+	}
+
+	return colSpan
 }

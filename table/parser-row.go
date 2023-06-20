@@ -346,7 +346,7 @@ func extractCells(pos int, header StructHeader, v reflect.Value, whenStructTagsO
 			case fmt.Stringer:
 				s = t.String()
 			case struct{}:
-				rr, rightEmbeddedSlices := getRowFromStruct(reflect.ValueOf(vi), whenStructTagsOnly)
+				rr, rightEmbeddedSlices := getRowFromStruct(reflect.ValueOf(vi), whenStructTagsOnly, 0)
 				if len(rr) > 0 {
 					cells = append(cells, rr...)
 					for range rightEmbeddedSlices {

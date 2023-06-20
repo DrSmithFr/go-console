@@ -8,8 +8,8 @@ import (
 func main() {
 
 	type Address struct {
-		city    string
-		country string
+		City    string
+		Country string
 	}
 
 	type Author struct {
@@ -31,8 +31,8 @@ func main() {
 			Name: "Dante Alighieri",
 			Age:  56,
 			Address: &Address{
-				city:    "Florence",
-				country: "Italy",
+				City:    "Florence",
+				Country: "Italy",
 			},
 		},
 	}

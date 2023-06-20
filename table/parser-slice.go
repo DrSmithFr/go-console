@@ -31,7 +31,7 @@ func (p *sliceParser) ParseRows(v reflect.Value, filters []RowFilter) (rows [][]
 			continue
 		}
 
-		r, c := getRowFromStruct(item, p.TagsOnly)
+		r, c := getRowFromStruct(item, p.TagsOnly, 0)
 
 		nums = append(nums, c...)
 		rows = append(rows, r)
