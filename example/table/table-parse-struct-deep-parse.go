@@ -14,8 +14,8 @@ func main() {
 
 	type Author struct {
 		Name    string
-		Age     int
-		Address *Address `table-display:"inline"`
+		Age     int64    `header:"Age,timestamp(ms|utc|RFC850)"`
+		Address *Address `display:"inline"`
 	}
 
 	type Book struct {
@@ -29,7 +29,7 @@ func main() {
 		Title: "The Divine Comedy",
 		Author: &Author{
 			Name: "Dante Alighieri",
-			Age:  56,
+			Age:  393529994,
 			Address: &Address{
 				City:    "Florence",
 				Country: "Italy",

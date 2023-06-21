@@ -104,6 +104,7 @@ func extractHeaderFromStructField(f reflect.StructField, pos int, config ParserC
 	} else if headerTag != "" {
 		if header, ok := extractHeaderFromTag(f, headerTag); ok {
 			header.Position = pos
+			header.Depth = depth
 
 			if f.Type.Kind() == reflect.Struct {
 				headers := extractHeadersFromStruct(f.Type, config, depth+1)
