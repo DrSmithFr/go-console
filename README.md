@@ -1,13 +1,10 @@
 GoConsole: New Update! thanks all of you for your advice and your help. I have updated the library to be more flexible and more powerful. I have also added a lot of new features.
 
-
-Hello Go community,
-I wanted to share an update on my Go project, GoConsole. Yesterday, I introduced this lightweight module that simplifies the creation of stylish command-line script, and I was thrilled to receive feedback from the community.
-Thanks to your suggestions, I've made several key improvements to GoConsole, including:
+- Adding a parser for JSON, Map, Struct and List to easily display data in a table
 - Adding a wrapper called go_console.Command to manage multiple go_console.Scripts
 - Automated generation of help messages for both the wrapper and scripts
 - Adding better validation of user input
-- Constantes are now all in Pascal case
+- Constants are now all in Pascal case
 - go_console.Script now implements the io.Writer interface
 - Capability to configure via Type or fluent setter
   I'm particularly excited about the new wrapper, which provides more flexibility for managing multiple scripts. Additionally, the automated help message generation will make it easier for developers to understand how to use GoConsole.
@@ -73,6 +70,17 @@ of Symfony PHP framework.
   * [Table Styling](#table-styling)
   * [Table Styling](#table-styling)
   * [Padding management](#padding-management)
+  * [Parsing Struct and List](#parsing-struct-and-list)
+    * [Parsing Tags](#parsing-tags)
+      * [DisplayTag](#displaytag)
+      * [HeaderTag](#headertag)
+      * [HeaderTag: Timestamp](#headertag-timestamp-options)
+    * [Parsing Config](#parsing-config)
+      * [TagsFieldsOnly](#tagsfieldsonly)
+      * [UnexportedFields](#unexportedfields)
+      * [MaxDepth](#maxdepth)
+  * [Parsing JSON](#Generate-Table-from-JSON-data)
+  * [Parsing Map](#parsing-map)
 ---
 
 # go_console.Command
@@ -1924,6 +1932,359 @@ func main() {
 
 <p align="center">
     <img src="docs/assets/table/table-padding.png">
+</p>
+
+---
+
+[Return to Table of content](#tables-of-contents)
+
+---
+
+## Parsing Struct and List
+
+You can generate a table directly form a struct or a list:
+
+> **Note:**
+> > Parsing List or Slice will behave the same as parsing a single struct. The only difference is that rows will be generated for each item in the list.
+>
+> > ParsingConfig is optional and behaves the same for both structs and lists.
+> 
+> > Pointer fields will be dereferenced and their value will be used instead.
+
+```go
+ackage main
+
+import (
+	"github.com/DrSmithFr/go-console"
+	"github.com/DrSmithFr/go-console/table"
+)
+
+func main() {
+
+	type Address struct {
+		City    string
+		Country string
+	}
+
+	type Author struct {
+		Name    string
+		age     int
+		Address *Address `display:"inline"`
+	}
+
+	type Book struct {
+		ISBN   *string `header:"ID"`
+		Title  string
+		Secret string `display:"hidden"`
+		Author *Author
+	}
+
+	ptrStr := func(str string) *string {
+		return &str
+	}
+
+	book := Book{
+		ISBN:   ptrStr("99921-58-10-7"),
+		Title:  "The Divine Comedy",
+		Secret: "This is a secret!",
+		Author: &Author{
+			Name: "Dante Alighieri",
+			age:  56,
+			Address: &Address{
+				City:    "Florence",
+				Country: "Italy",
+			},
+		},
+	}
+
+	cmd := go_console.NewScript().Build()
+
+	tab := table.
+		NewTable().
+
+		// Helpers to set the parser config.
+		SetParseTagsFieldsOnly(false).
+		SetParseUnexportedFields(false).
+		SetParseMaxDepth(1).
+
+		// Or set the parser config directly.
+		SetParseConfig(table.ParserConfig{
+			TagsFieldsOnly:   false,
+			UnexportedFields: false,
+			MaxDepth:         1,
+		})
+
+	tab.Parse(book)
+
+	render := table.
+		NewRender(cmd.Output).
+		SetContent(tab)
+
+	render.Render()
+}
+```
+
+This results in:
+
+<p align="center">
+    <img src="docs/assets/table-parser/pare-struct-basic.png">
+</p>
+
+### Parsing Tags
+
+#### DisplayTag
+
+With the `display` tag, you can set the display mode for each field:
+- `hidden` (to hide the field value and header)
+- `inline` (to inline value, see [MaxDepth](#maxdepth) for more details)
+
+
+#### HeaderTag
+
+You can set the header name for each field using the `header` tag, and depending on the field type, you can also set some options use to compile value for the given field.
+
+```go
+type Book struct {
+  ISBN    string   `header:"ID"`
+  Title   string   `header:"Book Title"`
+  PrintAt int64    `header:"Published,timestamp(ms|utc|RFC850)"`
+  Readers []string `header:"Readers,count"`
+}
+```
+
+This results in:
+
+<p align="center">
+    <img src="docs/assets/table-parser/header-tag.png">
+</p>
+
+##### HeaderTag Timestamp Options
+
+```go
+const (
+	// Timestamp unit
+  TimestampFromMillisecondsHeaderTag = "ms"
+  
+  // Timezone
+	TimestampAsUTCHeaderTag = "utc"
+	TimestampAsLocalHeaderTag = "local"
+	
+	// Formats
+	TimestampFormatHumanHeaderTag = "human"
+	TimestampFormatANSICHeaderTag = "ANSIC"
+	TimestampFormatUnixDateCHeaderTag = "UnixDate"
+	TimestampFormatRubyDateHeaderTag = "RubyDate"
+	TimestampFormatRFC822HeaderTag = "RFC822"
+	TimestampFormatRFC822ZHeaderTag = "RFC822Z"
+	TimestampFormatRFC850HeaderTag = "RFC850"
+	TimestampFormatRFC1123HeaderTag = "RFC1123"
+	TimestampFormatRFC1123ZHeaderTag = "RFC1123Z" // default one.
+	TimestampFormatRFC3339HeaderTag = "RFC3339"
+	TimestampFormatARFC3339NanoHeaderTag = "RFC3339Nano"
+)
+```
+
+### Parsing Config
+
+#### TagsFieldsOnly
+
+Using the same example as above, we can change the parsing config to get different results:
+
+```go
+  SetParseConfig(table.ParserConfig{
+    TagsFieldsOnly:   true,
+    UnexportedFields: false,
+    MaxDepth:         1,
+  })
+```
+
+Because Book.ISBN is the only field that implement a `header` tag, it will result in:
+
+<p align="center">
+    <img src="docs/assets/table-parser/TagsFieldsOnly.png">
+</p>
+
+#### UnexportedFields
+
+Using the same example as above, we can change the UnexportedFields config to get different results:
+
+```go
+  SetParseConfig(table.ParserConfig{
+    TagsFieldsOnly:   false,
+    UnexportedFields: true,
+    MaxDepth:         1,
+  })
+```
+
+Now Author.age will also be included in the result:
+
+<p align="center">
+    <img src="docs/assets/table-parser/TagsFieldsOnly.png">
+</p>
+
+#### MaxDepth
+
+Using the same example as above, we can change the MaxDepth config to get different results:
+
+> **Note:**
+> > MaxDepth is used to limit the depth of the parsing. 
+  > It is useful to avoid infinite recursion when parsing a struct that contains itself.
+> 
+> > When MaxDepth is set rematch, the parser will display `fmt.Sprintf("%v", field)`.
+
+```go
+  SetParseConfig(table.ParserConfig{
+    TagsFieldsOnly:   false,
+    UnexportedFields: false,
+    MaxDepth:         0,
+  })
+```
+
+Now Author became to deep will be displayed as `&{Dante Alighieri 56 0xc0000b4000}`:
+
+<p align="center">
+    <img src="docs/assets/table-parser/MaxDepth.png">
+</p>
+
+> **Note:**
+> > If you use `display:"inline"` tag, the parser will count them as the same depth level as the parent struct. (even with multiple levels of inline structs)
+
+For example, if we change the Author struct to:
+
+```go
+type Address struct {
+  City    string
+  Country string
+}
+
+type Author struct {
+  Name    string
+  age     int
+  Address *Address `display:"inline"`
+}
+
+type Book struct {
+  ISBN   *string `header:"ID"`
+  Title  string
+  Secret string  `display:"hidden"`
+  Author *Author `display:"inline"`
+}
+```
+
+then the result with MaxDepth set to 0 will be:
+
+<p align="center">
+    <img src="docs/assets/table-parser/deep-inline.png">
+</p>
+
+## Generate Table from JSON data
+
+You can generate a table directly form a JSON formatted []Byte:
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"github.com/DrSmithFr/go-console"
+	"github.com/DrSmithFr/go-console/table"
+)
+
+func main() {
+	cmd := go_console.NewScript().Build()
+
+	jsonData := getMyJSONBytes()
+
+	tab := table.
+		NewTable().
+		ParseJSON(jsonData)
+
+	render := table.
+		NewRender(cmd.Output).
+		SetContent(tab)
+
+	render.Render()
+}
+
+func getMyJSONBytes() []byte {
+	data := struct {
+		// json tags are optionally but if set they are being used for the headers on `PrintJSON`.
+		Firstname string `json:"first name"`
+		Lastname  string `json:"last name"`
+	}{"Georgios", "Callas"}
+	b, err := json.MarshalIndent(data, "", "    ")
+	if err != nil {
+		panic(err)
+	}
+
+	return b
+}
+```
+
+Internally the JSON is Unmarshalled and can get parsed as a struct. 
+So you can use the same parsing configuration as for the [Parsing Struct and List](#parsing-struct-and-list) to manage the display.
+
+<p align="center">
+    <img src="docs/assets/table-parser/json-parsing.png">
+</p>
+
+
+## Parsing Map
+
+You can generate a table directly form a map[string]interface{}:
+
+> **Note:**
+> > Keys are used as headers.
+>
+> > Values are used as rows and must implement `fmt.Stringer` interface.
+
+```go
+package main
+
+import (
+	"github.com/DrSmithFr/go-console"
+	"github.com/DrSmithFr/go-console/table"
+)
+
+type Book struct {
+	ISBN  string
+	Title string
+}
+
+func (b Book) String() string {
+	return b.ISBN
+}
+
+func main() {
+	books := map[string][]Book{
+		"bookshelves 1": {
+			{ISBN: "99921-58-10-7", Title: "The Divine Comedy"},
+			{ISBN: "9971-5-0210-0", Title: "A Tale of Two Cities"},
+		},
+		"bookshelves 2": {
+			{ISBN: "960-425-059-0", Title: "The Lord of the Rings"},
+			{ISBN: "80-902734-1-6", Title: "And Then There Were None"},
+		},
+	}
+
+	cmd := go_console.NewScript().Build()
+
+	tab := table.
+		NewTable().
+		Parse(books)
+
+	render := table.
+		NewRender(cmd.Output).
+		SetContent(tab)
+
+	render.Render()
+}
+```
+
+Will result in:
+
+<p align="center">
+    <img src="docs/assets/table-parser/map-parsing.png">
 </p>
 
 ---

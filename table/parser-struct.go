@@ -90,7 +90,8 @@ var emptyHeader StructHeader
 
 func extractHeaderFromStructField(f reflect.StructField, pos int, config ParserConfig, depth int) (header StructHeader, ok bool) {
 	if !config.UnexportedFields && f.PkgPath != "" {
-		return // ignore unexported fields.
+		// ignore unexported fields.
+		return emptyHeader, false
 	}
 
 	headerTag := f.Tag.Get(HeaderTag)
@@ -152,6 +153,8 @@ func extractHeadersFromStruct(typ reflect.Type, config ParserConfig, depth int) 
 	}
 	structsHeadersMu.RUnlock()
 
+	tableCellPosition := 0
+
 	for i, n := 0, typ.NumField(); i < n; i++ {
 		f := typ.Field(i)
 
@@ -163,11 +166,11 @@ func extractHeadersFromStruct(typ reflect.Type, config ParserConfig, depth int) 
 			continue
 		}
 
-		if f.Type.Kind() == reflect.Struct && f.Tag.Get(DisplayTag) == InlineDisplayTag {
+		if canGoDeeper(config, depth-1) && f.Type.Kind() == reflect.Struct && f.Tag.Get(DisplayTag) == InlineDisplayTag {
 			hs := extractHeadersFromStruct(f.Type, config, depth)
 
 			for idx := range hs {
-				hs[idx].Position += i
+				hs[idx].Position += tableCellPosition
 
 				if hs[idx].DefaultName {
 					hs[idx].Name = f.Name + " " + hs[idx].Name
@@ -179,22 +182,29 @@ func extractHeadersFromStruct(typ reflect.Type, config ParserConfig, depth int) 
 		}
 
 		if canGoDeeper(config, depth) && f.Type.Kind() == reflect.Struct {
-			header, _ := extractHeaderFromStructField(f, i, config, depth)
-			headers = append(headers, header)
+			header, ok := extractHeaderFromStructField(f, i, config, depth)
 
-			hs := extractHeadersFromStruct(f.Type, config, depth+1)
+			if ok && header.Name != "" {
+				header.Position = tableCellPosition
+				headers = append(headers, header)
 
-			for idx := range hs {
-				hs[idx].Position += i
+				hs := extractHeadersFromStruct(f.Type, config, depth+1)
+
+				for idx := range hs {
+					hs[idx].Position += tableCellPosition
+				}
+
+				headers = append(headers, hs...)
 			}
 
-			headers = append(headers, hs...)
 			continue
 		}
 
-		header, _ := extractHeaderFromStructField(f, i, config, depth)
-		if header.Name != "" {
+		header, ok := extractHeaderFromStructField(f, i, config, depth)
+		if ok && header.Name != "" {
+			header.Position = tableCellPosition
 			headers = append(headers, header)
+			tableCellPosition++
 		}
 	}
 

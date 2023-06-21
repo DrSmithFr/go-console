@@ -39,10 +39,7 @@ func NewTable() *Table {
 		headers:        NewTableData(),
 		rows:           NewTableData(),
 		columnsPadding: map[int]PaddingType{},
-		parsingConfig: &ParserConfig{
-			TagsFieldsOnly:   false,
-			UnexportedFields: false,
-		},
+		parsingConfig:  &DefaultConfig,
 	}
 }
 
@@ -241,6 +238,21 @@ func (t *Table) GetColumnPadding(column int) PaddingType {
 
 func (t *Table) SetParseConfig(config ParserConfig) *Table {
 	t.parsingConfig = &config
+	return t
+}
+
+func (t *Table) SetParseMaxDepth(depth int) *Table {
+	t.parsingConfig.MaxDepth = depth
+	return t
+}
+
+func (t *Table) SetParseUnexportedFields(v bool) *Table {
+	t.parsingConfig.UnexportedFields = v
+	return t
+}
+
+func (t *Table) SetParseTagsFieldsOnly(v bool) *Table {
+	t.parsingConfig.TagsFieldsOnly = v
 	return t
 }
 
