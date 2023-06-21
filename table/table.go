@@ -1,5 +1,7 @@
 package table
 
+import "reflect"
+
 type TableInterface interface {
 	SetHeaders(data *TableData) *Table
 	GetHeaders() *TableData
@@ -26,6 +28,8 @@ type Table struct {
 	footerTitle string
 
 	columnsPadding map[int]PaddingType
+
+	parsingConfig *ParserConfig
 }
 
 // Table constructors
@@ -35,6 +39,7 @@ func NewTable() *Table {
 		headers:        NewTableData(),
 		rows:           NewTableData(),
 		columnsPadding: map[int]PaddingType{},
+		parsingConfig:  &DefaultConfig,
 	}
 }
 
@@ -227,4 +232,93 @@ func (t *Table) GetColumnPadding(column int) PaddingType {
 	}
 
 	return t.columnsPadding[column]
+}
+
+// Data parse Helpers for Structs
+
+func (t *Table) SetParseConfig(config ParserConfig) *Table {
+	t.parsingConfig = &config
+	return t
+}
+
+func (t *Table) SetParseMaxDepth(depth int) *Table {
+	t.parsingConfig.MaxDepth = depth
+	return t
+}
+
+func (t *Table) SetParseUnexportedFields(v bool) *Table {
+	t.parsingConfig.UnexportedFields = v
+	return t
+}
+
+func (t *Table) SetParseTagsFieldsOnly(v bool) *Table {
+	t.parsingConfig.TagsFieldsOnly = v
+	return t
+}
+
+func (t *Table) ParseHeaders(in interface{}, filters ...interface{}) *Table {
+	v := indirectValue(reflect.ValueOf(in))
+	f := MakeFilters(v, filters...)
+
+	parser := WhichParser(v.Type(), t.parsingConfig)
+	if parser == nil {
+		panic("Invalid data type")
+	}
+
+	headers, _, _ := parser.Parse(v, f)
+
+	t.AddHeaders(headers)
+
+	return t
+}
+
+func (t *Table) ParseRows(in interface{}, filters ...interface{}) *Table {
+	v := indirectValue(reflect.ValueOf(in))
+	f := MakeFilters(v, filters...)
+
+	parser := WhichParser(v.Type(), t.parsingConfig)
+	if parser == nil {
+		panic("Invalid data type")
+	}
+
+	_, rows, _ := parser.Parse(v, f)
+
+	t.AddRowsFromString(rows)
+
+	return t
+}
+
+func (t *Table) Parse(in interface{}, filters ...interface{}) *Table {
+	v := indirectValue(reflect.ValueOf(in))
+	f := MakeFilters(v, filters...)
+
+	parser := WhichParser(v.Type(), t.parsingConfig)
+	if parser == nil {
+		panic("Invalid data type")
+	}
+
+	headers, rows, _ := parser.Parse(v, f)
+
+	t.AddHeaders(headers)
+	t.AddRowsFromString(rows)
+
+	return t
+}
+
+// JSON parse Helpers
+
+func (t *Table) ParseJSON(in []byte, filters ...interface{}) *Table {
+	v := indirectValue(reflect.ValueOf(in))
+	f := MakeFilters(v, filters...)
+
+	if !v.IsValid() {
+		panic("Invalid JSON data")
+	}
+
+	headers, rows, _ := JSONParser.Parse(v, f, t.parsingConfig)
+
+	t.AddHeaders(headers)
+	t.AddRowsFromString(rows)
+
+	return t
 }
