@@ -150,7 +150,7 @@ func (t *Term) HasSttyAvailable() bool {
 
 	_, err := cmd.Output()
 
-	t.stty = err != nil
+	t.stty = err == nil
 	t.sttyChecked = true
 
 	return t.stty
