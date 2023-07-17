@@ -266,8 +266,9 @@ func (c *Command) Run() {
 	// setup script
 	script.Input = input.NewArgvInput(argv[1:])
 	script.SetParentScriptName(argv[0])
-	script.Build()
+	script.Output = c.output
 
+	script.Build()
 	os.Exit(int(run(script)))
 }
 
