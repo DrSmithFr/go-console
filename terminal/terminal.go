@@ -1,10 +1,10 @@
 package terminal
 
 import (
-	"errors"
 	"os"
 	"os/exec"
 	"regexp"
+	"runtime"
 	"strconv"
 	"strings"
 )
@@ -224,12 +224,38 @@ func getSttyColumns() string {
 
 // Windows only
 
-// TODO: implement
-func getConsoleMode() (width int, height int, err error) {
-	return 0, 0, errors.New("not implemented")
+func hasVt100Support() bool {
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command("mode")
+		cmd.Stdin = os.Stdin
+
+		_, err := cmd.Output()
+
+		return err == nil
+	}
+
+	return false
 }
 
-// TODO: implement
-func hasVt100Support() bool {
-	return false
+func getConsoleMode() (width int, height int, error error) {
+	cmd := exec.Command("mode", "CON")
+	cmd.Stdin = os.Stdin
+
+	out, err := cmd.Output()
+
+	if err != nil {
+		return 0, 0, err
+	}
+
+	r := regexp.MustCompile("--------+\\r?\\n.+?(\\d+)\\r?\\n.+?(\\d+)\\r?\\n")
+	matches := r.FindStringSubmatch(string(out))
+
+	if len(matches) >= 2 {
+		width, _ := strconv.Atoi(matches[2])
+		height, _ := strconv.Atoi(matches[1])
+
+		return width, height, nil
+	}
+
+	return DefaultWidth, DefaultHeight, nil
 }

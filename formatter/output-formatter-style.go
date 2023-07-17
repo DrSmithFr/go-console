@@ -23,6 +23,8 @@ func NewOutputFormatterStyle(
 
 	if nil != options {
 		style.SetOptions(options)
+	} else {
+		style.SetOptions([]string{})
 	}
 
 	return style
