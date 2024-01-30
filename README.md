@@ -30,6 +30,12 @@ styling of the command's output.
 GoConsole is a lightweight equivalent in Go to the [Console Component 3.4](https://github.com/symfony/console/tree/3.4)
 of Symfony PHP framework.
 
+## Installation
+
+```bash
+go get github.com/DrSmithFr/go-console
+```
+
 ## Tables of Contents
 * [go_console.Command](#goconsolecommand)
   * [Defined an entry point for multiples scripts](#defined-an-entry-point-for-multiples-scripts)
