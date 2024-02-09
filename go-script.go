@@ -175,10 +175,10 @@ func (s *Script) Build() *Script {
 	}
 
 	s.parseInput()
-	s.validateInput()
 	s.findOutputVerbosity()
-
 	s.handleHelpCall()
+
+	s.validateInput()
 
 	if s.Runner != nil {
 		os.Exit(int(s.Runner(s)))
