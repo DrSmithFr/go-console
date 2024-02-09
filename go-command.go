@@ -14,6 +14,7 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"time"
 )
 
 type CommandRunner func(cmd *Script) ExitCode
@@ -83,6 +84,14 @@ type Command struct {
 
 	inputParsed      bool
 	definitionParsed bool
+
+	AppInfo *ApplicationInfo
+}
+
+type ApplicationInfo struct {
+	Name      string
+	Version   string
+	BuildDate time.Time
 }
 
 // (helper) add default options
@@ -120,6 +129,15 @@ func (c *Command) addDefaultOptions() {
 				SetShortcut("v|vv|vvv").
 				SetDescription("Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug"),
 		)
+
+	if c.AppInfo != nil {
+		c.addInputOption(
+			option.
+				New("version", option.None).
+				SetShortcut("V").
+				SetDescription("Display this application version."),
+		)
+	}
 }
 
 // addInputOption add option to input definition (fluent)
@@ -210,6 +228,12 @@ func (c *Command) FindScriptOrderByName(search string) []string {
 
 func (c *Command) Run() {
 	c.build()
+
+	if c.AppInfo != nil && option.Defined == c.input.Option("version") {
+		c.showVersion()
+
+		os.Exit(int(ExitSuccess))
+	}
 
 	command := c.input.Argument("command")
 
@@ -459,6 +483,23 @@ func (c *Command) showHelp() {
 		} else {
 			c.displayAllScriptsTable(*render)
 		}
+	}
+}
+
+func (c *Command) showVersion() {
+	if c.AppInfo.BuildDate.IsZero() {
+		c.PrintText(fmt.Sprintf(
+			"<info>%s</info> version <comment>%s</comment>",
+			c.AppInfo.Name,
+			c.AppInfo.Version,
+		))
+	} else {
+		c.PrintText(fmt.Sprintf(
+			"<info>%s</info> version <comment>%s</comment> %s",
+			c.AppInfo.Name,
+			c.AppInfo.Version,
+			c.AppInfo.BuildDate.Format(time.DateTime),
+		))
 	}
 }
 
