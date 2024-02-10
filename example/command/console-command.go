@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/DrSmithFr/go-console"
 	"github.com/DrSmithFr/go-console/input/argument"
+	"time"
 )
 
 func main() {
@@ -11,6 +12,11 @@ func main() {
 	script := go_console.Command{
 		UseNamespace: true,
 		Description:  "This Command act as a group of command.",
+		AppInfo: &go_console.ApplicationInfo{
+			Name:      "app",
+			Version:   "1.0.0",
+			BuildDate: time.Now(),
+		},
 		Scripts: []*go_console.Script{
 			{
 				Name:        "app:user:create",

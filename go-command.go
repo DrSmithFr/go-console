@@ -498,7 +498,7 @@ func (c *Command) showVersion() {
 			"<info>%s</info> version <comment>%s</comment> %s",
 			c.AppInfo.Name,
 			c.AppInfo.Version,
-			c.AppInfo.BuildDate.Format(time.DateTime),
+			c.AppInfo.BuildDate.Format("2006-01-02 15:04:05"),
 		))
 	}
 }
