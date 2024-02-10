@@ -13,7 +13,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 )
 
 type ExitCode int
@@ -76,7 +75,7 @@ type Script struct {
 	Name        string
 	Description string
 	Version     string
-	BuildDate   time.Time
+	BuildFlag   string
 
 	Arguments []Argument
 	Options   []Option
@@ -433,8 +432,8 @@ func (s *Script) handleVersionCall() {
 
 	tagLine := fmt.Sprintf("<info>%s</info><comment>@%s</comment>", cmdName, version)
 
-	if !s.BuildDate.IsZero() {
-		tagLine += " " + s.BuildDate.Format("2006-01-02 15:04:05")
+	if s.BuildFlag != "" {
+		tagLine += " " + s.BuildFlag
 	}
 
 	s.PrintText(tagLine)

@@ -15,7 +15,6 @@ import (
 	"regexp"
 	"sort"
 	"strings"
-	"time"
 )
 
 type CommandRunner func(cmd *Script) ExitCode
@@ -92,7 +91,7 @@ type Command struct {
 type Info struct {
 	Name      string
 	Version   string
-	BuildDate time.Time
+	BuildFlag string
 }
 
 // (helper) add default options
@@ -507,12 +506,8 @@ func (c *Command) showVersion() {
 		c.Info.Version,
 	)
 
-	if !c.Info.BuildDate.IsZero() {
-
-		tagLine += fmt.Sprintf(
-			" %s",
-			c.Info.BuildDate.Format("2006-01-02 15:04:05"),
-		)
+	if c.Info.BuildFlag != "" {
+		tagLine += " " + c.Info.BuildFlag
 	}
 
 	c.PrintText(tagLine)
