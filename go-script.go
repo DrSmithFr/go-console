@@ -74,8 +74,6 @@ type Script struct {
 
 	Name        string
 	Description string
-	Version     string
-	BuildFlag   string
 
 	Arguments []Argument
 	Options   []Option
@@ -86,6 +84,8 @@ type Script struct {
 	inputParsed      bool
 	definitionParsed bool
 	parentScriptName string
+
+	BuildInfo *BuildInfo
 }
 
 func (s *Script) SetDescription(description string) *Script {
@@ -418,7 +418,17 @@ func (s *Script) handleHelpCall() {
 }
 
 func (s *Script) handleVersionCall() {
-	cmdName := filepath.Base(os.Args[0])
+	// deprecated but still supported and prior to other options
+	cmdName := s.Name
+
+	if cmdName == "" && s.BuildInfo != nil {
+		cmdName = s.BuildInfo.Name
+	}
+
+	if cmdName == "" {
+		// fallback to the script name
+		cmdName = filepath.Base(os.Args[0])
+	}
 
 	if s.parentScriptName != "" {
 		cmdName = s.parentScriptName + " " + cmdName
@@ -426,14 +436,14 @@ func (s *Script) handleVersionCall() {
 
 	version := "latest"
 
-	if s.Version != "" {
-		version = s.Version
+	if s.BuildInfo != nil && s.BuildInfo.Version != "" {
+		version = s.BuildInfo.Version
 	}
 
 	tagLine := fmt.Sprintf("<info>%s</info><comment>@%s</comment>", cmdName, version)
 
-	if s.BuildFlag != "" {
-		tagLine += " " + s.BuildFlag
+	if s.BuildInfo != nil && s.BuildInfo.BuildFlag != "" {
+		tagLine += " " + s.BuildInfo.BuildFlag
 	}
 
 	s.PrintText(tagLine)

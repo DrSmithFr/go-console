@@ -18,10 +18,12 @@ func main() {
 	//
 
 	cmd := go_console.Script{
-		Version:     Version,
-		BuildFlag:   Flag,
 		Name:        "app:command",
 		Description: "The app:command command.",
+		BuildInfo: &go_console.BuildInfo{
+			Version:   Version,
+			BuildFlag: Flag,
+		},
 		Arguments: []go_console.Argument{
 			{
 				Name:        "name",

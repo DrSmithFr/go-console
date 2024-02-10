@@ -85,13 +85,7 @@ type Command struct {
 	inputParsed      bool
 	definitionParsed bool
 
-	Info *Info
-}
-
-type Info struct {
-	Name      string
-	Version   string
-	BuildFlag string
+	BuildInfo *BuildInfo
 }
 
 // (helper) add default options
@@ -130,7 +124,7 @@ func (c *Command) addDefaultOptions() {
 				SetDescription("Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug"),
 		)
 
-	if c.Info != nil {
+	if c.BuildInfo != nil {
 		c.addInputOption(
 			option.
 				New("version", option.None).
@@ -229,7 +223,7 @@ func (c *Command) FindScriptOrderByName(search string) []string {
 func (c *Command) Run() {
 	c.build()
 
-	if c.Info != nil && option.Defined == c.input.Option("version") {
+	if c.BuildInfo != nil && option.Defined == c.input.Option("version") {
 		c.showVersion()
 
 		os.Exit(int(ExitSuccess))
@@ -489,25 +483,25 @@ func (c *Command) showHelp() {
 func (c *Command) showVersion() {
 	appName := filepath.Base(os.Args[0])
 
-	if c.Info == nil {
+	if c.BuildInfo == nil {
 		c.PrintText(fmt.Sprintf(
 			"<info>%s</info>@latest",
 			appName,
 		))
 	}
 
-	if c.Info.Name != "" {
-		appName = c.Info.Name
+	if c.BuildInfo.Name != "" {
+		appName = c.BuildInfo.Name
 	}
 
 	tagLine := fmt.Sprintf(
 		"<info>%s</info><comment>@%s</comment>",
 		appName,
-		c.Info.Version,
+		c.BuildInfo.Version,
 	)
 
-	if c.Info.BuildFlag != "" {
-		tagLine += " " + c.Info.BuildFlag
+	if c.BuildInfo.BuildFlag != "" {
+		tagLine += " " + c.BuildInfo.BuildFlag
 	}
 
 	c.PrintText(tagLine)
