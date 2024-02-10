@@ -11,7 +11,9 @@ import (
 	"github.com/DrSmithFr/go-console/table"
 	"github.com/DrSmithFr/go-console/verbosity"
 	"os"
+	"path/filepath"
 	"strings"
+	"time"
 )
 
 type ExitCode int
@@ -73,6 +75,8 @@ type Script struct {
 
 	Name        string
 	Description string
+	Version     string
+	BuildDate   time.Time
 
 	Arguments []Argument
 	Options   []Option
@@ -119,6 +123,12 @@ func (s *Script) addDefaultOptions() {
 				New("help", option.None).
 				SetShortcut("h").
 				SetDescription("Display help for the given command."),
+		).
+		AddInputOption(
+			option.
+				New("version", option.None).
+				SetShortcut("V").
+				SetDescription("Display version for the given command."),
 		).
 		// add help option
 		AddInputOption(
@@ -177,6 +187,7 @@ func (s *Script) Build() *Script {
 	s.parseInput()
 	s.findOutputVerbosity()
 	s.handleHelpCall()
+	s.handleVersionCall()
 
 	s.validateInput()
 
@@ -372,7 +383,7 @@ func (s *Script) handleHelpCall() {
 	synopsis := s.input.Definition().Synopsis(false)
 	synopsis = strings.ReplaceAll(synopsis, "<", "\\<")
 
-	cmdName := os.Args[0]
+	cmdName := filepath.Base(os.Args[0])
 
 	if s.parentScriptName != "" {
 		cmdName = s.parentScriptName + " " + cmdName
@@ -404,6 +415,29 @@ func (s *Script) handleHelpCall() {
 			Render()
 	}
 
+	os.Exit(int(ExitSuccess))
+}
+
+func (s *Script) handleVersionCall() {
+	cmdName := filepath.Base(os.Args[0])
+
+	if s.parentScriptName != "" {
+		cmdName = s.parentScriptName + " " + cmdName
+	}
+
+	version := "latest"
+
+	if s.Version != "" {
+		version = s.Version
+	}
+
+	tagLine := fmt.Sprintf("<info>%s</info><comment>@%s</comment>", cmdName, version)
+
+	if !s.BuildDate.IsZero() {
+		tagLine += " " + s.BuildDate.Format("2006-01-02 15:04:05")
+	}
+
+	s.PrintText(tagLine)
 	os.Exit(int(ExitSuccess))
 }
 

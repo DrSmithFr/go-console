@@ -4,6 +4,7 @@ import (
 	"github.com/DrSmithFr/go-console"
 	"github.com/DrSmithFr/go-console/input/argument"
 	"github.com/DrSmithFr/go-console/input/option"
+	"time"
 )
 
 func main() {
@@ -13,6 +14,8 @@ func main() {
 	//
 
 	cmd := go_console.Script{
+		Version:     "1.0.0",
+		BuildDate:   time.Now(),
 		Name:        "app:command",
 		Description: "The app:command command.",
 		Arguments: []go_console.Argument{

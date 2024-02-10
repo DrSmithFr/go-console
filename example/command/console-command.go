@@ -12,8 +12,7 @@ func main() {
 	script := go_console.Command{
 		UseNamespace: true,
 		Description:  "This Command act as a group of command.",
-		AppInfo: &go_console.ApplicationInfo{
-			Name:      "app",
+		Info: &go_console.Info{
 			Version:   "1.0.0",
 			BuildDate: time.Now(),
 		},

@@ -11,6 +11,7 @@ import (
 	"github.com/DrSmithFr/go-console/table"
 	"github.com/DrSmithFr/go-console/verbosity"
 	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -85,10 +86,10 @@ type Command struct {
 	inputParsed      bool
 	definitionParsed bool
 
-	AppInfo *ApplicationInfo
+	Info *Info
 }
 
-type ApplicationInfo struct {
+type Info struct {
 	Name      string
 	Version   string
 	BuildDate time.Time
@@ -130,7 +131,7 @@ func (c *Command) addDefaultOptions() {
 				SetDescription("Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug"),
 		)
 
-	if c.AppInfo != nil {
+	if c.Info != nil {
 		c.addInputOption(
 			option.
 				New("version", option.None).
@@ -229,7 +230,7 @@ func (c *Command) FindScriptOrderByName(search string) []string {
 func (c *Command) Run() {
 	c.build()
 
-	if c.AppInfo != nil && option.Defined == c.input.Option("version") {
+	if c.Info != nil && option.Defined == c.input.Option("version") {
 		c.showVersion()
 
 		os.Exit(int(ExitSuccess))
@@ -487,20 +488,34 @@ func (c *Command) showHelp() {
 }
 
 func (c *Command) showVersion() {
-	if c.AppInfo.BuildDate.IsZero() {
+	appName := filepath.Base(os.Args[0])
+
+	if c.Info == nil {
 		c.PrintText(fmt.Sprintf(
-			"<info>%s</info> version <comment>%s</comment>",
-			c.AppInfo.Name,
-			c.AppInfo.Version,
-		))
-	} else {
-		c.PrintText(fmt.Sprintf(
-			"<info>%s</info> version <comment>%s</comment> %s",
-			c.AppInfo.Name,
-			c.AppInfo.Version,
-			c.AppInfo.BuildDate.Format("2006-01-02 15:04:05"),
+			"<info>%s</info>@latest",
+			appName,
 		))
 	}
+
+	if c.Info.Name != "" {
+		appName = c.Info.Name
+	}
+
+	tagLine := fmt.Sprintf(
+		"<info>%s</info><comment>@%s</comment>",
+		appName,
+		c.Info.Version,
+	)
+
+	if !c.Info.BuildDate.IsZero() {
+
+		tagLine += fmt.Sprintf(
+			" %s",
+			c.Info.BuildDate.Format("2006-01-02 15:04:05"),
+		)
+	}
+
+	c.PrintText(tagLine)
 }
 
 func (c *Command) showAutocompletionHelp(command string, scripts []string) {
