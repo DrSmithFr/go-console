@@ -418,6 +418,10 @@ func (s *Script) handleHelpCall() {
 }
 
 func (s *Script) handleVersionCall() {
+	if s.input.Option("version") == option.Undefined {
+		return
+	}
+
 	// deprecated but still supported and prior to other options
 	cmdName := s.Name
 
