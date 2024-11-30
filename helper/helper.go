@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/DrSmithFr/go-console/formatter"
 	"regexp"
+	"syscall"
 	"unicode"
 	"unicode/utf8"
 )
@@ -290,4 +291,12 @@ func InsertNth(s string, n int, insert rune) string {
 	}
 
 	return buffer.String()
+}
+
+var syscallMap = map[any]int{
+	syscall.Stdin: 0,
+}
+
+func Syscall(val any) int {
+	return syscallMap[val]
 }
