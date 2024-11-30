@@ -19,6 +19,7 @@ GoConsole: New Update! thanks all of you for your advice and your help. I have u
 
 [![CircleCI](https://circleci.com/gh/DrSmithFr/go-console.svg?style=shield)](https://circleci.com/gh/github.com/DrSmithFr/go-console)
 [![Go Report Card](https://goreportcard.com/badge/github.com/DrSmithFr/go-console)](https://goreportcard.com/report/github.com/github.com/DrSmithFr/go-console)
+[![Go Reference](https://pkg.go.dev/badge/github.com/DrSmithFr/go-console.svg)](https://pkg.go.dev/github.com/DrSmithFr/go-console)
 
 > The Console component eases the creation of beautiful and command line interfaces.
 
