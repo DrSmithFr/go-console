@@ -4,14 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/DrSmithFr/go-console/helper"
 	"reflect"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
 	"unsafe"
-
-	"github.com/dustin/go-humanize"
 )
 
 const (
@@ -196,7 +195,7 @@ func extractCells(pos int, header StructHeader, v reflect.Value, config ParserCo
 			}
 
 			if header.TimestampValue.Human {
-				s = humanize.Time(t)
+				s = helper.Time(t)
 			} else {
 				s = t.Format(header.TimestampValue.Format)
 			}

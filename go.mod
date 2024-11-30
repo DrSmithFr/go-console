@@ -3,7 +3,6 @@ module github.com/DrSmithFr/go-console
 go 1.18
 
 require (
-	github.com/dustin/go-humanize v1.0.1
 	github.com/stretchr/testify v1.8.1
 	golang.org/x/term v0.5.0
 	golang.org/x/text v0.7.0
